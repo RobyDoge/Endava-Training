@@ -84,7 +84,23 @@ void FeedAll()
 
 void ListAnimals()
 {
-    throw new NotImplementedException();
+    Console.WriteLine("ID  | Name       | Age | Extra              | Cost");
+    foreach (var animal in animals)
+    {
+        string id = string.Format("{0,-3}", animal.Id);
+        string name = string.Format("{0,-10}", animal.Name);
+        string age = string.Format("{0,-3}", animal.Age);
+        string extra = animal switch
+        {
+            Dog dog => $"IsTrained: {dog.IsTrained}",
+            Cat cat => $"IsIndoor: {cat.IsIndoor}",
+            Bird bird => $"WingSpanCm: {bird.WingSpanCm}",
+            _ => ""
+        };
+        extra = string.Format("{0,-18}", extra);
+        string dailyCareCost = string.Format("{0,-5}", animal.DayliyCareCost());
+        Console.WriteLine($"{id} | {name} | {age} | {extra} | {dailyCareCost}");
+    }
 }
 
 void AddBird()
