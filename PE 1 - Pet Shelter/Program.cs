@@ -3,9 +3,9 @@ using PetShelter.Models;
 
 List<Animal> animals = new()
 {
-    new Dog { Id = 1, Name = "Doggo", Age = 3, IsTrained = true },
-    new Cat { Id = 2, Name = "Catto", Age = 2, IsIndoor = false },
-    new Bird { Id = 3, Name = "Birdo", Age = 1, WingSpanCm = 25.5 }
+    new Dog { Id = 1, Name = "Bella", Age = 3, IsTrained = true },
+    new Cat { Id = 2, Name = "Oreo", Age = 2, IsIndoor = false },
+    new Bird { Id = 3, Name = "Pipsqueak", Age = 1, WingSpanCm = 25.5 }
 };
 
 int lastId = 3;
@@ -64,27 +64,60 @@ do
 
 void FlyAll()
 {
-    throw new NotImplementedException();
+    foreach (var animal in animals)
+    {
+        if (animal is IFlyable flyable)
+        {
+            flyable.Fly();
+        }   
+    }
 }
 
 void AdoptById()
 {
-    throw new NotImplementedException();
+    Console.WriteLine("Please insert the Id of the animal you want to adopt");
+    string input = Console.ReadLine() ?? "";
+    int id = int.TryParse(input, out int idResult) ? idResult : -1;
+    if (id <= 0)
+    {
+        Console.WriteLine("Invalid Id.");
+        return;
+    }
+    var animal = animals.Find(a => a.Id == id);
+    if(animal == null)
+    {
+        Console.WriteLine("Animal not Found");
+        return;
+    }
+    animals.Remove(animal);
+    Console.WriteLine($"You adopted {animal.Name}. Take good care of it!");
 }
 
 void SpeakAll()
 {
-    throw new NotImplementedException();
+    foreach (var animals in animals)
+    {
+        animals?.Speak();
+    }
 }
 
 void FeedAll()
 {
-    throw new NotImplementedException();
+    int feedCound = 0;
+    foreach (var animal in animals)
+    {
+        if (animal is IFeedable feedable)
+        {
+            feedable.Feed();
+            feedCound++;
+        }
+    }
 }
 
 void ListAnimals()
 {
     Console.WriteLine("ID  | Name       | Age | Extra              | Cost");
+    Console.WriteLine("--------------------------------------------------");
     foreach (var animal in animals)
     {
         string id = string.Format("{0,-3}", animal.Id);
