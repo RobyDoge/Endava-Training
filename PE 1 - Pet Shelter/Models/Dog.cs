@@ -5,9 +5,10 @@ namespace PetShelter.Models;
 internal class Dog : Animal, IFeedable
 {
     public bool IsTrained { get; set; }
+
     public void Feed()
     {
-        Console.WriteLine("I was feed thanks Buddy <3");
+        Console.WriteLine("Doggo Feed");
     }
 
     public override void Speak()
