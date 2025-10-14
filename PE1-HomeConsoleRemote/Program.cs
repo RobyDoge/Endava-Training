@@ -13,6 +13,7 @@ deviceRegistry.Get<SmartPlug>(3)?.PowerOn();
 
 do
 {
+    Console.WriteLine();
     Console.WriteLine("""
         === SMART HOME CONSOLE REMOTE ===
         1. List devices
@@ -67,7 +68,114 @@ void TogglePower()
 
 void AddDevice()
 {
-    throw new NotImplementedException();
+    Console.Write("To add a device include the following separated by blank spaces: type(LightBulb/ColorBulb/SmartPlug/Thermostat) name: ");
+    string input = Console.ReadLine().Trim();
+    string[] parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+    if (parts.Length < 2)
+    {
+        Console.WriteLine("Invalid input, please provide at least type and name.");
+        return;
+    }
+    switch (parts[0].ToUpper())
+    {
+        case "LIGHTBULB":
+            AddLightBulb(parts[1]);
+            return;
+        case "COLORBULB":
+            AddColorBulb(parts[1]);
+            return;
+        case "SMARTPLUG":
+            AddSmartPlug(parts[1]);
+            return;
+        case "THERMOSTAT":
+            AddThermostat(parts[1]);
+            return;
+        default:
+            Console.WriteLine("Invalid Option please choice one of the above.");
+            return;
+
+    }
+}
+
+void AddThermostat(string name)
+{
+    Console.WriteLine("Insert the target temperature (between 10-30): ");
+    try
+    {
+        int targetCelsius = int.Parse(Console.ReadLine());
+        deviceRegistry.Register(new Thermostat(currentId++, name, targetCelsius));
+        Console.WriteLine("Thermostat added succesfully");
+
+    }
+    catch (ArgumentOutOfRangeException ex)
+    {
+        Console.WriteLine(ex.Message);
+        return;
+    }
+    catch (FormatException)
+    {
+        Console.WriteLine("Invalid input format. Please ensure temperature is a number.");
+        return;
+    }
+    return;
+}
+
+void AddSmartPlug(string name)
+{
+    deviceRegistry.Register(new SmartPlug(currentId++,name));
+    Console.WriteLine("SmartPlug added succesfully");
+    return;
+}
+
+void AddLightBulb(string name)
+{
+    Console.WriteLine("Insert the brightness (between 0-100): ");
+    try
+    {
+        int brightness = int.Parse(Console.ReadLine());
+        deviceRegistry.Register(new LightBulb(currentId++,name, brightness));
+        Console.WriteLine("LightBulb added succesfully");
+
+    }
+    catch (ArgumentOutOfRangeException ex)
+    {
+        Console.WriteLine(ex.Message);
+        return;
+    }
+    catch (FormatException)
+    {
+        Console.WriteLine("Invalid input format. Please ensure brightness is a number.");
+        return;
+    }
+    return;
+}
+
+void AddColorBulb(string name)
+{
+    Console.WriteLine("Insert the brightness (between 0-100), RGB values (in this order; between 0-255), and temperature (between 0-100):");
+    string[] colorParts = Console.ReadLine().Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+    if (colorParts.Length < 5)
+    {
+        Console.WriteLine("Invalid input, please provide brightness, RGB values and temperature.");
+        return;
+    }
+    try
+    {
+        deviceRegistry.Register(new ColorBulb(currentId++, name, int.Parse(colorParts[0]), byte.Parse(colorParts[1]), byte.Parse(colorParts[2]), byte.Parse(colorParts[3]), int.Parse(colorParts[4])));
+        Console.WriteLine("ColorBulb added succesfully");
+
+    }
+    catch (ArgumentOutOfRangeException ex)
+    {
+        Console.WriteLine(ex.Message);
+        return;
+    }
+    catch (FormatException)
+    {
+        Console.WriteLine("Invalid input format. Please ensure all values are numbers.");
+        return;
+    }
+    return;
 }
 
 void ListDevices()
@@ -89,7 +197,6 @@ void ListDevices()
             _ => ""
         };
         Console.WriteLine($"{id} | {name} | {type} | {status} | {extraInfo}");
-        Console.WriteLine();
 
 
     }
