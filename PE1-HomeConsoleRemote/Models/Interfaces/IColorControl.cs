@@ -2,10 +2,10 @@
 
 internal interface IColorControl
 {
-    byte RedValue { get; init; }
-    byte GreenValue { get; init; }
-    byte BlueValue { get; init; } 
-    int Temperature { get; init; }
+    byte RedValue { get;}
+    byte GreenValue { get;}
+    byte BlueValue { get; } 
+    int Temperature { get;}
     void SetColor(byte red, byte green, byte blue);
     void SetTemperature(int temperature);
 }
