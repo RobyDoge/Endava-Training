@@ -4,7 +4,7 @@ namespace HomeConsole.Models;
 
 internal class Thermostat : SmartDevice, ITemperatureControl
 {
-    public double TargetCelsius { get; set; } = 20.0;
+    public double TargetCelsius { get; private set; } = 20.0;
 
     public Thermostat(int id, string name) : base(id, name)
     {

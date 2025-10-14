@@ -1,5 +1,6 @@
 ﻿using HomeConsole.Models;
 using HomeConsole.Services;
+using System.Xml.Linq;
 
 IDeviceRegistry deviceRegistry = new DeviceRegistry();
 int currentId = 1;
@@ -53,17 +54,116 @@ do
 
 void SelfTestAll()
 {
-    throw new NotImplementedException();
+    foreach (var device in deviceRegistry.GetAll())
+    {
+        Console.WriteLine(device.SelfTest());
+    }
 }
 
 void DeviceActions()
 {
-    throw new NotImplementedException();
+    Console.WriteLine("Insert the id of the device you want to interact with: ");
+    try
+    {
+        int id = int.Parse(Console.ReadLine());
+        var device = deviceRegistry.TryGetDevice(id, out var foundDevice) ? foundDevice : null;
+        if (device is null)
+        {
+            Console.WriteLine("Device not found");
+            return;
+        }
+        switch (device)
+        {
+            case LightBulb bulb:
+                Console.WriteLine("Insert the brightness (between 0-100): ");
+                if (!int.TryParse(Console.ReadLine(), out int brightness))
+                    throw new FormatException("Invalid input format. Please ensure temperature is a number.");
+                bulb.SetBrightness(brightness);
+                Console.WriteLine($"Lightbulb was adjusted");
+                break;
+
+            case ColorBulb colorBulb:
+                Console.WriteLine("Insert the brightness (between 0-100), RGB values (in this order; between 0-255), and temperature (between 0-100):");
+                string[] colorParts = Console.ReadLine().Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                if (colorParts.Length < 5)
+                {
+                    Console.WriteLine("Invalid input, please provide brightness, RGB values and temperature.");
+                    return;
+                }
+                colorBulb.SetColor(byte.Parse(colorParts[1]), byte.Parse(colorParts[2]), byte.Parse(colorParts[3]));
+                colorBulb.SetBrightness(int.Parse(colorParts[0]));
+                colorBulb.SetTemperature(int.Parse(colorParts[4]));
+                Console.WriteLine("Colorbulb was adjusted");
+                break;
+
+            case Thermostat thermostat:
+                Console.WriteLine("Set new target value (between 10 and 30):");
+                if (!int.TryParse(Console.ReadLine(), out int targetCelsius))
+                    throw new FormatException("Invalid input format. Please ensure temperature is a number.");
+                thermostat.SetTarget(targetCelsius);
+                Console.WriteLine("Thermostat was adjusted");
+                break;
+
+            case SmartPlug smartPlug:
+                Console.WriteLine("View current load(0) or reset the energy counter(1)");
+                if (!int.TryParse(Console.ReadLine(), out int choice) && (choice ==1 || choice == 0))
+                    throw new FormatException("Invalid input format. Please ensure input is 0 or 1.");
+                if (choice==0)
+                {
+                    Console.WriteLine($"Current load is: {smartPlug.CurrentWatts}");
+                    break;
+                }
+                smartPlug.ResetEnergy();
+                Console.WriteLine("Energy counter was reset");
+                break;
+        }
+        }
+    catch (FormatException fe)
+    { 
+        Console.WriteLine(fe.Message);
+        return;
+    }
+    catch (ArgumentOutOfRangeException aoore)
+    {
+        Console.WriteLine(aoore.Message);
+        return;
+    }
+    catch (OverflowException oe)
+    {
+        Console.WriteLine(oe.Message);
+        return;
+    }
 }
+
 
 void TogglePower()
 {
-    throw new NotImplementedException();
+    Console.WriteLine("Insert the id of device u want to change the power");
+    try
+    {
+        int id = int.Parse(Console.ReadLine());
+        var device = deviceRegistry.TryGetDevice(id, out var foundDevice) ? foundDevice : null;
+        if (device is null)
+        {
+            Console.WriteLine("Device not found");
+            return;
+        }
+        Console.WriteLine("Device found: " + device.Name + ", current status: " + (device.GetStatus() ? "On" : "Off"));
+        Console.WriteLine("Switching device to " + (device.GetStatus() ? "Off" : "On"));
+        if (device.GetStatus())
+        {
+            device.PowerOff();
+        }
+        else
+        {
+            device.PowerOn();
+        }
+    }
+    catch (FormatException)
+    {
+        Console.WriteLine("Invalid input format. Please ensure id is a number.");
+        return;
+    }
 }
 
 void AddDevice()
@@ -175,6 +275,10 @@ void AddColorBulb(string name)
         Console.WriteLine("Invalid input format. Please ensure all values are numbers.");
         return;
     }
+    catch(OverflowException)
+    {
+        Console.WriteLine("Invalid input. RGB value must be between 0 and 255.");
+    }
     return;
 }
 
@@ -197,7 +301,6 @@ void ListDevices()
             _ => ""
         };
         Console.WriteLine($"{id} | {name} | {type} | {status} | {extraInfo}");
-
 
     }
 }
