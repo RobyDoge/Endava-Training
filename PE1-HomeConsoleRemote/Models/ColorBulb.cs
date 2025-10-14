@@ -6,11 +6,21 @@ namespace HomeConsole.Models;
 internal class ColorBulb : SmartDevice, IDimmable, IColorControl
 {
     public int Brightness { get; private set; } = 0;
-    public byte RedValue { get; private set; }
-    public byte GreenValue { get; private set; }
-    public byte BlueValue { get; private set; }
-    public int Temperature { get; private set; }
+    public byte RedValue { get; private set; } = 0;
+    public byte GreenValue { get; private set; } = 0;
+    public byte BlueValue { get; private set; } = 0;
+    public int Temperature { get; private set; } = 0;
 
+    public ColorBulb(int id, string name) : base(id, name)
+    {
+    }
+    public ColorBulb(int id, string name, int brightness, byte red, byte green, byte blue, int temperature) : base(id, name)
+    {
+        SetBrightness(brightness);
+        SetColor(red, green, blue);
+        SetTemperature(temperature);
+    }
+    public override string SelfTest() => $"ColorBulb {Name}";
     public void SetBrightness(int brightness)
     {
         if (brightness < 0 || brightness > 100)
@@ -36,7 +46,7 @@ internal class ColorBulb : SmartDevice, IDimmable, IColorControl
     {
         if (temperature < 0 || temperature > 100)
         {
-            throw new ArgumentOutOfRangeException(nameof(temperature), "Color temperature must be between 0 and 100.");)
+            throw new ArgumentOutOfRangeException(nameof(temperature), "Color temperature must be between 0 and 100.");
         }
     }
 }

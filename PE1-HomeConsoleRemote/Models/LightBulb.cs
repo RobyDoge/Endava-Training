@@ -5,6 +5,13 @@ namespace HomeConsole.Models;
 
 internal class LightBulb : SmartDevice, IDimmable
 {
+    public LightBulb(int id, string name) : base(id, name)
+    {
+    }
+    public LightBulb(int id, string name, int brightness) : base(id, name)
+    {
+        SetBrightness(brightness);
+    }
 
     public int Brightness { get; private set; } = 0;
 
