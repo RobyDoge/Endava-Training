@@ -162,7 +162,43 @@ void TakeOffLandDrone()
 
 void SetWaypoint()
 {
-    throw new NotImplementedException();
+
+    Console.Write("Enter the id of the drone: ");
+    bool isInt = int.TryParse(Console.ReadLine(), out int id);
+    if (!isInt)
+    {
+        Console.WriteLine("Id must be an integer.");
+        return;
+    }
+    var drone = drones.Find(x => x.Id == id);
+    if (drone == null)
+    {
+        Console.WriteLine("Drone not found");
+        return;
+    }
+    if(drone is not INavigable)
+    {
+        Console.WriteLine("A waypoint can't be set for this kind of drone");
+        return;
+    }
+    Console.WriteLine("Insert the coordonates of the waypoint (must be numbers): ");
+    Console.Write("Longitude: ");
+    if(!double.TryParse(Console.ReadLine(),out double longitude))
+    {
+        Console.WriteLine("Invalid input.");
+        return;
+    }
+    Console.WriteLine("Latitude: ");
+    if (!double.TryParse(Console.ReadLine(), out double latitude))
+    {
+        Console.WriteLine("Invalid input.");
+        return;
+    }
+
+    ((INavigable)drone).SetWaypoint(latitude, longitude);
+    Console.WriteLine("The waypoint was set");
+
+
 }
 
 void SpecialAction()
