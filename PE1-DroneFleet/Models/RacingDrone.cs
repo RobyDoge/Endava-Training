@@ -2,7 +2,7 @@
 
 internal class RacingDrone : Drone
 {
-    public RacingDrone(int id, int name, decimal batteryPercent) : base(id, name, batteryPercent)
+    public RacingDrone(int id, string name, decimal batteryPercent) : base(id, name, batteryPercent)
     {
     }
 }
