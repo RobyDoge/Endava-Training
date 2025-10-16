@@ -94,5 +94,20 @@ void SpecialAction()
 
 void ChargeBattery()
 {
-    throw new NotImplementedException();
+    Console.Write("Enter the id of the drone: ");
+    bool isInt = int.TryParse(Console.ReadLine(), out int id);
+    if(!isInt)
+    {
+        Console.WriteLine("Id must be an integer.");
+        return;
+    }
+    var drone = drones.Find(x => x.Id == id);
+    if (drone == null)
+    {
+        Console.WriteLine("Drone not found");
+        return;
+    }
+    drone.BatteryPercent = 100;
+    Console.WriteLine($"The battery for drone {drone.Name} was charged to {drone.BatteryPercent}.");
+
 }
