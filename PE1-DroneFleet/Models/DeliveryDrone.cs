@@ -13,6 +13,7 @@ internal class DeliveryDrone : Drone, INavigable, ICargoCarrier
     {
         if(capacityKg<= 0) throw new ArgumentOutOfRangeException(nameof(capacityKg), "The capacity must be greater than 0.");
         CapacityKg = capacityKg;
+        CurrentWaypoint = (-1, -1);
     }
 
     public void SetWaypoint(double latitude, double longitude)

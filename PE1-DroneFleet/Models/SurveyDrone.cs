@@ -10,6 +10,7 @@ internal class SurveyDrone : Drone, INavigable, IPhotoCapture
 
     public SurveyDrone(int id, string name, decimal batteryPercent) : base(id, name, batteryPercent)
     {
+        CurrentWaypoint = (-1, -1);
     }
     public void SetWaypoint(double latitude, double longitude)
     {
