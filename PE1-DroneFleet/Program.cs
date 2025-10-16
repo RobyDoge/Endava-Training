@@ -91,7 +91,35 @@ void ListDrones()
 
 void AddDrone()
 {
-    throw new NotImplementedException();
+    Console.WriteLine("Insert the type and name of the drone.");
+    Console.Write("Type (Survey/Delivery/Racing): ");
+    string type = Console.ReadLine()!.Trim().ToLower();
+    Console.Write("Name: ");
+    string name = Console.ReadLine()!.Trim();
+    switch (type)
+    {
+        case "delivery":
+            Console.Write("Insert the total carrying capacity of the drone: ");
+            bool isInt = int.TryParse(Console.ReadLine(), out int value);
+            if (!isInt || value <= 0)
+            {
+                Console.WriteLine("Input Invalid");
+                return;
+            }
+            drones.Add(DroneFactory.CreateDrone(new DroneSpecs { Type = DroneType.Delivery, Id = ++currentId, Name = name, BatteryPercent = 100, CapacityKg = value }));
+            break;
+        case "raceing":
+            drones.Add(DroneFactory.CreateDrone(new DroneSpecs { Type = DroneType.Racing, BatteryPercent = 100, Name = name, Id = ++currentId }));
+            break;
+        case "survey":
+            drones.Add(DroneFactory.CreateDrone(new DroneSpecs { Type = DroneType.Survey, BatteryPercent = 100, Name = name, Id = ++currentId }));
+
+            break;
+        default:
+            Console.WriteLine("Invalid input");
+            return;
+    }
+    Console.WriteLine($"Added {type} drone with id {currentId} and name {name}");
 }
 
 void CheckAllDrones()
