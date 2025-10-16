@@ -124,12 +124,40 @@ void AddDrone()
 
 void CheckAllDrones()
 {
-    throw new NotImplementedException();
+    foreach(var drone in drones)
+    {
+        string aux = drone.RunSelfTest() ? "does" : "doesn't";
+        Console.WriteLine($"Drone {drone.Name} {aux} have enough battery to start the flight. Current battery percentage: {drone.BatteryPercent} ");
+    }
 }
 
 void TakeOffLandDrone()
 {
-    throw new NotImplementedException();
+    Console.Write("Insert the ID of the drone: ");
+    if(!int.TryParse(Console.ReadLine(), out int id))
+    {
+        Console.WriteLine("Invalid Input.");
+        return;
+    }
+    var drone = drones.Find(x => x.Id == id);
+    if(drone == null)
+    {
+        Console.WriteLine("Drone not found");
+        return;
+    }
+    if (drone.IsAirborne)
+    {
+        Console.WriteLine($"Drone {drone.Name} is Landing....");
+        drone.Land();
+        Thread.Sleep(500);
+        Console.WriteLine("Drone landed safely");
+        return;
+    }
+    Console.WriteLine($"Drone {drone.Name} is preparing to launch....");
+    drone.TakeOff();
+    Thread.Sleep(500);
+    Console.WriteLine("Drone is in air");
+    return;
 }
 
 void SetWaypoint()
