@@ -2,7 +2,7 @@
 
 namespace PetShelter.Models;
 
-internal class Bird: Animal, IFeedable, IFlyable
+internal class Bird : Animal, IFeedable, IFlyable
 {
     public double WingSpanCm { get; set; }
 
@@ -10,7 +10,6 @@ internal class Bird: Animal, IFeedable, IFlyable
     {
         Console.WriteLine($"Birdo {Name} Feed");
     }
-
     public void Fly()
     {
         Console.WriteLine($"Birdo {Name} has a {WingSpanCm} Wing Span");
@@ -20,5 +19,4 @@ internal class Bird: Animal, IFeedable, IFlyable
         Console.WriteLine($"{Name}: Chunchun");
     }
     public override decimal DayliyCareCost() => base.DayliyCareCost() + 1.0m;
-
 }

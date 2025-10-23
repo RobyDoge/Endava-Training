@@ -7,7 +7,6 @@ List<Animal> animals = new()
     new Cat { Id = 2, Name = "Oreo", Age = 2, IsIndoor = false },
     new Bird { Id = 3, Name = "Pipsqueak", Age = 1, WingSpanCm = 25.5 }
 };
-
 int lastId = 3;
 
 do
@@ -50,7 +49,7 @@ do
         case 6:
             SpeakAll();
             break;
-        case 7 :
+        case 7:
             AdoptById();
             break;
         case 8:
@@ -60,7 +59,7 @@ do
             break;
     }
 
-}while (true);
+} while (true);
 
 void FlyAll()
 {
@@ -69,7 +68,7 @@ void FlyAll()
         if (animal is IFlyable flyable)
         {
             flyable.Fly();
-        }   
+        }
     }
 }
 
@@ -84,7 +83,7 @@ void AdoptById()
         return;
     }
     var animal = animals.Find(a => a.Id == id);
-    if(animal == null)
+    if (animal == null)
     {
         Console.WriteLine("Animal not Found");
         return;
@@ -179,7 +178,6 @@ void AddCat()
 
     bool isIndoor = input == "y";
     animals.Add(new Cat { Id = ++lastId, Name = name, Age = age, IsIndoor = isIndoor, IntakeDate = DateTime.Now });
-
 }
 
 void AddDog()
@@ -200,9 +198,7 @@ void AddDog()
         Console.WriteLine("Invalid IsTrained.");
         return;
     }
+
     bool isTrained = input.ToLower() == "y";
-    
     animals.Add(new Dog { Id = ++lastId, Name = name, Age = age, IsTrained = isTrained, IntakeDate = DateTime.Now });
-
-
 }

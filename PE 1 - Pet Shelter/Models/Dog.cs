@@ -10,11 +10,9 @@ internal class Dog : Animal, IFeedable
     {
         Console.WriteLine($"Doggo {Name} Feed");
     }
-
     public override void Speak()
     {
         Console.WriteLine($"{Name}: Wan Wan");
     }
-
     public override decimal DayliyCareCost() => base.DayliyCareCost() + 3.0m;
 }
