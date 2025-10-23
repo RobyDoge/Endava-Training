@@ -7,7 +7,6 @@ List<Animal> animals = new()
     new Cat { Id = 2, Name = "Oreo", Age = 2, IsIndoor = false },
     new Bird { Id = 3, Name = "Pipsqueak", Age = 1, WingSpanCm = 25.5 }
 };
-
 int lastId = 3;
 
 do
@@ -50,7 +49,7 @@ do
         case 6:
             SpeakAll();
             break;
-        case 7 :
+        case 7:
             AdoptById();
             break;
         case 8:
@@ -60,7 +59,7 @@ do
             break;
     }
 
-}while (true);
+} while (true);
 
 void FlyAll()
 {
@@ -69,7 +68,7 @@ void FlyAll()
         if (animal is IFlyable flyable)
         {
             flyable.Fly();
-        }   
+        }
     }
 }
 
@@ -84,7 +83,7 @@ void AdoptById()
         return;
     }
     var animal = animals.Find(a => a.Id == id);
-    if(animal == null)
+    if (animal == null)
     {
         Console.WriteLine("Animal not Found");
         return;
@@ -138,22 +137,18 @@ void ListAnimals()
 
 void AddBird()
 {
-    Console.WriteLine("Insert the Name, Age, WingSpanCm(number) of the bird separated by blank spaces");
-    string input = Console.ReadLine() ?? "";
-    string[] parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-    if (parts.Length != 3)
-    {
-        Console.WriteLine("Invalid input.");
-        return;
-    }
-    string name = parts[0];
-    int age = int.TryParse(parts[1], out int ageResult) ? ageResult : -1;
+    Console.Write("Insert the Name: ");
+    string name = Console.ReadLine();
+
+    Console.Write("Insert the age: ");
+    int age = int.TryParse(Console.ReadLine(), out int ageResult) ? ageResult : -1;
     if (age <= 0)
     {
         Console.WriteLine("Invalid age.");
         return;
     }
-    double wingSpanCm = double.TryParse(parts[2], out double wingSpanCmResult) ? wingSpanCmResult : -1;
+    Console.Write("Enter the wing span in cm: ");
+    double wingSpanCm = double.TryParse(Console.ReadLine(), out double wingSpanCmResult) ? wingSpanCmResult : -1;
     if (wingSpanCm <= 0)
     {
         Console.WriteLine("Invalid WingSpanCm.");
@@ -164,56 +159,46 @@ void AddBird()
 
 void AddCat()
 {
-    Console.WriteLine("Insert the Name, Age, IsIndoor(y/n) of the cat separated by blank spaces");
-    string input = Console.ReadLine() ?? "";
-    string[] parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-    if (parts.Length != 3)
-    {
-        Console.WriteLine("Invalid input.");
-        return;
-    }
-    string name = parts[0];
-    int age = int.TryParse(parts[1], out int ageResult) ? ageResult : -1;
+    Console.Write("Insert the Name: ");
+    string name = Console.ReadLine();
+    Console.Write("Insert the age: ");
+    int age = int.TryParse(Console.ReadLine(), out int ageResult) ? ageResult : -1;
     if (age <= 0)
     {
         Console.WriteLine("Invalid age.");
         return;
     }
-    if (parts[2].ToLower() != "y" && parts[2].ToLower() != "n")
+    Console.Write("Is the cat for indoors? (y/n): ");
+    string input = Console.ReadLine();
+    if (input.ToLower() != "y" && input.ToLower() != "n")
     {
-        Console.WriteLine("Invalid IsTrained.");
+        Console.WriteLine("Invalid IsIndoor.");
         return;
     }
-    bool isIndoor = parts[2].ToLower() == "y";
-    animals.Add(new Cat { Id = ++lastId, Name = name, Age = age, IsIndoor = isIndoor, IntakeDate = DateTime.Now });
 
+    bool isIndoor = input == "y";
+    animals.Add(new Cat { Id = ++lastId, Name = name, Age = age, IsIndoor = isIndoor, IntakeDate = DateTime.Now });
 }
 
 void AddDog()
 {
-    Console.WriteLine("Insert the Name, Age, IsTrained(y/n) of the dog separated by blank spaces");
-    string input = Console.ReadLine() ?? "";
-    string[] parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-    if (parts.Length != 3)
-    {
-        Console.WriteLine("Invalid input.");
-        return;
-    }
-    string name = parts[0];
-    int age = int.TryParse(parts[1], out int ageResult) ? ageResult : -1;
+    Console.Write("Insert the Name: ");
+    string name = Console.ReadLine();
+    Console.Write("Insert the age: ");
+    int age = int.TryParse(Console.ReadLine(), out int ageResult) ? ageResult : -1;
     if (age <= 0)
     {
         Console.WriteLine("Invalid age.");
         return;
     }
-    if (parts[2].ToLower() != "y" && parts[2].ToLower() != "n")
+    Console.Write("Is the dog for trained? (y/n): ");
+    string input = Console.ReadLine();
+    if (input.ToLower() != "y" && input.ToLower() != "n")
     {
         Console.WriteLine("Invalid IsTrained.");
         return;
     }
-    bool isTrained = parts[2].ToLower() == "y";
-    
+
+    bool isTrained = input.ToLower() == "y";
     animals.Add(new Dog { Id = ++lastId, Name = name, Age = age, IsTrained = isTrained, IntakeDate = DateTime.Now });
-
-
 }
