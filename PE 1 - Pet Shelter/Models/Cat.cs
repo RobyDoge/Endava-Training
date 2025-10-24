@@ -5,6 +5,7 @@ namespace PetShelter.Models;
 internal class Cat: Animal, IFeedable
 {
     public bool IsIndoor { get; set; }
+    
     public void Feed()
     {
         Console.WriteLine($"Catto {Name} Feed");
