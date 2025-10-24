@@ -24,13 +24,12 @@ do
         3. Pre-flight check (all)
         4. Take off / Land
         5. Set waypoint
-        6. Capability actions
-        7. Charge battery
-        8. Exit
+        6. Charge battery
+        7. Exit
         """);
     Console.Write("Select: ");
     bool isInt= int.TryParse(Console.ReadLine(), out int option);
-    if (!isInt || (option < 1 || option > 8))
+    if (!isInt || (option < 1 || option > 7))
     {
         Console.WriteLine("Please selecte a valid option");
         continue; 
@@ -53,12 +52,9 @@ do
             SetWaypoint();
             break;
         case 6:
-            SpecialAction();
-            break;
-        case 7:
             ChargeBattery();
             break;
-        case 8:
+        case 7:
             return;
         default:
             Console.WriteLine("Invalid option. Please choice again!");
@@ -199,11 +195,6 @@ void SetWaypoint()
     Console.WriteLine("The waypoint was set");
 
 
-}
-
-void SpecialAction()
-{
-    throw new NotImplementedException();
 }
 
 void ChargeBattery()
