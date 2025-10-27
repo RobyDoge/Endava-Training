@@ -1,5 +1,4 @@
-﻿
-namespace ReadingList.Domain;
+﻿namespace ReadingList.Domain.Records;
 
 internal record Book
 {

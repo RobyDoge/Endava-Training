@@ -1,10 +1,9 @@
 ﻿namespace ReadingList.Domain.Interfaces;
 
-public interface IAsyncRepository<T> where T : class
+public interface IRepository<T, TKey> where T : class
 {
-    Task<Result<List<T?>> FetchAll();
-    TaskIQueryable<T> Select();
-    object Add(T entity);
-    void Delete(T entity);
-    void Save();
+    Result<List<T>> FetchAll();
+    Result<IQueryable<T>> Select();
+    Result Add(TKey key, T entity);
+    Result Delete(TKey Key);
 }
