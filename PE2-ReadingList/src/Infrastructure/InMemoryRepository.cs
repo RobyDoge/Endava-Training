@@ -8,42 +8,76 @@ namespace ReadingList.Infrastructure;
 internal class InMemoryRepository<TKey, T> : IRepository<TKey, T> where T : class
 {
     private ConcurrentDictionary<TKey, T> Store { get; } = new();
-
-    #region IRepository<T> Members
-    public Result Add(TKey key, T entity)
+    private Func<T, TKey> KeySelector { get; }
+    
+    public InMemoryRepository(Func<T, TKey> keySelector)
     {
-        try
-        {
-            if (!Store.TryAdd(key, entity)) return Result.Failure(Error.Add);
-            return Result.Success();
-        }
-        catch (Exception ex) 
-        {
-            return Result.Failure(Error.FromException(ex));
-        }
+        KeySelector = keySelector;
     }
-    public Result Delete(TKey key)
+    #region IRepository<T> Members
+    public Task<Result> AddAsync(T entity)
     {
         try
         {
-            if (!Store.TryRemove(key, out var _)) return Result.Failure(Error.Remove);
-            return Result.Success();
+            var key = KeySelector(entity);
+            if (!Store.TryAdd(key, entity)) return Task.FromResult(Result.Failure(Error.Add));
+            return Task.FromResult(Result.Success());
         }
         catch (Exception ex)
         {
-            return Result.Failure(Error.FromException(ex));
+            return Task.FromResult(Result.Failure(Error.FromException(ex)));
         }
     }
-    public Result<List<T>> FetchAll()
+    public Task<Result> BulkAddAsync(IEnumerable<T> entities)
     {
-        List<T> values = [.. Store.Values];
-        if (values.Count == 0) return Result.Failure<List<T>>(Error.NullValue);
-        return Result.Success(values);
+        foreach (var entity in entities)
+        {
+            if (AddAsync(entity).Result.ISFailure) continue;
+        }
+        return Task.FromResult(Result.Success());
     }
-    public Result<IQueryable<T>> Select()
+    public Task<Result<T>> GetByIdAsync(TKey key)
     {
-        try { return Result.Success(Store.Values.AsQueryable()); }
-        catch (Exception ex) { return Result.Failure<IQueryable<T>>(Error.FromException(ex)); }
+        try
+        {
+            if(!Store.TryGetValue(key, out T? entity)) return Task.FromResult(Result.Failure<T>(Error.Get));
+            return Task.FromResult(Result.Success(entity));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure<T>(Error.FromException(ex)));
+        }
+    }
+    public Task<Result<IReadOnlyList<T>>> ListAsync()
+    {
+        IReadOnlyList<T> values = [.. Store.Values];
+        if (values.Count == 0) return Task.FromResult(Result.Failure<IReadOnlyList<T>>(Error.NullValue));
+        return Task.FromResult(Result.Success(values));
+    }
+    public Task<Result> UpdateAsync(TKey key, T updatedEntity)
+    {
+        try
+        {
+            if (!Store.TryGetValue(key, out T? current)) return Task.FromResult(Result.Failure(Error.Get));
+            if (!Store.TryUpdate(key, updatedEntity, current)) return Task.FromResult(Result.Failure(Error.Update));
+            return Task.FromResult(Result.Success());
+        }
+        catch(Exception ex) 
+        {
+            return Task.FromResult(Result.Failure(Error.FromException(ex)));
+        }
+    }
+    public Task<Result> DeleteAsync(TKey key)
+    {
+        try
+        {
+            if (!Store.TryRemove(key, out var _)) return Task.FromResult(Result.Failure(Error.Remove));
+            return Task.FromResult(Result.Success());
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result.Failure(Error.FromException(ex)));
+        }
     }
     #endregion
 }
