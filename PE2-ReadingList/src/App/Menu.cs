@@ -1,8 +1,12 @@
-﻿namespace ReadingList.App;
+﻿using ReadingList.Domain.Records;
+using ReadingList.Infrastructure;
+
+namespace ReadingList.App;
 
 public partial class Menu
 {
     string DataFolderPath { get; init; }
+    private InMemoryRepository<Guid, Book> BookRepository { get; set; }
 
     public Menu(string path) => DataFolderPath = path;
 
@@ -22,7 +26,7 @@ public partial class Menu
         switch (option)
         {
             case 1:
-                //import case
+                ImportCommand();
                 return;
             case 2:
                 //list case
@@ -40,5 +44,16 @@ public partial class Menu
                 return;
         }
     }
+    private void ImportCommand()
+    {
+        ImportPrompt();
+        string? input;
+        while((input = Console.ReadLine()) != null)
+        {
+            if (string.IsNullOrWhiteSpace(input)) return;
 
+
+            Console.WriteLine("CSV File: ");
+        }
+    }
 }

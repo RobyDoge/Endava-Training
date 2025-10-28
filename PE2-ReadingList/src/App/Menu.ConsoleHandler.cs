@@ -24,4 +24,9 @@ public partial class Menu
         Console.WriteLine($"Input invalid. It must be between {from} and {to}.");
         Console.WriteLine();
     }
+    private void ImportPrompt()
+    {
+        Console.WriteLine("Insert the name of each csv file for importing or leave it blank for exiting");
+        Console.Write("CSV File: ");
+    }
 }

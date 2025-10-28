@@ -1,6 +1,6 @@
 ﻿namespace ReadingList.Domain.Interfaces;
 
-public interface IRepository<T, TKey> where T : class
+public interface IRepository<TKey, T> where T : class
 {
     Result<List<T>> FetchAll();
     Result<IQueryable<T>> Select();

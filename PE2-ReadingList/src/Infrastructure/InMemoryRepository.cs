@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 
 namespace ReadingList.Infrastructure;
 
-internal class InMemoryRepository<T, TKey> : IRepository<T, TKey> where T : class
+internal class InMemoryRepository<TKey, T> : IRepository<TKey, T> where T : class
 {
     private ConcurrentDictionary<TKey, T> Store { get; } = new();
 
