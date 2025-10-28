@@ -1,4 +1,6 @@
-﻿namespace ReadingList.App;
+﻿using Microsoft.VisualBasic.FileIO;
+
+namespace ReadingList.App;
 
 public partial class Menu
 {
@@ -27,6 +29,15 @@ public partial class Menu
     private void ImportPrompt()
     {
         Console.WriteLine("Insert the name of each csv file for importing or leave it blank for exiting");
-        Console.Write("CSV File: ");
+    }
+    private void FileNotFound()
+    {
+        Console.WriteLine("The file was not found: ");
+    }
+    private string? GetFullPath(string filename)
+    {
+        string fullPath = $"{DataFolderPath}/{filename}.csv";
+        if (File.Exists(fullPath)) { return fullPath; }
+        return null;
     }
 }
