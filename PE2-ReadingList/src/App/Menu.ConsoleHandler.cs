@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic.FileIO;
+using ReadingList.Domain;
 using ReadingList.Domain.Records;
 
 namespace ReadingList.App;
@@ -58,5 +59,20 @@ public partial class Menu
             4. List the books that contain a specific Author
             5. Show stats about the library
             """);
+    }
+    private void PrintBooks(IEnumerable<Book> books)
+    {
+        Console.WriteLine("Listing all the books");
+        Console.WriteLine(
+            $"{"ID",-2} | {"Title",-30} | {"Author",-20} | {"Year",-4} | " +
+            $"{"Pages",-3} | {"Genre",-20} | {"Fin",-3} | {"Rate",-3}");
+        Console.WriteLine(new string('-', 110));
+        foreach (var book in books)
+        {
+            string finished = book.Finished ? "yes" : "no";
+            Console.WriteLine(
+                $"{book.Id,-2} | {book.Title,-30} | {book.Author,-20} | {book.Year,-4} | " +
+                $"{book.Pages,-3} | {book.Genre,-20} | {finished,-3} | {book.Rating,-3}");
+        }
     }
 }

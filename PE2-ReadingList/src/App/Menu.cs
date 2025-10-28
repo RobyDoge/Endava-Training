@@ -35,7 +35,7 @@ public partial class Menu
                 ImportCommand();
                 return;
             case 2:
-                ListCommand();
+                await ListCommand();
                 return;
             case 3:
                 //update case
@@ -79,16 +79,17 @@ public partial class Menu
             Console.Write("CSV File: ");
         }
     }
-    private void ListCommand()
+    private async Task ListCommand()
     {
         ListPrompt();
         if (!int.TryParse(Console.ReadLine(), out int option)) { InvalidInput("number"); return; }
         switch (option)
         {
             case 1:
-                ListAllBooks();
+                await ListAllBooks();
                 return;
             case 2:
+                await ListAllFinishedBooks();
                 return;
             case 3:
                 return;
@@ -102,4 +103,5 @@ public partial class Menu
         }
     }
 
+    
 }
