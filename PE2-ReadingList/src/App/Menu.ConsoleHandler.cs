@@ -1,9 +1,18 @@
 ﻿using Microsoft.VisualBasic.FileIO;
+using ReadingList.Domain.Records;
 
 namespace ReadingList.App;
 
 public partial class Menu
 {
+    //TODO: to be moved somewhere where it makes sense
+    private string? GetFullPath(string filename)
+    {
+        string fullPath = $"{DataFolderPath}/{filename}.csv";
+        if (File.Exists(fullPath)) { return fullPath; }
+        return null;
+    }
+
     private void ShowMainMenu()
     {
         Console.WriteLine("""
@@ -30,14 +39,24 @@ public partial class Menu
     {
         Console.WriteLine("Insert the name of each csv file for importing or leave it blank for exiting");
     }
+    private void ResultFailed(Error error)
+    {
+        Console.WriteLine($"Error found. Code: {error.Code}. Message: {error.Message}.");
+    }
     private void FileNotFound()
     {
         Console.WriteLine("The file was not found: ");
     }
-    private string? GetFullPath(string filename)
+    
+    private void ListPrompt()
     {
-        string fullPath = $"{DataFolderPath}/{filename}.csv";
-        if (File.Exists(fullPath)) { return fullPath; }
-        return null;
+        Console.WriteLine("""
+                Insert one of the following commands:
+            1. List all the books
+            2. List only the finished books
+            3. List the highest rated <N> books
+            4. List the books that contain a specific Author
+            5. Show stats about the library
+            """);
     }
 }

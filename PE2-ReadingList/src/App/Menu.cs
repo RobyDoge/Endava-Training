@@ -1,6 +1,7 @@
 ﻿using ReadingList.Domain.Records;
 using ReadingList.Infrastructure;
 using System.IO;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -23,7 +24,6 @@ public partial class Menu
             Console.WriteLine();
             ShowMainMenu();
             if (!int.TryParse(Console.ReadLine(), out int option)) { InvalidInput("number"); continue; }
-            if (option < 1 || option > 5) { InputOutOfRange("1", "5"); continue; }
             await SelectCommand(option);
         }while (true);
     }
@@ -32,10 +32,10 @@ public partial class Menu
         switch (option)
         {
             case 1:
-                await ImportCommand();
+                ImportCommand();
                 return;
             case 2:
-                //list case
+                ListCommand();
                 return;
             case 3:
                 //update case
@@ -47,11 +47,13 @@ public partial class Menu
                 //help and exit case
                 return;
             default:
+                InputOutOfRange("1", "5");
                 return;
         }
     }
-    private async Task ImportCommand()
+    private void ImportCommand()
     {
+        //TODO: Log for exisiting ID
         ImportPrompt();
         string? input;
         Console.Write("CSV File: ");
@@ -59,7 +61,7 @@ public partial class Menu
         {
             if (string.IsNullOrWhiteSpace(input)) return;
             string? filepath = GetFullPath(input);
-            if(filepath == null) { FileNotFound(); continue; }
+            if(filepath == null) { FileNotFound(); Console.Write("CSV File: "); continue; }
 
             _ = Task.Run(async () =>
             {
@@ -77,4 +79,27 @@ public partial class Menu
             Console.Write("CSV File: ");
         }
     }
+    private void ListCommand()
+    {
+        ListPrompt();
+        if (!int.TryParse(Console.ReadLine(), out int option)) { InvalidInput("number"); return; }
+        switch (option)
+        {
+            case 1:
+                ListAllBooks();
+                return;
+            case 2:
+                return;
+            case 3:
+                return;
+            case 4:
+                return;
+            case 5:
+                return;
+            default:
+                InputOutOfRange("1", "5");
+                return;
+        }
+    }
+
 }

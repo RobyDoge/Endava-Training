@@ -6,7 +6,7 @@ namespace ReadingList.Domain;
 public class Result
 {
     public bool IsSuccess { get; }
-    public bool ISFailure => !IsSuccess;
+    public bool IsFailure => !IsSuccess;
     public Error Error { get; }
 
     protected Result(bool isSuccess, Error error)

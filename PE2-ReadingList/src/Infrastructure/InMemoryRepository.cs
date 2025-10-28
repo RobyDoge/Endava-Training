@@ -32,7 +32,7 @@ internal class InMemoryRepository<TKey, T> : IRepository<TKey, T> where T : clas
     {
         foreach (var entity in entities)
         {
-            if (AddAsync(entity).Result.ISFailure) continue;
+            if (AddAsync(entity).Result.IsFailure) continue;
         }
         return Task.FromResult(Result.Success());
     }
