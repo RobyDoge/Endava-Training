@@ -98,6 +98,7 @@ public partial class Menu
                 await BooksContainingAuthor();
                 return;
             case 5:
+                await BooksStats();
                 return;
             default:
                 InputOutOfRange("1", "5");

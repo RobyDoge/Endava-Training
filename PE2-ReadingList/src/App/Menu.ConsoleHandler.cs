@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using ReadingList.Domain;
 using ReadingList.Domain.Records;
+using System.Collections.Concurrent;
 
 namespace ReadingList.App;
 
@@ -87,5 +88,30 @@ public partial class Menu
         string? author = Console.ReadLine();
         if (author == null) { InvalidInput("not null"); return null;   }
         return author;
+    }
+    private void PrintStats(int numberOfBooks, int numberOfFinishiedBooks, double avgRating, ConcurrentDictionary<string, int> pagesPerGenre, string[] topAuthors)
+    {
+        string pagesPerGenreString = $"""
+            Pages per genre:
+            {"Genre",-20} | {"Pages",-5}
+            {new string('-',30)}
+
+            """;
+        foreach (var (genre, pages) in pagesPerGenre)
+        {
+            pagesPerGenreString += $"{genre,-20} | {pages,-5}\n";
+        }
+
+        Console.WriteLine($"""
+            Stats:
+            Total number of books: {numberOfBooks}
+            Total number of finishied books: {numberOfFinishiedBooks}
+            The average rating: {avgRating:F2}
+            {pagesPerGenreString}
+            Top Authors by book count:
+            {topAuthors[0]}
+            {topAuthors[1]}
+            {topAuthors[2]}
+            """);
     }
 }

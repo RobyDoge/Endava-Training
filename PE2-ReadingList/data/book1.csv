@@ -1,19 +1,19 @@
 Id,Title,Author,Year,Pages,Genre,Finished,Rating
 18,"Shadows of the North","Elena Marquez",1998,412,Fantasy,no,4.2
-19,"Binary Dawn","Lucas Chen",2021,328,Science Fiction,yes,3.8
-20,"The Marble Scholar","Hugo Rasmussen",1872,654,History,no,3.5
-21,"Love in Winter Harbor","Sofia Dimitriou",2009,287,Romance,yes,4.6
-22,"Recursive Souls","Amit Rao",2018,501,Software,no,3.9
+19,"Binary Dawn","Jonas Petrov",2021,328,Science Fiction,yes,3.8
+20,"The Marble Scholar","Jonas Petrov",1872,654,History,no,3.5
+21,"Love in Winter Harbor","Jonas Petrov",2009,287,Romance,yes,4.6
+22,"Recursive Souls","Jonas Petrov",2018,501,Software,no,3.9
 23,"The Last Archivist","Caroline Byrne",2003,723,Mystery,no,4.1
 24,"Empire of Sand","Khaled Nasser",1975,391,Historical Fiction,yes,4.0
 25,"The Quantum Key","Rebecca Holt",2022,446,Science Fiction,yes,4.9
 26,"Tides of Amber","Jun Park",1991,534,Fantasy,no,3.7
-27,"Unwritten Algorithm","Marcus Lavoie",2015,279,Software,yes,3.4
+27,"Unwritten Algorithm","Satoshi Tan",2015,279,Software,yes,3.4
 28,"The Crimson Heir","Natalie Wu",2007,688,Fantasy,yes,4.3
 29,"A Song for the Crows","Jonas Petrov",2011,402,Mystery,no,3.6
-30,"Echoes of the Silk Road","Farah Al-Khatib",1968,598,History,no,4.8
-31,"Wired Hearts","Daniela Costa",2020,321,Romance,yes,3.9
-32,"Paths Through Code","Emil Johansson",2017,362,Software,yes,4.5
+30,"Echoes of the Silk Road","Jonas Petrov",1968,598,History,no,4.8
+31,"Wired Hearts","Leo Martínez",2020,321,Romance,yes,3.9
+32,"Paths Through Code","Leo Martínez",2017,362,Software,yes,4.5
 
 11,"Pixels and Glory","Hannah Suzuki",2021,342,ESports,yes,4.3
 12,"The Final Match","Leo Martínez",2024,276,ESports,no,3.9

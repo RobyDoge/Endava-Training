@@ -7,7 +7,6 @@ public static class ImportCSV
     public static async Task<List<Book>> ImportBooksAsync(string path)
     {
         var books = new List<Book>();
-
         using var reader = new StreamReader(path);
         string? line;
         bool first = true;
@@ -32,9 +31,6 @@ public static class ImportCSV
             ));
             } catch { continue; }
         }
-
-        await Task.Delay(2000);
-
         return books;
     }
 }
