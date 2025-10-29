@@ -17,4 +17,17 @@ public partial class Menu
         if(result.IsFailure) {ResultFailed(result.Error); return; }
         PrintBooks(result.Value);
     }
+    private async Task TopRatedNBooks()
+    {
+        int booksNumber = GetBooksNumberFromUser();
+        if(booksNumber <1 ) return;
+        var result = await BookRepository.ListAsync();
+        if (result.IsFailure) { ResultFailed(result.Error); return; }
+        var maxSize = booksNumber <= result.Value.Count ? booksNumber : result.Value.Count;
+        var topRatedBooks = result.Value
+            .OrderByDescending(book => book.Rating)
+            .Take(maxSize)
+            .ToList();
+        PrintBooks(topRatedBooks);
+    }
 }

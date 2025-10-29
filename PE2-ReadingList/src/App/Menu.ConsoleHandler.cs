@@ -48,7 +48,6 @@ public partial class Menu
     {
         Console.WriteLine("The file was not found: ");
     }
-    
     private void ListPrompt()
     {
         Console.WriteLine("""
@@ -74,5 +73,12 @@ public partial class Menu
                 $"{book.Id,-2} | {book.Title,-30} | {book.Author,-20} | {book.Year,-4} | " +
                 $"{book.Pages,-3} | {book.Genre,-20} | {finished,-3} | {book.Rating,-3}");
         }
+    }
+    private int GetBooksNumberFromUser()
+    {
+        Console.Write("Enter the number of books you want to show: ");
+        if(!int.TryParse(Console.ReadLine(), out var bookNumber)) { InvalidInput("number"); return -1; }
+        if(bookNumber < 1) { Console.WriteLine("Input must be greater than 0."); return -1; }
+        return bookNumber;
     }
 }

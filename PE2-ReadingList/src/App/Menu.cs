@@ -92,6 +92,7 @@ public partial class Menu
                 await ListAllFinishedBooks();
                 return;
             case 3:
+                await TopRatedNBooks();
                 return;
             case 4:
                 return;
