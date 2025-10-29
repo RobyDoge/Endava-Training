@@ -8,7 +8,6 @@ public partial class Menu
     {
         var result = await BookRepository.ListAsync();
         if(result.IsFailure) { ResultFailed(result.Error); return; }
-
         PrintBooks(result.Value);
     }
     private async Task ListAllFinishedBooks()
@@ -29,5 +28,15 @@ public partial class Menu
             .Take(maxSize)
             .ToList();
         PrintBooks(topRatedBooks);
+    }
+    private async Task BooksContainingAuthor()
+    {
+        string? author = GetAuthorFromUser();
+        if(author == null) return;
+        var result = await BookRepository.ListAsync();
+        if (result.IsFailure) { ResultFailed(result.Error); return; }
+
+        var booksWithAutor = result.Value.Where(book => book.Author.Contains(author));
+        PrintBooks(booksWithAutor);
     }
 }

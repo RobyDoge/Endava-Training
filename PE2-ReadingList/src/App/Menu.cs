@@ -95,6 +95,7 @@ public partial class Menu
                 await TopRatedNBooks();
                 return;
             case 4:
+                await BooksContainingAuthor();
                 return;
             case 5:
                 return;

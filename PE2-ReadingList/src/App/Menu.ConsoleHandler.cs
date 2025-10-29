@@ -77,8 +77,15 @@ public partial class Menu
     private int GetBooksNumberFromUser()
     {
         Console.Write("Enter the number of books you want to show: ");
-        if(!int.TryParse(Console.ReadLine(), out var bookNumber)) { InvalidInput("number"); return -1; }
-        if(bookNumber < 1) { Console.WriteLine("Input must be greater than 0."); return -1; }
+        if (!int.TryParse(Console.ReadLine(), out var bookNumber)) { InvalidInput("number"); return -1; }
+        if (bookNumber < 1) { Console.WriteLine("Input must be greater than 0."); return -1; }
         return bookNumber;
+    }
+    private string? GetAuthorFromUser()
+    {
+        Console.Write("Enter the name of the author (case sensitive): ");
+        string? author = Console.ReadLine();
+        if (author == null) { InvalidInput("not null"); return null;   }
+        return author;
     }
 }
