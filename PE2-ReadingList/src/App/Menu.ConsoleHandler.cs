@@ -114,4 +114,25 @@ public partial class Menu
             {topAuthors[2]}
             """);
     }
+    private void UpdatePrompt()
+    {
+        Console.WriteLine("""
+            Insert the number coresponding to the wanted command:
+            1. Mark a book as finished
+            2. Rate a book
+            """);
+    }
+    private int GetIdFromUser()
+    {
+        Console.Write("Insert the Id of the book: ");
+        if(!int.TryParse(Console.ReadLine(), out var id)) { InvalidInput("number"); return -1; }
+        return id;
+    }
+    private double GetRatingFromUser()
+    {
+        Console.Write("Insert the rating for the book: ");
+        if (!double.TryParse(Console.ReadLine(), out var rating)) { InvalidInput("number"); return -1; }
+        if (rating < 0 || rating > 5) { InputOutOfRange("0.0", "5.0"); return -1; }
+        return rating;
+    }
 }

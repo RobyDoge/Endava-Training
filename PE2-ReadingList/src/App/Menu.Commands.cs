@@ -1,4 +1,5 @@
-﻿using ReadingList.Infrastructure;
+﻿using ReadingList.Domain.Records;
+using ReadingList.Infrastructure;
 using System.Collections.Concurrent;
 
 namespace ReadingList.App;
@@ -43,4 +44,21 @@ public partial class Menu
             topAuthors: await BookService.GetTopAuthorsAsync()
             );
     }
+    private async Task MarkBookFinished()
+    {
+        int id = GetIdFromUser();
+        if (id == -1) return;
+        if (await BookService.MarkBookFinished(id)) Console.WriteLine("Book Updated"); 
+        else Console.WriteLine("Book could not be updated");
+    }
+    private async Task RateBook()
+    {
+        int id = GetIdFromUser();
+        if (id == -1) return;
+        double rating = GetRatingFromUser();
+        if (rating == -1) return;
+        if (await BookService.RateBookAsync(id, rating)) Console.WriteLine("Book Updated");
+        else Console.WriteLine("Book could not be updated");
+    }
+   
 }

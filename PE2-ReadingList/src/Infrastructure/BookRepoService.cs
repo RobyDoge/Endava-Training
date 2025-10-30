@@ -88,5 +88,22 @@ public class BookRepoService
             .Take(AuthorMaxSize < booksPerAuthorResult.Value.Count ? AuthorMaxSize : booksPerAuthorResult.Value.Count)
             .ToArray();
     }
-
+    public async Task<bool> MarkBookFinished(int id)
+    {
+        var bookResult = await BookRepository.GetByIdAsync(id);
+        if (bookResult.IsFailure) return false;
+        var newBook = bookResult.Value with { Finished = true };
+        var result = await BookRepository.UpdateAsync(id, newBook);
+        if (result.IsFailure) return false;
+        return true;
+    }
+    public async Task<bool> RateBookAsync(int id, double  rate)
+    {
+        var bookResult = await BookRepository.GetByIdAsync(id);
+        if (bookResult.IsFailure) return false;
+        var newBook = bookResult.Value with {Rating = rate };
+        var result = await BookRepository.UpdateAsync(id, newBook);
+        if (result.IsFailure) return false;
+        return true;
+    }
 }

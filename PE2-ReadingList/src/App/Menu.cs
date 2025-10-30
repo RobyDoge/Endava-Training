@@ -38,7 +38,7 @@ public partial class Menu
                 await ListCommand();
                 return;
             case 3:
-                //update case
+                await UpdateCommand();
                 return;
             case 4:
                 //export case
@@ -90,6 +90,23 @@ public partial class Menu
                 return;
             default:
                 InputOutOfRange("1", "5");
+                return;
+        }
+    }
+    private async Task UpdateCommand()
+    {
+        UpdatePrompt();
+        if (!int.TryParse(Console.ReadLine(), out int option)) { InvalidInput("number"); return; }
+        switch (option)
+        {
+            case 1:
+                await MarkBookFinished();
+                return;
+            case 2:
+                await RateBook();
+                return;
+            default:
+                InputOutOfRange("1", "2");
                 return;
         }
     }
