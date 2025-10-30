@@ -10,12 +10,12 @@ namespace ReadingList.App;
 public partial class Menu
 {
     string DataFolderPath { get; init; }
-    private InMemoryRepository<int, Book> BookRepository { get; set; }
+    private BookRepoService BookService { get; set; }
 
     public Menu(string path, Func<Book,int> keySelector)
     {
         DataFolderPath = path;
-        BookRepository = new InMemoryRepository<int, Book>(keySelector);
+        BookService = new BookRepoService(keySelector);
     }
     public async Task Run()
     {
@@ -62,20 +62,8 @@ public partial class Menu
             if (string.IsNullOrWhiteSpace(input)) return;
             string? filepath = GetFullPath(input);
             if(filepath == null) { FileNotFound(); Console.Write("CSV File: "); continue; }
-
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    var books = await ImportCSV.ImportBooksAsync(filepath);
-                    await BookRepository.BulkAddAsync(books);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error importing {filepath}: {ex.Message}");
-                }
-            });
-
+            
+            BookService.ImportBooksInBackground(filepath);
             Console.Write("CSV File: ");
         }
     }
@@ -105,6 +93,4 @@ public partial class Menu
                 return;
         }
     }
-
-    
 }
