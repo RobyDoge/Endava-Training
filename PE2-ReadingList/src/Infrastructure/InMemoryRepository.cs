@@ -1,6 +1,7 @@
 ﻿using ReadingList.Domain;
 using ReadingList.Domain.Interfaces;
 using ReadingList.Domain.Records;
+using ReadingList.Logging;
 using System.Collections.Concurrent;
 
 namespace ReadingList.Infrastructure;
@@ -32,7 +33,7 @@ internal class InMemoryRepository<TKey, T> : IRepository<TKey, T> where T : clas
     {
         foreach (var entity in entities)
         {
-            if (AddAsync(entity).Result.IsFailure) continue;
+            if(AddAsync(entity).Result.Error == Error.Add) Logger.Log(LogType.DuplicatedId, $"Skipped ID {KeySelector(entity)}");
         }
         return Task.FromResult(Result.Success());
     }

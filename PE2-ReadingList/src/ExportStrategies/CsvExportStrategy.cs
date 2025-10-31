@@ -2,7 +2,6 @@
 using ReadingList.Domain.Records;
 using System.Globalization;
 using System.Text;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace ReadingList.ExportStrategies;
 
@@ -18,17 +17,17 @@ public class CsvExportStrategy : IExportStrategy
 
             foreach (var b in collection)
             {
-                var finished = b.Finished ? "Yes" : "No";
+                var finished = b.Finished ? "yes" : "no";
 
                 var line = string.Join(",",
-                    b.Id.ToString(CultureInfo.InvariantCulture),
+                    b.Id.ToString(),
                     b.Title,
                     b.Author,
-                    b.Year.ToString(CultureInfo.InvariantCulture),
-                    b.Pages.ToString(CultureInfo.InvariantCulture),
+                    b.Year.ToString(),
+                    b.Pages.ToString(),
                     b.Genre,
                     finished,
-                    b.Rating.ToString("F2", CultureInfo.InvariantCulture)
+                    b.Rating.ToString("F2")
                 );
 
                 await writer.WriteLineAsync(line);

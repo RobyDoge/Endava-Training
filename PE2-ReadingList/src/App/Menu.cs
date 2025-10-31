@@ -54,7 +54,6 @@ public partial class Menu
     }
     private void ImportCommand()
     {
-        //TODO: Log for exisiting ID
         ImportPrompt();
         string? input;
         Console.Write("CSV File: ");
