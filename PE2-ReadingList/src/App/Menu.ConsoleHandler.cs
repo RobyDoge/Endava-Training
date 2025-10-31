@@ -23,7 +23,7 @@ public partial class Menu
             2. List & Querry
             3. Update
             4. Export
-            5. Help & Exit
+            5. Exit
             """);
         Console.Write("Option: ");
     }

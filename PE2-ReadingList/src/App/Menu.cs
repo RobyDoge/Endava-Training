@@ -20,13 +20,14 @@ public partial class Menu
     }
     public async Task Run()
     {
+        int option;
         do
         {
             Console.WriteLine();
             ShowMainMenu();
-            if (!int.TryParse(Console.ReadLine(), out int option)) { InvalidInput("number"); continue; }
+            if (!int.TryParse(Console.ReadLine(), out option)) { InvalidInput("number"); continue; }
             await SelectCommand(option);
-        }while (true);
+        }while (option != 5 && true);
     }
     private async Task SelectCommand(int option)
     {
@@ -45,7 +46,6 @@ public partial class Menu
                 ExportCommand();
                 return;
             case 5:
-                //help and exit case
                 return;
             default:
                 InputOutOfRange("1", "5");
