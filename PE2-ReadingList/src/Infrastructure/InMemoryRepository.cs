@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 
 namespace ReadingList.Infrastructure;
 
-internal class InMemoryRepository<TKey, T> : IRepository<TKey, T> where T : class
+public class InMemoryRepository<TKey, T> : IRepository<TKey, T> where T : class
 {
     private ConcurrentDictionary<TKey, T> Store { get; } = new();
     private Func<T, TKey> KeySelector { get; }
