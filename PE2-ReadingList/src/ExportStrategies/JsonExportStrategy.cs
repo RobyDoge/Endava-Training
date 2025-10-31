@@ -1,9 +1,29 @@
-﻿namespace ReadingList.ExportStrategies;
+﻿using ReadingList.Domain.Records;
+using System.Globalization;
+using System.Text;
+using System.Text.Json;
+
+namespace ReadingList.ExportStrategies;
 
 public class JsonExportStrategy : IExportStrategy
 {
-    public async Task SaveAsync<T>(ICollection<T> collection, string filepath)
+    public async Task<bool> SaveAsync(IEnumerable<Book> collection, string filepath)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+
+            var json = JsonSerializer.Serialize(collection, options);
+            await File.WriteAllTextAsync(filepath, json);
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

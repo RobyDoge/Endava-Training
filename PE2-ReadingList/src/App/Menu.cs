@@ -1,4 +1,5 @@
 ﻿using ReadingList.Domain.Records;
+using ReadingList.ExportStrategies;
 using ReadingList.Infrastructure;
 using System.IO;
 using System.Reflection.Metadata.Ecma335;
@@ -41,7 +42,7 @@ public partial class Menu
                 await UpdateCommand();
                 return;
             case 4:
-                //export case
+                ExportCommand();
                 return;
             case 5:
                 //help and exit case
@@ -110,4 +111,32 @@ public partial class Menu
                 return;
         }
     }
+    private void ExportCommand()
+    {
+        ExportPrompt();
+        if (!int.TryParse(Console.ReadLine(), out int option)) { InvalidInput("number"); return; }
+        Console.Write("Enter the filename: ");
+        string filename = Console.ReadLine();
+        if (GetFullPath(filename) is not null)
+        {
+            Console.Write("File already existst, do you want to overwrite it (y/n)?: ");
+            var answer = Console.ReadKey();
+            if (answer.Key != ConsoleKey.Y) return;
+        }
+
+        switch (option)
+        {
+            case 1:
+                if (!filename.EndsWith(".json", StringComparison.OrdinalIgnoreCase)) { InvalidInput(".json");return; }
+                BookService.ExportBooksInBackgorund($"{DataFolderPath}/{filename}", new JsonExportStrategy());
+                break;
+
+            case 2:
+                if (!filename.EndsWith(".csv", StringComparison.OrdinalIgnoreCase)) { InvalidInput(".json"); return; }
+                BookService.ExportBooksInBackgorund($"{DataFolderPath}/{filename}", new CsvExportStrategy());
+                break;
+        }
+
+    }
+
 }

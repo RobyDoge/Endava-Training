@@ -1,5 +1,6 @@
 ﻿using ReadingList.Domain;
 using ReadingList.Domain.Records;
+using ReadingList.ExportStrategies;
 using System.Collections.Concurrent;
 
 namespace ReadingList.Infrastructure;
@@ -24,6 +25,22 @@ public class BookRepoService
             catch (Exception ex)
             {
                 Console.WriteLine($"Error importing {filepath}: {ex.Message}");
+            }
+        });
+    }
+    public void ExportBooksInBackgorund(string filepath, IExportStrategy exportStrategy)
+    {
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                var result = await BookRepository.ListAsync();
+                if (result.IsFailure) throw new Exception("Could not get the books");
+                await exportStrategy.SaveAsync(result.Value, filepath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error exporting {ex.Message}");
             }
         });
     }

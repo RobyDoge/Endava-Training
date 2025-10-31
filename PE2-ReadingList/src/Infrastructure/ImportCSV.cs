@@ -21,8 +21,8 @@ public static class ImportCSV
             {
                 books.Add(new Book(
                Id: int.Parse(parts[0]),
-               Title: parts[1],
-               Author: parts[2],
+               Title: parts[1].Trim().Trim('"'),
+               Author: parts[2].Trim().Trim('"'),
                Year: int.Parse(parts[3]),
                Pages: int.Parse(parts[4]),
                Genre: parts[5],

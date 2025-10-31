@@ -10,7 +10,7 @@ public partial class Menu
     //TODO: to be moved somewhere where it makes sense
     private string? GetFullPath(string filename)
     {
-        string fullPath = $"{DataFolderPath}/{filename}.csv";
+        string fullPath = $"{DataFolderPath}/{filename}";
         if (File.Exists(fullPath)) { return fullPath; }
         return null;
     }
@@ -117,7 +117,7 @@ public partial class Menu
     private void UpdatePrompt()
     {
         Console.WriteLine("""
-            Insert the number coresponding to the wanted command:
+            Insert the number corresponding to the wanted command:
             1. Mark a book as finished
             2. Rate a book
             """);
@@ -134,5 +134,13 @@ public partial class Menu
         if (!double.TryParse(Console.ReadLine(), out var rating)) { InvalidInput("number"); return -1; }
         if (rating < 0 || rating > 5) { InputOutOfRange("0.0", "5.0"); return -1; }
         return rating;
+    }
+    private void ExportPrompt()
+    {
+        Console.WriteLine("""
+            Insert the number corresponding to the wanted format:
+            1. Json
+            2. CSV
+            """);
     }
 }

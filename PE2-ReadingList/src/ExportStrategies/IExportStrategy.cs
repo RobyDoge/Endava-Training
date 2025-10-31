@@ -1,6 +1,8 @@
-﻿namespace ReadingList.ExportStrategies;
+﻿using ReadingList.Domain.Records;
+
+namespace ReadingList.ExportStrategies;
 
 public interface IExportStrategy
 {
-    Task SaveAsync<T>(ICollection<T> collection, string filepath);
+    Task<bool> SaveAsync(IEnumerable<Book> collection, string filepath);
 }
