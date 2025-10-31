@@ -19,8 +19,9 @@ public class BookRepoService
         {
             try
             {
-                var books = await ImportCSV.ImportBooksAsync(filepath);
-                await BookRepository.BulkAddAsync(books);
+                var result = await ImportCSV.ImportBooksAsync(filepath);
+                if (result.IsFailure) throw new Exception(result.Error.Message);
+                await BookRepository.BulkAddAsync(result.Value);
             }
             catch (Exception ex)
             {

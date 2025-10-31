@@ -48,7 +48,7 @@ public partial class Menu
     {
         int id = GetIdFromUser();
         if (id == -1) return;
-        if (await BookService.MarkBookFinished(id)) Console.WriteLine("Book Updated"); 
+        if (await BookService.MarkBookFinished(id)) Console.WriteLine("Book marked as finishied"); 
         else Console.WriteLine("Book could not be updated");
     }
     private async Task RateBook()
@@ -57,7 +57,7 @@ public partial class Menu
         if (id == -1) return;
         double rating = GetRatingFromUser();
         if (rating == -1) return;
-        if (await BookService.RateBookAsync(id, rating)) Console.WriteLine("Book Updated");
+        if (await BookService.RateBookAsync(id, rating)) Console.WriteLine("Book rated");
         else Console.WriteLine("Book could not be updated");
     }
    

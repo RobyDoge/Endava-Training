@@ -116,7 +116,7 @@ public partial class Menu
         ExportPrompt();
         if (!int.TryParse(Console.ReadLine(), out int option)) { InvalidInput("number"); return; }
         Console.Write("Enter the filename: ");
-        string filename = Console.ReadLine();
+        string filename = Console.ReadLine()!;
         if (GetFullPath(filename) is not null)
         {
             Console.Write("File already existst, do you want to overwrite it (y/n)?: ");

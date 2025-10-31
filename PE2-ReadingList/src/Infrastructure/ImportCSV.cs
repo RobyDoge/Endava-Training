@@ -1,10 +1,11 @@
-﻿using ReadingList.Domain.Records;
+﻿using ReadingList.Domain;
+using ReadingList.Domain.Records;
 
 namespace ReadingList.Infrastructure;
 
 public static class ImportCSV
 {
-    public static async Task<List<Book>> ImportBooksAsync(string path)
+    public static async Task<Result<List<Book>>> ImportBooksAsync(string path)
     {
         var books = new List<Book>();
         using var reader = new StreamReader(path);
@@ -31,6 +32,7 @@ public static class ImportCSV
             ));
             } catch { continue; }
         }
-        return books;
+        if (books.Count > 0) return Result.Success(books);
+        return Result.Failure<List<Book>>(Error.NullValue);
     }
 }
