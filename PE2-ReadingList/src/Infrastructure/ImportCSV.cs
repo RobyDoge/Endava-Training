@@ -18,35 +18,41 @@ public static class ImportCSV
         { 
             lineIndex++;
             if (first) { first = false; continue; }
-            
-            var parts = line.Split(',');
-            if (parts.Length != 8)
+            try 
             {
-                Logger.Log(LogType.MalformedRow, $"Expected 8 columns, got {parts.Length} on line {lineIndex}");
-                continue;
+                books.Add(ParseLine(line));
+            } 
+            catch(FormatException fe) 
+            {
+                Logger.Log(LogType.MalformedRow, $"{fe.Message} found on line {lineIndex}");
             }
-
-            try
-            {
-                books.Add(new Book(
-                    Id: int.Parse(parts[0]),
-                    Title: parts[1],
-                    Author: parts[2],
-                    Year: int.Parse(parts[3]),
-                    Pages: int.Parse(parts[4]),
-                    Genre: parts[5],
-                    Finished: parts[6].Trim().Equals("yes", StringComparison.OrdinalIgnoreCase),
-                    Rating: double.Parse(parts[7])
-                ));
-            } catch (Exception ex) 
+            catch (Exception ex) 
             {
                 Logger.Log(LogType.MalformedRow, $"{ex.Message} found on line {lineIndex}");
-                continue; 
             }
         }
+
         if (books.Count > 0) return Result.Success(books);
-        
         Logger.Log(LogType.MalformedRow, "Empty or invalid CSV file");
         return Result.Failure<List<Book>>(Error.NullValue);
+    }
+    private static Book ParseLine(string line)
+    {
+        const int expectedColumnCount = 8;
+        var parts = line.Split(',');
+        if (parts.Length != 8)
+        {
+            throw new FormatException($"CSV line has {parts.Length} columns, expected {expectedColumnCount}.");
+        }
+        return new Book(
+            Id: int.Parse(parts[0]),
+            Title: parts[1],
+            Author: parts[2],
+            Year: int.Parse(parts[3]),
+            Pages: int.Parse(parts[4]),
+            Genre: parts[5],
+            Finished: parts[6].Trim().Equals("yes", StringComparison.OrdinalIgnoreCase),
+            Rating: double.Parse(parts[7])
+        );
     }
 }
