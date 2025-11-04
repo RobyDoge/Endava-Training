@@ -1,0 +1,141 @@
+﻿using ReadingList.Domain.Records;
+using ReadingList.ExportStrategies;
+using ReadingList.Infrastructure;
+using System.IO;
+using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+
+namespace ReadingList.App;
+
+public partial class Menu
+{
+    string DataFolderPath { get; init; }
+    private BookRepoService BookService { get; set; }
+
+    public Menu(string path, Func<Book,int> keySelector)
+    {
+        DataFolderPath = path;
+        BookService = new BookRepoService(keySelector);
+    }
+    public async Task Run()
+    {
+        int option;
+        do
+        {
+            Console.WriteLine();
+            ShowMainMenu();
+            if (!int.TryParse(Console.ReadLine(), out option)) { InvalidInput("number"); continue; }
+            await SelectCommand(option);
+        }while (option != 5 && true);
+    }
+    private async Task SelectCommand(int option)
+    {
+        switch (option)
+        {
+            case 1:
+                ImportCommand();
+                return;
+            case 2:
+                await ListCommand();
+                return;
+            case 3:
+                await UpdateCommand();
+                return;
+            case 4:
+                ExportCommand();
+                return;
+            case 5:
+                return;
+            default:
+                InputOutOfRange("1", "5");
+                return;
+        }
+    }
+    private void ImportCommand()
+    {
+        ImportPrompt();
+        string? input;
+        Console.Write("CSV File: ");
+        while ((input = Console.ReadLine()) != null)
+        {
+            if (string.IsNullOrWhiteSpace(input)) return;
+            string? filepath = Utils.GetFullPath(DataFolderPath, input);
+            if(filepath == null) { FileNotFound(); Console.Write("CSV File: "); continue; }
+            
+            BookService.ImportBooksInBackground(filepath);
+            Console.Write("CSV File: ");
+        }
+    }
+    private async Task ListCommand()
+    {
+        ListPrompt();
+        if (!int.TryParse(Console.ReadLine(), out int option)) { InvalidInput("number"); return; }
+        switch (option)
+        {
+            case 1:
+                await ListAllBooks();
+                return;
+            case 2:
+                await ListAllFinishedBooks();
+                return;
+            case 3:
+                await TopRatedNBooks();
+                return;
+            case 4:
+                await BooksContainingAuthor();
+                return;
+            case 5:
+                await BooksStats();
+                return;
+            default:
+                InputOutOfRange("1", "5");
+                return;
+        }
+    }
+    private async Task UpdateCommand()
+    {
+        UpdatePrompt();
+        if (!int.TryParse(Console.ReadLine(), out int option)) { InvalidInput("number"); return; }
+        switch (option)
+        {
+            case 1:
+                await MarkBookFinished();
+                return;
+            case 2:
+                await RateBook();
+                return;
+            default:
+                InputOutOfRange("1", "2");
+                return;
+        }
+    }
+    private void ExportCommand()
+    {
+        ExportPrompt();
+        if (!int.TryParse(Console.ReadLine(), out int option)) { InvalidInput("number"); return; }
+        Console.Write("Enter the filename: ");
+        string filename = Console.ReadLine()!;
+        if (Utils.GetFullPath(DataFolderPath,filename) is not null)
+        {
+            Console.Write("File already existst, do you want to overwrite it (y/n)?: ");
+            var answer = Console.ReadKey();
+            if (answer.Key != ConsoleKey.Y) return;
+        }
+
+        switch (option)
+        {
+            case 1:
+                if (!filename.EndsWith(".json", StringComparison.OrdinalIgnoreCase)) { InvalidInput(".json");return; }
+                BookService.ExportBooksInBackgorund($"{DataFolderPath}/{filename}", new JsonExportStrategy());
+                break;
+
+            case 2:
+                if (!filename.EndsWith(".csv", StringComparison.OrdinalIgnoreCase)) { InvalidInput(".json"); return; }
+                BookService.ExportBooksInBackgorund($"{DataFolderPath}/{filename}", new CsvExportStrategy());
+                break;
+        }
+
+    }
+
+}
