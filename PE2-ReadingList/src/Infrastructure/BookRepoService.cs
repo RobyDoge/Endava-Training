@@ -15,20 +15,21 @@ public class BookRepoService
     }
     public void ImportBooksInBackground(string filepath)
     {
-        _ = Task.Run(async () =>
+        _ = Task.Run(async () => ImportBooksAsync(filepath));
+    }
+    public async Task ImportBooksAsync(string filepath)
+    {
+        try
         {
-            try
-            {
-                var result = await ImportCSV.ImportBooksAsync(filepath);
-                if (result.IsFailure) throw new Exception(result.Error.Message);
-                
-                await BookRepository.BulkAddAsync(result.Value);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error importing {filepath}: {ex.Message}");
-            }
-        });
+            var result = await ImportCSV.ImportBooksAsync(filepath);
+            if (result.IsFailure) throw new Exception(result.Error.Message);
+
+            await BookRepository.BulkAddAsync(result.Value);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error importing {filepath}: {ex.Message}");
+        }
     }
     public void ExportBooksInBackgorund(string filepath, IExportStrategy exportStrategy)
     {
