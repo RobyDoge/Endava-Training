@@ -21,7 +21,6 @@ public class Result
                 IsSuccess = isSuccess;
                 Error = error;
                 break;
-
         }
     }
     public static Result Success() => new(true, Error.None);
@@ -29,6 +28,6 @@ public class Result
     public static Result<T> Success<T>(T value) => new(value, true, Error.None);
     public static Result<T> Failure<T>(Error error) => new(default,false, error);
     public static Result<T> Create<T>(T? value) =>
-        value is not null ? Success<T>(value) : Failure<T>(Error.NullValue); 
+        value is not null ? Success(value) : Failure<T>(Error.NullValue); 
 
 }

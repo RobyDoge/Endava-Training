@@ -32,7 +32,6 @@ public class CsvExportStrategy : IExportStrategy
 
                 await writer.WriteLineAsync(line);
             }
-
             return true;
         }
         catch
