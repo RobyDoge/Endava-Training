@@ -10,13 +10,13 @@ public partial class Menu
     {
         var result = await BookService.GetAllAsync();
         if(result.IsFailure) { ResultFailed(result.Error); return; }
-        PrintBooks(result.Value);
+        DisplayBooks(result.Value);
     }
     private async Task ListAllFinishedBooks()
     {
         var result = await BookService.GetAllFinishedAsync();
         if(result.IsFailure) {ResultFailed(result.Error); return; }
-        PrintBooks(result.Value);
+        DisplayBooks(result.Value);
     }
     private async Task TopRatedNBooks()
     {
@@ -24,7 +24,7 @@ public partial class Menu
         if(booksNumber <1 ) return;
         var result = await BookService.GetTopRatedBooksAsync(booksNumber);
         if (result.IsFailure) { ResultFailed(result.Error); return; }
-        PrintBooks(result.Value);
+        DisplayBooks(result.Value);
     }
     private async Task BooksContainingAuthor()
     {
@@ -32,11 +32,11 @@ public partial class Menu
         if(author == null) return;
         var result = await BookService.GetBooksContainingAuthor(author);
         if (result.IsFailure) { ResultFailed(result.Error); return; }
-        PrintBooks(result.Value);
+        DisplayBooks(result.Value);
     }
     private async Task BooksStats()
     {
-        PrintStats(
+        DisplayStats(
             numberOfBooks: await BookService.GetNumberOfBooksAsync(),
             numberOfFinishiedBooks: await BookService.GetNumberOfFinishiedBooksAsync(),
             avgRating: await BookService.GetAverageRatingAsync(),

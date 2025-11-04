@@ -15,7 +15,7 @@ public static class ImportCSV
         int lineIndex = 0;
 
         while((line = await reader.ReadLineAsync()) != null)
-        {
+        { 
             lineIndex++;
             if (first) { first = false; continue; }
             

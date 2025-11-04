@@ -1,20 +1,11 @@
-﻿using Microsoft.VisualBasic.FileIO;
-using ReadingList.Domain;
-using ReadingList.Domain.Records;
+﻿using ReadingList.Domain.Records;
 using System.Collections.Concurrent;
 
 namespace ReadingList.App;
 
 public partial class Menu
 {
-    //TODO: to be moved somewhere where it makes sense
-    private string? GetFullPath(string filename)
-    {
-        string fullPath = $"{DataFolderPath}/{filename}";
-        if (File.Exists(fullPath)) { return fullPath; }
-        return null;
-    }
-
+    #region MenuDisplay
     private void ShowMainMenu()
     {
         Console.WriteLine("""
@@ -27,27 +18,9 @@ public partial class Menu
             """);
         Console.Write("Option: ");
     }
-    private void InvalidInput(string typeAccepted)
-    {
-        Console.WriteLine($"Input invalid. It must be {typeAccepted}.");
-        Console.WriteLine();
-    }
-    private void InputOutOfRange(string from, string to)
-    {
-        Console.WriteLine($"Input invalid. It must be between {from} and {to}.");
-        Console.WriteLine();
-    }
     private void ImportPrompt()
     {
         Console.WriteLine("Insert the name of each csv file for importing or leave it blank for exiting");
-    }
-    private void ResultFailed(Error error)
-    {
-        Console.WriteLine($"Error found. Code: {error.Code}. Message: {error.Message}.");
-    }
-    private void FileNotFound()
-    {
-        Console.WriteLine("The file was not found: ");
     }
     private void ListPrompt()
     {
@@ -60,7 +33,23 @@ public partial class Menu
             5. Show stats about the library
             """);
     }
-    private void PrintBooks(IEnumerable<Book> books)
+    private void UpdatePrompt()
+    {
+        Console.WriteLine("""
+            Insert the number corresponding to the wanted command:
+            1. Mark a book as finished
+            2. Rate a book
+            """);
+    }
+    private void ExportPrompt()
+    {
+        Console.WriteLine("""
+            Insert the number corresponding to the wanted format:
+            1. Json
+            2. CSV
+            """);
+    }
+    private void DisplayBooks(IEnumerable<Book> books)
     {
         Console.WriteLine("Listing all the books");
         Console.WriteLine(
@@ -75,26 +64,12 @@ public partial class Menu
                 $"{book.Pages,-3} | {book.Genre,-20} | {finished,-3} | {book.Rating,-3}");
         }
     }
-    private int GetBooksNumberFromUser()
-    {
-        Console.Write("Enter the number of books you want to show: ");
-        if (!int.TryParse(Console.ReadLine(), out var bookNumber)) { InvalidInput("number"); return -1; }
-        if (bookNumber < 1) { Console.WriteLine("Input must be greater than 0."); return -1; }
-        return bookNumber;
-    }
-    private string? GetAuthorFromUser()
-    {
-        Console.Write("Enter the name of the author (case sensitive): ");
-        string? author = Console.ReadLine();
-        if (author == null) { InvalidInput("not null"); return null;   }
-        return author;
-    }
-    private void PrintStats(int numberOfBooks, int numberOfFinishiedBooks, double avgRating, ConcurrentDictionary<string, int> pagesPerGenre, string[] topAuthors)
+    private void DisplayStats(int numberOfBooks, int numberOfFinishiedBooks, double avgRating, ConcurrentDictionary<string, int> pagesPerGenre, string[] topAuthors)
     {
         string pagesPerGenreString = $"""
             Pages per genre:
             {"Genre",-20} | {"Pages",-5}
-            {new string('-',30)}
+            {new string('-', 30)}
 
             """;
         foreach (var (genre, pages) in pagesPerGenre)
@@ -114,13 +89,43 @@ public partial class Menu
             {topAuthors[2]}
             """);
     }
-    private void UpdatePrompt()
+    #endregion
+
+    #region MenuErrorDisplay
+    private void InvalidInput(string typeAccepted)
     {
-        Console.WriteLine("""
-            Insert the number corresponding to the wanted command:
-            1. Mark a book as finished
-            2. Rate a book
-            """);
+        Console.WriteLine($"Input invalid. It must be {typeAccepted}.");
+        Console.WriteLine();
+    }
+    private void InputOutOfRange(string from, string to)
+    {
+        Console.WriteLine($"Input invalid. It must be between {from} and {to}.");
+        Console.WriteLine();
+    }
+    private void ResultFailed(Error error)
+    {
+        Console.WriteLine($"Error found. Code: {error.Code}. Message: {error.Message}.");
+    }
+    private void FileNotFound()
+    {
+        Console.WriteLine("The file could not be found, try another one");
+    }
+    #endregion
+
+    #region UserInput
+    private int GetBooksNumberFromUser()
+    {
+        Console.Write("Enter the number of books you want to show: ");
+        if (!int.TryParse(Console.ReadLine(), out var bookNumber)) { InvalidInput("number"); return -1; }
+        if (bookNumber < 1) { InvalidInput("greater than 0"); return -1; }
+        return bookNumber;
+    }
+    private string? GetAuthorFromUser()
+    {
+        Console.Write("Enter the name of the author (case sensitive): ");
+        string? author = Console.ReadLine();
+        if (author == null) { InvalidInput("not null"); return null;   }
+        return author;
     }
     private int GetIdFromUser()
     {
@@ -135,12 +140,5 @@ public partial class Menu
         if (rating < 0 || rating > 5) { InputOutOfRange("0.0", "5.0"); return -1; }
         return rating;
     }
-    private void ExportPrompt()
-    {
-        Console.WriteLine("""
-            Insert the number corresponding to the wanted format:
-            1. Json
-            2. CSV
-            """);
-    }
+    #endregion
 }

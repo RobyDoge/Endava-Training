@@ -60,7 +60,7 @@ public partial class Menu
         while ((input = Console.ReadLine()) != null)
         {
             if (string.IsNullOrWhiteSpace(input)) return;
-            string? filepath = GetFullPath(input);
+            string? filepath = Utils.GetFullPath(DataFolderPath, input);
             if(filepath == null) { FileNotFound(); Console.Write("CSV File: "); continue; }
             
             BookService.ImportBooksInBackground(filepath);
@@ -116,7 +116,7 @@ public partial class Menu
         if (!int.TryParse(Console.ReadLine(), out int option)) { InvalidInput("number"); return; }
         Console.Write("Enter the filename: ");
         string filename = Console.ReadLine()!;
-        if (GetFullPath(filename) is not null)
+        if (Utils.GetFullPath(DataFolderPath,filename) is not null)
         {
             Console.Write("File already existst, do you want to overwrite it (y/n)?: ");
             var answer = Console.ReadKey();
