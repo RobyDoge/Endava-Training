@@ -21,6 +21,7 @@ public class BookRepoService
             {
                 var result = await ImportCSV.ImportBooksAsync(filepath);
                 if (result.IsFailure) throw new Exception(result.Error.Message);
+                
                 await BookRepository.BulkAddAsync(result.Value);
             }
             catch (Exception ex)
@@ -37,6 +38,7 @@ public class BookRepoService
             {
                 var result = await BookRepository.ListAsync();
                 if (result.IsFailure) throw new Exception("Could not get the books");
+                
                 await exportStrategy.SaveAsync(result.Value, filepath);
             }
             catch (Exception ex)
@@ -57,6 +59,7 @@ public class BookRepoService
     {
         var result = await BookRepository.ListAsync();
         if (result.IsFailure) { return result; }
+        
         return result.Value
             .OrderByDescending(book => book.Rating)
             .Take(topNBooks <= result.Value.Count ? topNBooks : result.Value.Count)
@@ -71,57 +74,68 @@ public class BookRepoService
             .Where(book => book.Author.Contains(author))
             .ToList();
     }
-    public async Task<int> GetNumberOfBooksAsync()
+    public async Task<Result<int>> GetNumberOfBooksAsync()
     {
         var result = await BookRepository.ListAsync();
-        if (result.IsFailure) { return 0; }
+        if (result.IsFailure) { return Result.Failure<int>(result.Error); }
+        
         return result.Value.Count;
     }
-    public async Task<int> GetNumberOfFinishiedBooksAsync()
+    public async Task<Result<int>> GetNumberOfFinishiedBooksAsync()
     {
         var result = await BookRepository.ListFinishedAsync();
-        if (result.IsFailure) { return 0; }
+        if (result.IsFailure) { return Result.Failure<int>(result.Error); }
+        
         return result.Value.Count;
     }
-    public async Task<double> GetAverageRatingAsync()
+    public async Task<Result<double>> GetAverageRatingAsync()
     {
         var result = await BookRepository.AverageRatingAsync();
-        if (result.IsFailure) { return 0.0; }
+        if (result.IsFailure) { return Result.Failure<double>(result.Error); }
+        
         return result.Value;
     }
-    public async Task<ConcurrentDictionary<string, int>> GetPagesPerGenreAsync()
+    public async Task<Result<ConcurrentDictionary<string, int>>> GetPagesPerGenreAsync()
     {
-        var pagesPerGenreResult = await BookRepository.GetPagesPerGenreAsync();
-        if (pagesPerGenreResult.IsFailure) return new();
-        return pagesPerGenreResult.Value;
+        var result = await BookRepository.GetPagesPerGenreAsync();
+        if (result.IsFailure) return Result.Failure<ConcurrentDictionary<string, int>> (result.Error);
+        
+        return result.Value;
     }
-    public async Task<string[]> GetTopAuthorsAsync()
+    public async Task<Result<List<string>>> GetTopAuthorsAsync()
     {
-        var booksPerAuthorResult = await BookRepository.GetBooksPerAuthorAsync();
-        if (booksPerAuthorResult.IsFailure) { return new string[1]; }
+        var result = await BookRepository.GetBooksPerAuthorAsync();
+        if (result.IsFailure) { return Result.Failure<List<string>>(result.Error); }
+        
         const int AuthorMaxSize = 3;
-        return booksPerAuthorResult.Value
+        return result.Value
             .OrderByDescending(kvp => kvp.Value.Count)
             .Select(kvp => kvp.Key)
-            .Take(AuthorMaxSize < booksPerAuthorResult.Value.Count ? AuthorMaxSize : booksPerAuthorResult.Value.Count)
-            .ToArray();
+            .Take(AuthorMaxSize < result.Value.Count ? AuthorMaxSize : result.Value.Count)
+            .ToList();
     }
-    public async Task<bool> MarkBookFinished(int id)
+    public async Task<Result> MarkBookFinished(int id)
     {
         var bookResult = await BookRepository.GetByIdAsync(id);
-        if (bookResult.IsFailure) return false;
+        if (bookResult.IsFailure) return Result.Failure(bookResult.Error);
+        
         var newBook = bookResult.Value with { Finished = true };
         var result = await BookRepository.UpdateAsync(id, newBook);
-        if (result.IsFailure) return false;
-        return true;
+        if (result.IsFailure) return Result.Failure(result.Error);
+        
+        return Result.Success();
     }
-    public async Task<bool> RateBookAsync(int id, double  rate)
+    public async Task<Result> RateBookAsync(int id, double  rate)
     {
+        if (rate < 0 || rate > 5) return Result.Failure(Error.FromException(new ArgumentOutOfRangeException("rate")));
+        
         var bookResult = await BookRepository.GetByIdAsync(id);
-        if (bookResult.IsFailure) return false;
+        if (bookResult.IsFailure) return Result.Failure(bookResult.Error);
+        
         var newBook = bookResult.Value with {Rating = rate };
         var result = await BookRepository.UpdateAsync(id, newBook);
-        if (result.IsFailure) return false;
-        return true;
+        if (result.IsFailure) return Result.Failure(result.Error);
+
+        return Result.Success();
     }
 }

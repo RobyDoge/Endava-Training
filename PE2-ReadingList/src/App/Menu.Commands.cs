@@ -36,20 +36,37 @@ public partial class Menu
     }
     private async Task BooksStats()
     {
+        var numBooksResult = await BookService.GetNumberOfBooksAsync();
+        var numFinishedBooksResult = await BookService.GetNumberOfFinishiedBooksAsync();
+        var avgRatingResult = await BookService.GetAverageRatingAsync();
+        var pagesPerGenreResult = await BookService.GetPagesPerGenreAsync();
+        var topAuthors = await BookService.GetTopAuthorsAsync();
+
         DisplayStats(
-            numberOfBooks: await BookService.GetNumberOfBooksAsync(),
-            numberOfFinishiedBooks: await BookService.GetNumberOfFinishiedBooksAsync(),
-            avgRating: await BookService.GetAverageRatingAsync(),
-            pagesPerGenre: await BookService.GetPagesPerGenreAsync(),
-            topAuthors: await BookService.GetTopAuthorsAsync()
+            numberOfBooks: numBooksResult.IsSuccess 
+                    ? numBooksResult.Value 
+                    : 0,
+            numberOfFinishiedBooks: numFinishedBooksResult.IsSuccess 
+                    ? numFinishedBooksResult.Value 
+                    : 0,
+            avgRating: avgRatingResult.IsSuccess
+                    ? avgRatingResult.Value
+                    : 0.0,
+            pagesPerGenre: pagesPerGenreResult.IsSuccess
+                    ? pagesPerGenreResult.Value
+                    : [],
+            topAuthors: topAuthors.IsSuccess
+                    ? topAuthors.Value
+                    : []
             );
     }
     private async Task MarkBookFinished()
     {
         int id = GetIdFromUser();
         if (id == -1) return;
-        if (await BookService.MarkBookFinished(id)) Console.WriteLine("Book marked as finishied"); 
-        else Console.WriteLine("Book could not be updated");
+        var result = await BookService.MarkBookFinished(id);
+        if (result.IsSuccess) Console.WriteLine("Book marked as finishied");
+        else ResultFailed(result.Error);
     }
     private async Task RateBook()
     {
@@ -57,8 +74,10 @@ public partial class Menu
         if (id == -1) return;
         double rating = GetRatingFromUser();
         if (rating == -1) return;
-        if (await BookService.RateBookAsync(id, rating)) Console.WriteLine("Book rated");
-        else Console.WriteLine("Book could not be updated");
+
+        var result = await BookService.RateBookAsync(id, rating);
+        if (result.IsSuccess) Console.WriteLine("Book rated");
+        else ResultFailed(result.Error);
     }
    
 }

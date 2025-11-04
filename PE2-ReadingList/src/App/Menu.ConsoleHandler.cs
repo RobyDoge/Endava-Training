@@ -64,7 +64,7 @@ public partial class Menu
                 $"{book.Pages,-3} | {book.Genre,-20} | {finished,-3} | {book.Rating,-3}");
         }
     }
-    private void DisplayStats(int numberOfBooks, int numberOfFinishiedBooks, double avgRating, ConcurrentDictionary<string, int> pagesPerGenre, string[] topAuthors)
+    private void DisplayStats(int numberOfBooks, int numberOfFinishiedBooks, double avgRating, ConcurrentDictionary<string, int> pagesPerGenre, List<string> topAuthors)
     {
         string pagesPerGenreString = $"""
             Pages per genre:
@@ -76,6 +76,16 @@ public partial class Menu
         {
             pagesPerGenreString += $"{genre,-20} | {pages,-5}\n";
         }
+        
+        string topAuthorsString = $"""
+            Top Authors by book count:
+
+            """;
+        for (int i = 0; i < topAuthors.Count; i++)
+        {
+            if (i > 2) break;
+            topAuthorsString += $"{i+1}. {topAuthors[i]}\n";
+        }
 
         Console.WriteLine($"""
             Stats:
@@ -83,10 +93,7 @@ public partial class Menu
             Total number of finishied books: {numberOfFinishiedBooks}
             The average rating: {avgRating:F2}
             {pagesPerGenreString}
-            Top Authors by book count:
-            {topAuthors[0]}
-            {topAuthors[1]}
-            {topAuthors[2]}
+            {topAuthorsString}
             """);
     }
     #endregion
