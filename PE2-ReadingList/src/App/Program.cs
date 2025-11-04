@@ -10,5 +10,6 @@ string logPath = Path.GetFullPath("../../../logs");
 string logName = $"log-[{DateTime.Now:yyyy-MM-dd_HH-mm-ss}].log";
 Logger.SetWriter($"{logPath}/{logName}");
 
-
 await menu.Run();
+
+Logger.Close();
