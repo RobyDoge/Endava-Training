@@ -17,6 +17,7 @@ internal static class InMemoryRepositoryExtensions
             ? Result.Failure<IReadOnlyList<Book>>(Error.NullValue)
             : Result.Success((IReadOnlyList<Book>)finised);
     }
+
     public static async Task<Result<double>> AverageRatingAsync(
         this InMemoryRepository<int, Book> repo)
     {
@@ -26,7 +27,8 @@ internal static class InMemoryRepositoryExtensions
         double avgRating = all.Value.Average(book => book.Rating);
         return Result.Success(avgRating);
     }
-    public static async Task<Result<ConcurrentDictionary<string,int>>> GetPagesPerGenreAsync(
+
+    public static async Task<Result<ConcurrentDictionary<string, int>>> GetPagesPerGenreAsync(
         this InMemoryRepository<int, Book> repo)
     {
         ConcurrentDictionary<string, int> pagesPerGenre = new();
@@ -34,18 +36,19 @@ internal static class InMemoryRepositoryExtensions
         if (all.IsFailure) return Result.Failure<ConcurrentDictionary<string, int>>(all.Error);
         foreach (var book in all.Value)
         {
-            if(!pagesPerGenre.TryAdd(book.Genre, book.Pages))
+            if (!pagesPerGenre.TryAdd(book.Genre, book.Pages))
                 pagesPerGenre[book.Genre] += book.Pages;
         }
         return Result.Success(pagesPerGenre);
     }
-    public static async Task<Result<ConcurrentDictionary<string,List<Book>>>> GetBooksPerAuthorAsync(
+
+    public static async Task<Result<ConcurrentDictionary<string, List<Book>>>> GetBooksPerAuthorAsync(
         this InMemoryRepository<int, Book> repo)
     {
         ConcurrentDictionary<string, List<Book>> booksPerAuthor = new();
         var all = await repo.ListAsync();
         if (all.IsFailure) return Result.Failure<ConcurrentDictionary<string, List<Book>>>(all.Error);
-        foreach(var book in all.Value)
+        foreach (var book in all.Value)
         {
             booksPerAuthor.TryAdd(book.Author, new List<Book>());
             booksPerAuthor[book.Author].Add(book);

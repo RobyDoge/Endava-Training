@@ -4,7 +4,6 @@ namespace DroneFleet.Models;
 
 internal class SurveyDrone : Drone, INavigable, IPhotoCapture
 {
-
     public int PhotoCount { get; private set; } = 0;
     public (double latitude, double longitude)? CurrentWaypoint { get; private set; } = null;
 
@@ -12,6 +11,7 @@ internal class SurveyDrone : Drone, INavigable, IPhotoCapture
     {
         CurrentWaypoint = (-1, -1);
     }
+
     public void SetWaypoint(double latitude, double longitude)
     {
         CurrentWaypoint = (latitude, longitude);

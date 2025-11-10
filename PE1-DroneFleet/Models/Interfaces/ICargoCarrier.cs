@@ -6,6 +6,6 @@ internal interface ICargoCarrier
     double CurrentLoadKg { get; }
 
     bool Load(double weightKg);
-    void UnloadAll();
 
+    void UnloadAll();
 }

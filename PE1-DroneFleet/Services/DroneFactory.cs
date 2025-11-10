@@ -14,7 +14,5 @@ internal static class DroneFactory
             DroneType.Racing => new RacingDrone(specs.Id, specs.Name, specs.BatteryPercent),
             _ => throw new InvalidOperationException("Drone type unsuported.")
         };
-
     }
-
 }

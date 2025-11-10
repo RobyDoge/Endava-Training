@@ -3,7 +3,7 @@ using ReadingList.Domain.Records;
 using ReadingList.Logging;
 
 string dataFolderPath = Path.GetFullPath("../../../../data");
-Func<Book,int> keySelector = (book) => book.Id;
+Func<Book, int> keySelector = (book) => book.Id;
 var menu = new Menu(dataFolderPath, keySelector);
 
 string logPath = Path.GetFullPath("../../../logs");

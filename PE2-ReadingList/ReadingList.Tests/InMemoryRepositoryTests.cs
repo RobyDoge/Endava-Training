@@ -1,7 +1,6 @@
-﻿using ReadingList.Domain;
-using ReadingList.Domain.Records;
+﻿using ReadingList.Domain.Records;
 using ReadingList.Infrastructure;
-using System.Threading.Tasks;
+
 namespace ReadingList.Tests;
 
 public class InMemoryRepositoryTests

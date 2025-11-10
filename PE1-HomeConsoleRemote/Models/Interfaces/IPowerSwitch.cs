@@ -1,8 +1,8 @@
-﻿
-namespace HomeConsole.Models.Interfaces;
+﻿namespace HomeConsole.Models.Interfaces;
 
 internal interface IPowerSwitch
 {
     void PowerOn();
+
     void PowerOff();
 }

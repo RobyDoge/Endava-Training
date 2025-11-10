@@ -8,6 +8,7 @@ internal class DeviceRegistry : IDeviceRegistry
     private ConcurrentDictionary<int, SmartDevice> Devices { get; } = new();
 
     public event Action<SmartDevice>? DeviceRegistered;
+
     public event Action<int>? DeviceUnregistered;
 
     public IEnumerable<TCapability> FindByCapability<TCapability>() where TCapability : class

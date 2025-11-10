@@ -1,6 +1,4 @@
-﻿
-using ReadingList.Domain.Records;
-using System.Globalization;
+﻿using ReadingList.Domain.Records;
 using System.Text;
 
 namespace ReadingList.ExportStrategies;

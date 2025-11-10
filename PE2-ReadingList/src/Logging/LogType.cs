@@ -4,5 +4,4 @@ public enum LogType
 {
     MalformedRow,
     DuplicatedId,
-
 }

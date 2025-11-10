@@ -1,6 +1,4 @@
 ﻿using DroneFleet.Models.Interfaces;
-using System.Reflection.Metadata;
-using System.Threading.Channels;
 
 namespace DroneFleet.Models;
 
@@ -10,7 +8,7 @@ internal abstract class Drone : IFlightControl, ISelfTest
     public string Name { get; set; }
     public decimal BatteryPercent { get; set; }
     public bool IsAirborne { get; private set; }
-    
+
     public Drone(int id, string name, decimal batteryPercent)
     {
         Id = id;
@@ -33,6 +31,5 @@ internal abstract class Drone : IFlightControl, ISelfTest
     public void TakeOff()
     {
         IsAirborne = true;
-
     }
 }
