@@ -11,4 +11,3 @@ public record Error(string Code, string Message)
     public static Error FromException(Exception ex) =>
             new("Error.Exception", ex.Message);
 }
-

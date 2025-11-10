@@ -9,31 +9,35 @@ public partial class Menu
     private async Task ListAllBooks()
     {
         var result = await BookService.GetAllAsync();
-        if(result.IsFailure) { ResultFailed(result.Error); return; }
+        if (result.IsFailure) { ResultFailed(result.Error); return; }
         DisplayBooks(result.Value);
     }
+
     private async Task ListAllFinishedBooks()
     {
         var result = await BookService.GetAllFinishedAsync();
-        if(result.IsFailure) {ResultFailed(result.Error); return; }
+        if (result.IsFailure) { ResultFailed(result.Error); return; }
         DisplayBooks(result.Value);
     }
+
     private async Task TopRatedNBooks()
     {
         int booksNumber = GetBooksNumberFromUser();
-        if(booksNumber <1 ) return;
+        if (booksNumber < 1) return;
         var result = await BookService.GetTopRatedBooksAsync(booksNumber);
         if (result.IsFailure) { ResultFailed(result.Error); return; }
         DisplayBooks(result.Value);
     }
+
     private async Task BooksContainingAuthor()
     {
         string? author = GetAuthorFromUser();
-        if(author == null) return;
+        if (author == null) return;
         var result = await BookService.GetBooksContainingAuthor(author);
         if (result.IsFailure) { ResultFailed(result.Error); return; }
         DisplayBooks(result.Value);
     }
+
     private async Task BooksStats()
     {
         var numBooksResult = await BookService.GetNumberOfBooksAsync();
@@ -43,11 +47,11 @@ public partial class Menu
         var topAuthors = await BookService.GetTopAuthorsAsync();
 
         DisplayStats(
-            numberOfBooks: numBooksResult.IsSuccess 
-                    ? numBooksResult.Value 
+            numberOfBooks: numBooksResult.IsSuccess
+                    ? numBooksResult.Value
                     : 0,
-            numberOfFinishiedBooks: numFinishedBooksResult.IsSuccess 
-                    ? numFinishedBooksResult.Value 
+            numberOfFinishiedBooks: numFinishedBooksResult.IsSuccess
+                    ? numFinishedBooksResult.Value
                     : 0,
             avgRating: avgRatingResult.IsSuccess
                     ? avgRatingResult.Value
@@ -60,6 +64,7 @@ public partial class Menu
                     : []
             );
     }
+
     private async Task MarkBookFinished()
     {
         int id = GetIdFromUser();
@@ -68,6 +73,7 @@ public partial class Menu
         if (result.IsSuccess) Console.WriteLine("Book marked as finishied");
         else ResultFailed(result.Error);
     }
+
     private async Task RateBook()
     {
         int id = GetIdFromUser();
@@ -79,5 +85,4 @@ public partial class Menu
         if (result.IsSuccess) Console.WriteLine("Book rated");
         else ResultFailed(result.Error);
     }
-   
 }

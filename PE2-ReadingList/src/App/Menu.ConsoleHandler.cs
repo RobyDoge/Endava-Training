@@ -6,6 +6,7 @@ namespace ReadingList.App;
 public partial class Menu
 {
     #region MenuDisplay
+
     private void ShowMainMenu()
     {
         Console.WriteLine("""
@@ -18,10 +19,12 @@ public partial class Menu
             """);
         Console.Write("Option: ");
     }
+
     private void ImportPrompt()
     {
         Console.WriteLine("Insert the name of each csv file for importing or leave it blank for exiting");
     }
+
     private void ListPrompt()
     {
         Console.WriteLine("""
@@ -33,6 +36,7 @@ public partial class Menu
             5. Show stats about the library
             """);
     }
+
     private void UpdatePrompt()
     {
         Console.WriteLine("""
@@ -41,6 +45,7 @@ public partial class Menu
             2. Rate a book
             """);
     }
+
     private void ExportPrompt()
     {
         Console.WriteLine("""
@@ -49,6 +54,7 @@ public partial class Menu
             2. CSV
             """);
     }
+
     private void DisplayBooks(IEnumerable<Book> books)
     {
         Console.WriteLine("Listing all the books");
@@ -64,6 +70,7 @@ public partial class Menu
                 $"{book.Pages,-3} | {book.Genre,-20} | {finished,-3} | {book.Rating,-3}");
         }
     }
+
     private void DisplayStats(int numberOfBooks, int numberOfFinishiedBooks, double avgRating, ConcurrentDictionary<string, int> pagesPerGenre, List<string> topAuthors)
     {
         string pagesPerGenreString = $"""
@@ -76,7 +83,7 @@ public partial class Menu
         {
             pagesPerGenreString += $"{genre,-20} | {pages,-5}\n";
         }
-        
+
         string topAuthorsString = $"""
             Top Authors by book count:
 
@@ -84,7 +91,7 @@ public partial class Menu
         for (int i = 0; i < topAuthors.Count; i++)
         {
             if (i > 2) break;
-            topAuthorsString += $"{i+1}. {topAuthors[i]}\n";
+            topAuthorsString += $"{i + 1}. {topAuthors[i]}\n";
         }
 
         Console.WriteLine($"""
@@ -96,30 +103,37 @@ public partial class Menu
             {topAuthorsString}
             """);
     }
-    #endregion
+
+    #endregion MenuDisplay
 
     #region MenuErrorDisplay
+
     private void InvalidInput(string typeAccepted)
     {
         Console.WriteLine($"Input invalid. It must be {typeAccepted}.");
         Console.WriteLine();
     }
+
     private void InputOutOfRange(string from, string to)
     {
         Console.WriteLine($"Input invalid. It must be between {from} and {to}.");
         Console.WriteLine();
     }
+
     private void ResultFailed(Error error)
     {
         Console.WriteLine($"Error found. Code: {error.Code}. Message: {error.Message}.");
     }
+
     private void FileNotFound()
     {
         Console.WriteLine("The file could not be found, try another one");
     }
-    #endregion
+
+    #endregion MenuErrorDisplay
 
     #region UserInput
+
     private int GetBooksNumberFromUser()
     {
         Console.Write("Enter the number of books you want to show: ");
@@ -127,19 +141,22 @@ public partial class Menu
         if (bookNumber < 1) { InvalidInput("greater than 0"); return -1; }
         return bookNumber;
     }
+
     private string? GetAuthorFromUser()
     {
         Console.Write("Enter the name of the author (case sensitive): ");
         string? author = Console.ReadLine();
-        if (author == null) { InvalidInput("not null"); return null;   }
+        if (author == null) { InvalidInput("not null"); return null; }
         return author;
     }
+
     private int GetIdFromUser()
     {
         Console.Write("Insert the Id of the book: ");
-        if(!int.TryParse(Console.ReadLine(), out var id)) { InvalidInput("number"); return -1; }
+        if (!int.TryParse(Console.ReadLine(), out var id)) { InvalidInput("number"); return -1; }
         return id;
     }
+
     private double GetRatingFromUser()
     {
         Console.Write("Insert the rating for the book: ");
@@ -147,5 +164,6 @@ public partial class Menu
         if (rating < 0 || rating > 5) { InputOutOfRange("0.0", "5.0"); return -1; }
         return rating;
     }
-    #endregion
+
+    #endregion UserInput
 }

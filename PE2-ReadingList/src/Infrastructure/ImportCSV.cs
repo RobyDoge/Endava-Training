@@ -14,19 +14,19 @@ public static class ImportCSV
         bool first = true;
         int lineIndex = 0;
 
-        while((line = await reader.ReadLineAsync()) != null)
-        { 
+        while ((line = await reader.ReadLineAsync()) != null)
+        {
             lineIndex++;
             if (first) { first = false; continue; }
-            try 
+            try
             {
                 books.Add(ParseLine(line));
-            } 
-            catch(FormatException fe) 
+            }
+            catch (FormatException fe)
             {
                 Logger.Log(LogType.MalformedRow, $"{fe.Message} found on line {lineIndex}");
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Logger.Log(LogType.MalformedRow, $"{ex.Message} found on line {lineIndex}");
             }
@@ -36,6 +36,7 @@ public static class ImportCSV
         Logger.Log(LogType.MalformedRow, "Empty or invalid CSV file");
         return Result.Failure<List<Book>>(Error.NullValue);
     }
+
     private static Book ParseLine(string line)
     {
         const int expectedColumnCount = 8;

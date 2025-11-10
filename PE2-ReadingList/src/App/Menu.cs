@@ -1,10 +1,6 @@
 ﻿using ReadingList.Domain.Records;
 using ReadingList.ExportStrategies;
 using ReadingList.Infrastructure;
-using System.IO;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace ReadingList.App;
 
@@ -13,7 +9,7 @@ public partial class Menu
     string DataFolderPath { get; init; }
     private BookRepoService BookService { get; set; }
 
-    public Menu(string path, Func<Book,int> keySelector)
+    public Menu(string path, Func<Book, int> keySelector)
     {
         DataFolderPath = path;
         BookService = new BookRepoService(keySelector);
@@ -27,7 +23,7 @@ public partial class Menu
             ShowMainMenu();
             if (!int.TryParse(Console.ReadLine(), out option)) { InvalidInput("number"); continue; }
             await SelectCommand(option);
-        }while (option != 5 && true);
+        } while (option != 5 && true);
     }
     private async Task SelectCommand(int option)
     {
@@ -36,17 +32,22 @@ public partial class Menu
             case 1:
                 ImportCommand();
                 return;
+
             case 2:
                 await ListCommand();
                 return;
+
             case 3:
                 await UpdateCommand();
                 return;
+
             case 4:
                 ExportCommand();
                 return;
+
             case 5:
                 return;
+
             default:
                 InputOutOfRange("1", "5");
                 return;
@@ -61,8 +62,8 @@ public partial class Menu
         {
             if (string.IsNullOrWhiteSpace(input)) return;
             string? filepath = Utils.GetFullPath(DataFolderPath, input);
-            if(filepath == null) { FileNotFound(); Console.Write("CSV File: "); continue; }
-            
+            if (filepath == null) { FileNotFound(); Console.Write("CSV File: "); continue; }
+
             BookService.ImportBooksInBackground(filepath);
             Console.Write("CSV File: ");
         }
@@ -76,18 +77,23 @@ public partial class Menu
             case 1:
                 await ListAllBooks();
                 return;
+
             case 2:
                 await ListAllFinishedBooks();
                 return;
+
             case 3:
                 await TopRatedNBooks();
                 return;
+
             case 4:
                 await BooksContainingAuthor();
                 return;
+
             case 5:
                 await BooksStats();
                 return;
+
             default:
                 InputOutOfRange("1", "5");
                 return;
@@ -102,9 +108,11 @@ public partial class Menu
             case 1:
                 await MarkBookFinished();
                 return;
+
             case 2:
                 await RateBook();
                 return;
+
             default:
                 InputOutOfRange("1", "2");
                 return;
@@ -116,7 +124,7 @@ public partial class Menu
         if (!int.TryParse(Console.ReadLine(), out int option)) { InvalidInput("number"); return; }
         Console.Write("Enter the filename: ");
         string filename = Console.ReadLine()!;
-        if (Utils.GetFullPath(DataFolderPath,filename) is not null)
+        if (Utils.GetFullPath(DataFolderPath, filename) is not null)
         {
             Console.Write("File already existst, do you want to overwrite it (y/n)?: ");
             var answer = Console.ReadKey();
@@ -126,7 +134,7 @@ public partial class Menu
         switch (option)
         {
             case 1:
-                if (!filename.EndsWith(".json", StringComparison.OrdinalIgnoreCase)) { InvalidInput(".json");return; }
+                if (!filename.EndsWith(".json", StringComparison.OrdinalIgnoreCase)) { InvalidInput(".json"); return; }
                 BookService.ExportBooksInBackgorund($"{DataFolderPath}/{filename}", new JsonExportStrategy());
                 break;
 
@@ -135,7 +143,5 @@ public partial class Menu
                 BookService.ExportBooksInBackgorund($"{DataFolderPath}/{filename}", new CsvExportStrategy());
                 break;
         }
-
     }
-
 }

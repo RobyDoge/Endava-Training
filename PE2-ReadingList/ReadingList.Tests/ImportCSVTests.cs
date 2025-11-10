@@ -1,7 +1,6 @@
 ﻿using ReadingList.Domain.Records;
 using ReadingList.Infrastructure;
 using ReadingList.Logging;
-using System.Text;
 
 namespace ReadingList.Tests;
 
@@ -38,5 +37,4 @@ public class ImportCSVTests
         Assert.True(result.IsFailure);
         Assert.Equal(Error.NullValue, result.Error);
     }
-
 }
