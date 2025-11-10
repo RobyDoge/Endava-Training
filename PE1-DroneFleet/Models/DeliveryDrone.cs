@@ -11,7 +11,7 @@ internal class DeliveryDrone : Drone, INavigable, ICargoCarrier
 
     public DeliveryDrone(int id, string name, decimal batteryPercent, double capacityKg) : base(id, name, batteryPercent)
     {
-        if(capacityKg<= 0) throw new ArgumentOutOfRangeException(nameof(capacityKg), "The capacity must be greater than 0.");
+        if (capacityKg <= 0) throw new ArgumentOutOfRangeException(nameof(capacityKg), "The capacity must be greater than 0.");
         CapacityKg = capacityKg;
         CurrentWaypoint = (-1, -1);
     }

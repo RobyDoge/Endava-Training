@@ -1,5 +1,4 @@
-﻿
-namespace DroneFleet.Models.Interfaces;
+﻿namespace DroneFleet.Models.Interfaces;
 
 internal interface ISelfTest
 {
