@@ -4,7 +4,7 @@ internal class HotChocolate : IBeverage
 {
     public string Name { get; } = "Hot Chocolate";
 
-    public decimal Cost() => 2.0m;
+    public decimal Cost() => 3.0m;
 
     public string Description() => Name;
 }
