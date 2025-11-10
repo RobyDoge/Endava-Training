@@ -2,6 +2,7 @@
 
 internal interface IDimmable
 {
-    int Brightness { get;}
+    int Brightness { get; }
+
     void SetBrightness(int brightness);
 }

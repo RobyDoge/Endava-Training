@@ -1,5 +1,4 @@
-﻿
-using HomeConsole.Models.Interfaces;
+﻿using HomeConsole.Models.Interfaces;
 
 namespace HomeConsole.Models;
 
@@ -8,6 +7,7 @@ internal class LightBulb : SmartDevice, IDimmable
     public LightBulb(int id, string name) : base(id, name)
     {
     }
+
     public LightBulb(int id, string name, int brightness) : base(id, name)
     {
         SetBrightness(brightness);
@@ -23,6 +23,6 @@ internal class LightBulb : SmartDevice, IDimmable
         }
         Brightness = brightness;
     }
+
     public override string SelfTest() => $"LightBulb {Name}";
 }
-

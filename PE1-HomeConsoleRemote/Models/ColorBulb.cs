@@ -1,5 +1,4 @@
 ﻿using HomeConsole.Models.Interfaces;
-using System.Data;
 
 namespace HomeConsole.Models;
 
@@ -14,13 +13,16 @@ internal class ColorBulb : SmartDevice, IDimmable, IColorControl
     public ColorBulb(int id, string name) : base(id, name)
     {
     }
+
     public ColorBulb(int id, string name, int brightness, byte red, byte green, byte blue, int temperature) : base(id, name)
     {
         SetBrightness(brightness);
         SetColor(red, green, blue);
         SetTemperature(temperature);
     }
+
     public override string SelfTest() => $"ColorBulb {Name}";
+
     public void SetBrightness(int brightness)
     {
         if (brightness < 0 || brightness > 100)
@@ -32,7 +34,7 @@ internal class ColorBulb : SmartDevice, IDimmable, IColorControl
 
     public void SetColor(byte red, byte green, byte blue)
     {
-        if (red>= 0 && blue >= 0 && green >= 0)
+        if (red >= 0 && blue >= 0 && green >= 0)
         {
             RedValue = red;
             GreenValue = green;

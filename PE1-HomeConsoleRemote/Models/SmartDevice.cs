@@ -1,9 +1,8 @@
-﻿
-using HomeConsole.Models.Interfaces;
+﻿using HomeConsole.Models.Interfaces;
 
 namespace HomeConsole.Models;
 
-internal abstract class SmartDevice: IPowerSwitch, ISelfTest
+internal abstract class SmartDevice : IPowerSwitch, ISelfTest
 
 {
     public int Id { get; init; }
@@ -17,8 +16,12 @@ internal abstract class SmartDevice: IPowerSwitch, ISelfTest
         Name = name;
         IsOn = false;
     }
+
     public void PowerOn() => IsOn = true;
+
     public void PowerOff() => IsOn = false;
+
     public bool GetStatus() => IsOn;
+
     public virtual string SelfTest() => "SmartDevice";
 }
