@@ -1,12 +1,15 @@
-﻿namespace Cafe.Domain.Beverages.Decorators;
+﻿using System.Globalization;
+
+namespace Cafe.Domain.Beverages.Decorators;
 
 public class SyrupDecorator : BeverageDecorator
 {
     private string _flavour;
 
-    private SyrupDecorator(IBeverage beverage, string flavour) : base(beverage)
+    public SyrupDecorator(IBeverage beverage, string flavour) : base(beverage)
     {
-        _flavour = flavour.ToLower();
+        var textInfo = CultureInfo.CurrentCulture.TextInfo;
+        _flavour = textInfo.ToTitleCase(flavour.ToLower());
     }
 
     public override string Name => $"{_beverage.Name} + {_flavour} Syrup";
