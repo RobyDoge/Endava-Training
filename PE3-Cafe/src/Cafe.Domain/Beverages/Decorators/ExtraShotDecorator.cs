@@ -1,6 +1,6 @@
 ﻿namespace Cafe.Domain.Beverages.Decorators;
 
-internal class ExtraShotDecorator : BeverageDecorator
+public class ExtraShotDecorator : BeverageDecorator
 {
     public ExtraShotDecorator(IBeverage beverage) : base(beverage)
     {

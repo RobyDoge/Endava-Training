@@ -1,6 +1,6 @@
 ﻿namespace Cafe.Domain.Beverages.Decorators;
 
-internal class SyrupDecorator : BeverageDecorator
+public class SyrupDecorator : BeverageDecorator
 {
     private string _flavour;
 

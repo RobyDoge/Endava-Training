@@ -1,6 +1,6 @@
 ﻿namespace Cafe.Domain.Beverages;
 
-internal class Espresso : IBeverage
+public class Espresso : IBeverage
 {
     public string Name { get; } = "Espresso";
 

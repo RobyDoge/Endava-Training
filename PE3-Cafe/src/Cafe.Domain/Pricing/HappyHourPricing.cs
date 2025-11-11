@@ -1,6 +1,6 @@
 ﻿namespace Cafe.Domain.Pricing;
 
-internal class HappyHourPricing : IPricingStrategy
+public class HappyHourPricing : IPricingStrategy
 {
     private decimal _discount = 0.2m;
 

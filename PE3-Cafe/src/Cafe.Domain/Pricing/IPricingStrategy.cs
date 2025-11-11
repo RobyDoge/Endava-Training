@@ -1,6 +1,6 @@
 ﻿namespace Cafe.Domain.Pricing;
 
-internal interface IPricingStrategy
+public interface IPricingStrategy
 {
     decimal Apply(decimal subtotal);
 }
