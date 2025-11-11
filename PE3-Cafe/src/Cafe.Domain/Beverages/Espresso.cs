@@ -8,4 +8,3 @@ internal class Espresso : IBeverage
 
     public string Description() => Name;
 }
-}
