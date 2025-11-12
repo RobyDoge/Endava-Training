@@ -4,6 +4,8 @@ namespace Cafe.ConsoleUI.Menus;
 
 internal class MainMenu
 {
+    DrinkMenu DrinkMenu { get; init; } = new DrinkMenu();
+
     public void Run()
     {
         int option = 0;
@@ -69,7 +71,7 @@ internal class MainMenu
     private void ShowDrinkMenu()
     {
         Console.WriteLine();
-        Console.WriteLine("TBA");
+        DrinkMenu.Run();
         Console.WriteLine();
     }
 }
