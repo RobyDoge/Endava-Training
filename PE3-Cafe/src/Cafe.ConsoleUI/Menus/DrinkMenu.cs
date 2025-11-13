@@ -4,14 +4,6 @@ using Cafe.Domain.Beverages;
 using Cafe.Domain.Beverages.Decorators;
 using Cafe.Domain.Events;
 using Cafe.Domain.Pricing;
-using Microsoft.VisualBasic.FileIO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.WebSockets;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cafe.ConsoleUI.Menus;
 
@@ -22,10 +14,11 @@ namespace Cafe.ConsoleUI.Menus;
 internal class DrinkMenu
 {
     private readonly IOrderService _orders;
+
     public DrinkMenu(IOrderService orders) => _orders = orders;
+
     public void Run()
     {
-
         CreateNewOrder();
         if (!ChooseDrink()) return;
         if (!AddAddons()) return;
@@ -38,10 +31,11 @@ internal class DrinkMenu
     {
         ShowDrinkOptions();
         Console.Write("Option: ");
-        if(!int.TryParse(Console.ReadLine(), out int option)) { ErrorDisplay.InvalidInput("number"); return false; }
-        if(!GetBeverage(option, order)) return false;
-        return true;    
+        if (!int.TryParse(Console.ReadLine(), out int option)) { ErrorDisplay.InvalidInput("number"); return false; }
+        if (!GetBeverage(option, order)) return false;
+        return true;
     }
+
     private bool AddAddons(OrderPlaced order = null)
     {
         ShowAddonOptions();
@@ -52,10 +46,10 @@ internal class DrinkMenu
             if (!int.TryParse(Console.ReadLine(), out option)) { ErrorDisplay.InvalidInput("number"); return false; }
             if (option == 0) return true;
             if (!GetAddon(option, order)) return false;
-
         } while (option != 0);
         return true;
     }
+
     private IPricingStrategy ChoosePricePolicy()
     {
         ShowPricePolicy();
@@ -63,11 +57,14 @@ internal class DrinkMenu
         if (!int.TryParse(Console.ReadLine(), out int option)) { ErrorDisplay.InvalidInput("number"); }
         return GetPricePolicy(option);
     }
+
     private void GetTotalCost(IPricingStrategy pricePolicy, OrderPlaced order = null)
     {
         order.Total = pricePolicy.Apply(order.Subtotal);
     }
+
     #region Display
+
     private void ShowDrinkOptions()
     {
         Console.WriteLine($"""
@@ -77,6 +74,7 @@ internal class DrinkMenu
             3. HotChocolate    - $3.00
             """);
     }
+
     private void ShowAddonOptions()
     {
         Console.WriteLine($"""
@@ -87,6 +85,7 @@ internal class DrinkMenu
             0. Finish the drink
         """);
     }
+
     private void ShowPricePolicy()
     {
         Console.WriteLine($"""
@@ -95,20 +94,23 @@ internal class DrinkMenu
             2. Happy Hour (20% off)
             """);
     }
+
     //To Improve
     private void PrintReceipt(OrderPlaced order = null)
     {
         Console.WriteLine(order.Description);
         Console.WriteLine(order.Total);
     }
+
     #endregion Display
 
     #region Application
+
     private void CreateNewOrder()
     {
         Console.WriteLine("CreateNewOrder - TBD");
-        
     }
+
     private bool GetBeverage(int option, OrderPlaced order)
     {
         Console.WriteLine("GetBeverage - TBD");
@@ -127,16 +129,19 @@ internal class DrinkMenu
             case 3:
         }
     }
+
     private bool GetAddon(int option, OrderPlaced order)
     {
         Console.WriteLine("GetAddon - TBA");
         order.Beverage = new ExtraShotDecorator(order.Beverage);
         return true;
     }
+
     private IPricingStrategy GetPricePolicy(int option)
     {
         Console.WriteLine("PricePolicy - TBD");
         return new RegularPricing();
     }
+
     #endregion Application
 }

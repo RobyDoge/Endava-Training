@@ -1,15 +1,11 @@
 ﻿using Cafe.Application.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cafe.Application.Services;
 
 public class OrderService : IOrderService
 {
     #region IOrderService Members
+
     public void AddAddon()
     {
         throw new NotImplementedException();
@@ -34,6 +30,6 @@ public class OrderService : IOrderService
     {
         throw new NotImplementedException();
     }
-    #endregion IOrderService Members
 
+    #endregion IOrderService Members
 }
