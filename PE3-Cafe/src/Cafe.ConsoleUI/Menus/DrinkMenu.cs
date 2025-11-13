@@ -1,8 +1,8 @@
-﻿using Cafe.ConsoleUI.ConsoleHelpers;
+﻿using Cafe.Application.Services.Interfaces;
+using Cafe.ConsoleUI.ConsoleHelpers;
 using Cafe.Domain.Beverages;
 using Cafe.Domain.Beverages.Decorators;
 using Cafe.Domain.Events;
-using Cafe.Domain.Factories;
 using Cafe.Domain.Pricing;
 using Microsoft.VisualBasic.FileIO;
 using System;
@@ -21,17 +21,20 @@ namespace Cafe.ConsoleUI.Menus;
 
 internal class DrinkMenu
 {
+    private readonly IOrderService _orders;
+    public DrinkMenu(IOrderService orders) => _orders = orders;
     public void Run()
     {
-        OrderPlaced order = new();
-        if (!ChooseDrink(order)) return;
-        if (!AddAddons(order)) return;
+
+        CreateNewOrder();
+        if (!ChooseDrink()) return;
+        if (!AddAddons()) return;
         var pricePolicy = ChoosePricePolicy();
-        GetTotalCost(order, pricePolicy);
-        PrintReceipt(order);
+        GetTotalCost(pricePolicy);
+        PrintReceipt();
     }
 
-    private bool ChooseDrink(OrderPlaced order)
+    private bool ChooseDrink(OrderPlaced order = null)
     {
         ShowDrinkOptions();
         Console.Write("Option: ");
@@ -39,7 +42,7 @@ internal class DrinkMenu
         if(!GetBeverage(option, order)) return false;
         return true;    
     }
-    private bool AddAddons(OrderPlaced order)
+    private bool AddAddons(OrderPlaced order = null)
     {
         ShowAddonOptions();
         int option;
@@ -60,7 +63,7 @@ internal class DrinkMenu
         if (!int.TryParse(Console.ReadLine(), out int option)) { ErrorDisplay.InvalidInput("number"); }
         return GetPricePolicy(option);
     }
-    private void GetTotalCost(OrderPlaced order, IPricingStrategy pricePolicy)
+    private void GetTotalCost(IPricingStrategy pricePolicy, OrderPlaced order = null)
     {
         order.Total = pricePolicy.Apply(order.Subtotal);
     }
@@ -93,7 +96,7 @@ internal class DrinkMenu
             """);
     }
     //To Improve
-    private void PrintReceipt(OrderPlaced order)
+    private void PrintReceipt(OrderPlaced order = null)
     {
         Console.WriteLine(order.Description);
         Console.WriteLine(order.Total);
@@ -101,6 +104,11 @@ internal class DrinkMenu
     #endregion Display
 
     #region Application
+    private void CreateNewOrder()
+    {
+        Console.WriteLine("CreateNewOrder - TBD");
+        
+    }
     private bool GetBeverage(int option, OrderPlaced order)
     {
         Console.WriteLine("GetBeverage - TBD");
