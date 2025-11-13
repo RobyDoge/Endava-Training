@@ -1,4 +1,4 @@
-﻿using Cafe.Application.Services.Interfaces;
+﻿using Cafe.Application.Interfaces;
 using Cafe.ConsoleUI.ConsoleHelpers;
 using Cafe.Domain.Beverages;
 using Cafe.Domain.Beverages.Decorators;
@@ -13,13 +13,13 @@ namespace Cafe.ConsoleUI.Menus;
 
 internal class DrinkMenu
 {
-    private readonly IOrderService _orders;
+    private IOrderService OrderService { get; init; }
 
-    public DrinkMenu(IOrderService orders) => _orders = orders;
+    public DrinkMenu(IOrderService orders) => OrderService = orders;
 
     public void Run()
     {
-        CreateNewOrder();
+        if (!CreateNewOrder()) return;
         if (!ChooseDrink()) return;
         if (!AddAddons()) return;
         var pricePolicy = ChoosePricePolicy();
@@ -106,9 +106,11 @@ internal class DrinkMenu
 
     #region Application
 
-    private void CreateNewOrder()
+    private bool CreateNewOrder()
     {
-        Console.WriteLine("CreateNewOrder - TBD");
+        var result = OrderService.StartOrder();
+        if (result.IsFailure) { ErrorDisplay.OperationFailed("Create New Order", result.Error.Message); return false; }
+        return true;
     }
 
     private bool GetBeverage(int option, OrderPlaced order)

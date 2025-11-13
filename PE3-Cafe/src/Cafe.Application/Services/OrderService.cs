@@ -1,34 +1,43 @@
-﻿using Cafe.Application.Services.Interfaces;
+﻿using Cafe.Application.Interfaces;
+using Cafe.Domain.Result;
+using System.Dynamic;
 
 namespace Cafe.Application.Services;
 
 public class OrderService : IOrderService
 {
+    private IOrderRepository OrderRepository { get; init; }
+
+    public OrderService(IOrderRepository orderRepository)
+    {
+        OrderRepository = orderRepository;
+    }
+
     #region IOrderService Members
 
-    public void AddAddon()
+    public Result AddAddon()
     {
         throw new NotImplementedException();
     }
 
-    public void ChoiceDrink()
+    public Result ChoiceDrink()
     {
         throw new NotImplementedException();
     }
 
-    public string GetReceipt()
+    public Result GetReceipt()
     {
         throw new NotImplementedException();
     }
 
-    public void SetPricingStrategy()
+    public Result SetPricingStrategy()
     {
         throw new NotImplementedException();
     }
 
-    public void StartOrder()
+    public Result StartOrder()
     {
-        throw new NotImplementedException();
+        return OrderRepository.CreateOrder();
     }
 
     #endregion IOrderService Members
