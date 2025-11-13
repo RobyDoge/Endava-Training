@@ -1,4 +1,5 @@
 ﻿using Cafe.Application.Interfaces;
+using Cafe.Application.Validators;
 using Cafe.Domain.Result;
 using Cafe.Infrastructure.Validators;
 using System.Dynamic;
@@ -16,9 +17,10 @@ public class OrderService : IOrderService
 
     #region IOrderService Members
 
-    public Result AddAddon()
+    public Result AddAddon(int option, params List<string?> additionalInfo)
     {
-        throw new NotImplementedException();
+        var decoratorType = DecoratorValidator.GetDecoratorType(option);
+        return OrderRepository.AddAddon(decoratorType, additionalInfo);
     }
 
     public Result AddDrink(int option)

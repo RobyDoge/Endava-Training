@@ -1,4 +1,6 @@
 ﻿using Cafe.Domain.Result;
+using System.Globalization;
+using System.Runtime.InteropServices;
 
 namespace Cafe.Application.Interfaces;
 
@@ -8,7 +10,7 @@ public interface IOrderService
 
     Result AddDrink(int option);
 
-    Result AddAddon();
+    Result AddAddon(int option, params List<string?> additionalInfo);
 
     Result SetPricingStrategy();
 

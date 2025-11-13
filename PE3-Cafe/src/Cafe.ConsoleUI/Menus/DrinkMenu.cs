@@ -21,7 +21,7 @@ internal class DrinkMenu
     {
         if (!CreateNewOrder()) return;
         if (!ChooseDrink()) return;
-        if (!AddAddons()) return;
+        AddAddons();
         var pricePolicy = ChoosePricePolicy();
         GetTotalCost(pricePolicy);
         PrintReceipt();
@@ -36,18 +36,17 @@ internal class DrinkMenu
         return true;
     }
 
-    private bool AddAddons(OrderPlaced order = null)
+    private void AddAddons()
     {
         ShowAddonOptions();
         int option;
         do
         {
             Console.Write("Option: ");
-            if (!int.TryParse(Console.ReadLine(), out option)) { ErrorDisplay.InvalidInput("number"); return false; }
-            if (option == 0) return true;
-            if (!GetAddon(option, order)) return false;
+            if (!int.TryParse(Console.ReadLine(), out option)) { ErrorDisplay.InvalidInput("number"); return; }
+            if (option == 0) return;
+            if (!AddAddon(option)) { ErrorDisplay.OperationFailed("Add Addon", "Could not add addon"); continue; }
         } while (option != 0);
-        return true;
     }
 
     private IPricingStrategy ChoosePricePolicy()
@@ -120,10 +119,10 @@ internal class DrinkMenu
         return true;
     }
 
-    private bool GetAddon(int option, OrderPlaced order)
+    private bool AddAddon(int option, string? syrupFlavour = null)
     {
-        Console.WriteLine("GetAddon - TBA");
-        order.Beverage = new ExtraShotDecorator(order.Beverage);
+        var result = OrderService.AddAddon(option, GetAddonAdditionalInfo(option));
+        if (result.IsFailure) { ErrorDisplay.OperationFailed("Add Addon", result.Error.Message); return false; }
         return true;
     }
 
@@ -134,4 +133,18 @@ internal class DrinkMenu
     }
 
     #endregion Application
+
+    private List<string?> GetAddonAdditionalInfo(int option)
+    {
+        switch (option)
+        {
+            case 2:
+                Console.Write("Enter syrup flavour: ");
+                var flavour = Console.ReadLine();
+                return [flavour];
+
+            default:
+                return [null];
+        }
+    }
 }
