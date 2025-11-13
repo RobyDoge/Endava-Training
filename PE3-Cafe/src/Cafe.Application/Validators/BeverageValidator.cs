@@ -3,7 +3,7 @@ using Cafe.Domain.Beverages;
 
 namespace Cafe.Infrastructure.Validators;
 
-public static class DrinkValidator
+public static class BeverageValidator
 {
     public static BeverageType GetBeverageType(int option)
     {

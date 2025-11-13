@@ -27,12 +27,12 @@ internal class DrinkMenu
         PrintReceipt();
     }
 
-    private bool ChooseDrink(OrderPlaced order = null)
+    private bool ChooseDrink()
     {
         ShowDrinkOptions();
         Console.Write("Option: ");
         if (!int.TryParse(Console.ReadLine(), out int option)) { ErrorDisplay.InvalidInput("number"); return false; }
-        if (!GetBeverage(option, order)) return false;
+        if (!AddBeverage(option)) return false;
         return true;
     }
 
@@ -78,11 +78,11 @@ internal class DrinkMenu
     private void ShowAddonOptions()
     {
         Console.WriteLine($"""
-            The following addons are present:
-            1. Milk         - $0.40
-            2. Syrup        - $0.50
-            3. Extra Shot   - $0.80
-            0. Finish the drink
+        The following addons are present:
+        1. Milk         - $0.40
+        2. Syrup        - $0.50
+        3. Extra Shot   - $0.80
+        0. Finish the drink
         """);
     }
 
@@ -113,23 +113,11 @@ internal class DrinkMenu
         return true;
     }
 
-    private bool GetBeverage(int option, OrderPlaced order)
+    private bool AddBeverage(int option)
     {
-        Console.WriteLine("GetBeverage - TBD");
-
-        //placeholder
-        order.Beverage = new Espresso();
+        var result = OrderService.AddDrink(option);
+        if (result.IsFailure) { ErrorDisplay.OperationFailed("Add Beverage", result.Error.Message); return false; }
         return true;
-
-        //get the trype from a service
-        //create a drinky drink
-        BeverageType beverageType;
-        switch (option)
-        {
-            case 1:
-            case 2:
-            case 3:
-        }
     }
 
     private bool GetAddon(int option, OrderPlaced order)

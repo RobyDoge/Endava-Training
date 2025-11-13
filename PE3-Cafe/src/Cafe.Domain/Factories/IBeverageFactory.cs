@@ -1,8 +1,9 @@
 ﻿using Cafe.Domain.Beverages;
+using Cafe.Domain.Result;
 
 namespace Cafe.Domain.Factories;
 
 public interface IBeverageFactory
 {
-    IBeverageFactory Create(BeverageType beverageType);
+    Result<IBeverage> Create(BeverageType beverageType);
 }

@@ -1,5 +1,6 @@
 ﻿using Cafe.Application.Interfaces;
 using Cafe.Domain.Result;
+using Cafe.Infrastructure.Validators;
 using System.Dynamic;
 
 namespace Cafe.Application.Services;
@@ -20,9 +21,10 @@ public class OrderService : IOrderService
         throw new NotImplementedException();
     }
 
-    public Result ChoiceDrink()
+    public Result AddDrink(int option)
     {
-        throw new NotImplementedException();
+        var beverageType = BeverageValidator.GetBeverageType(option);
+        return OrderRepository.AddDrink(beverageType);
     }
 
     public Result GetReceipt()
