@@ -31,7 +31,6 @@ public class OrderRepository : IOrderRepository
         if (beverageResult.IsFailure) return Result.Failure(beverageResult.Error);
 
         CurrentOrder.Beverage = beverageResult.Value;
-        OrderEventPublisher.Publish(CurrentOrder);
         return Result.Success();
     }
 
@@ -50,7 +49,6 @@ public class OrderRepository : IOrderRepository
         if (decoratorResult.IsFailure) return Result.Failure(decoratorResult.Error);
 
         CurrentOrder.Beverage = decoratorResult.Value;
-        OrderEventPublisher.Publish(CurrentOrder);
         return Result.Success();
     }
 
