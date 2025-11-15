@@ -2,5 +2,7 @@
 
 public interface IOrderEventPublisher
 {
-    void Publish(OrderPlaced evt);
+    void Subscribe(IOrderEventSubscriber subscriber);
+
+    Task Publish(OrderPlaced evt);
 }

@@ -13,10 +13,12 @@ public class OrderRepository : IOrderRepository
 {
     private OrderPlaced? CurrentOrder { get; set; }
     private IBeverageFactory BeverageFactory { get; init; }
+    private IOrderEventPublisher OrderEventPublisher { get; init; }
 
-    public OrderRepository(IBeverageFactory beverageFactory)
+    public OrderRepository(IBeverageFactory beverageFactory, IOrderEventPublisher orderEventPublisher)
     {
         BeverageFactory = beverageFactory;
+        OrderEventPublisher = orderEventPublisher;
     }
 
     #region IOrderRepository Members
@@ -29,6 +31,7 @@ public class OrderRepository : IOrderRepository
         if (beverageResult.IsFailure) return Result.Failure(beverageResult.Error);
 
         CurrentOrder.Beverage = beverageResult.Value;
+        OrderEventPublisher.Publish(CurrentOrder);
         return Result.Success();
     }
 
@@ -47,6 +50,7 @@ public class OrderRepository : IOrderRepository
         if (decoratorResult.IsFailure) return Result.Failure(decoratorResult.Error);
 
         CurrentOrder.Beverage = decoratorResult.Value;
+        OrderEventPublisher.Publish(CurrentOrder);
         return Result.Success();
     }
 
@@ -57,6 +61,7 @@ public class OrderRepository : IOrderRepository
 
         var total = pricingStrategy.Apply(CurrentOrder.Subtotal);
         CurrentOrder.Total = total;
+        OrderEventPublisher.Publish(CurrentOrder);
         return Result.Success();
     }
 

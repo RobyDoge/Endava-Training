@@ -1,5 +1,6 @@
 ﻿using Cafe.Application.Interfaces;
 using Cafe.Application.Validators;
+using Cafe.Domain.Events;
 using Cafe.Domain.Result;
 using Cafe.Infrastructure.Validators;
 using System.Dynamic;

@@ -9,5 +9,5 @@ public class OrderPlaced
     public string? Description { get => Beverage!.Description(); }
     public IBeverage? Beverage { get; set; }
     public decimal Subtotal { get => Beverage!.Cost(); }
-    public decimal Total { get; set; }
+    public decimal Total { get; set; } = 0;
 }
