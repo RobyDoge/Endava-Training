@@ -29,14 +29,16 @@ public class OrderService : IOrderService
         return OrderRepository.AddDrink(beverageType);
     }
 
-    public Result GetReceipt()
+    public Result<string> GetReceipt()
     {
-        throw new NotImplementedException();
+        return OrderRepository.GetReceipt();
     }
 
-    public Result SetPricingStrategy()
+    public Result ApplyPricePolicy(int option)
     {
-        throw new NotImplementedException();
+        var pricePolicyResult = PricePolicyValidator.GetPricePolicy(option);
+        if (pricePolicyResult.IsFailure) { return Result.Failure(pricePolicyResult.Error); }
+        return OrderRepository.ApplyPricePolicy(pricePolicyResult.Value);
     }
 
     public Result StartOrder()

@@ -4,6 +4,8 @@ using Cafe.Domain.Events;
 using Cafe.Domain.Beverages;
 using Cafe.Domain.Factories;
 using Cafe.Domain.Beverages.Decorators;
+using Cafe.Domain.Pricing;
+using Cafe.Domain.Result.Formaters;
 
 namespace Cafe.Infrastructure.Repositories;
 
@@ -46,6 +48,24 @@ public class OrderRepository : IOrderRepository
 
         CurrentOrder.Beverage = decoratorResult.Value;
         return Result.Success();
+    }
+
+    public Result ApplyPricePolicy(IPricingStrategy pricingStrategy)
+    {
+        if (CurrentOrder is null) return Result.Failure(Error.NullOrder);
+        if (CurrentOrder.Beverage is null) return Result.Failure(Error.NullBeverage);
+
+        var total = pricingStrategy.Apply(CurrentOrder.Subtotal);
+        CurrentOrder.Total = total;
+        return Result.Success();
+    }
+
+    public Result<string> GetReceipt()
+    {
+        if (CurrentOrder is null) return Result.Failure<string>(Error.NullOrder);
+        if (CurrentOrder.Beverage is null) return Result.Failure<string>(Error.NullBeverage);
+
+        return OrderConsoleFormater.FormatOrder(CurrentOrder);
     }
 
     #endregion IOrderRepository Members

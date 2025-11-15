@@ -16,5 +16,5 @@ public class SyrupDecorator : BeverageDecorator
 
     public override decimal Cost() => _beverage.Cost() + 0.5m;
 
-    public override string Description() => $"{_beverage.Description()} {_flavour} Syrup ($0.50)";
+    public override string Description() => $"{_beverage.Description()}, {_flavour} Syrup";
 }

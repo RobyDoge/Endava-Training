@@ -12,7 +12,7 @@ public interface IOrderService
 
     Result AddAddon(int option, params List<string?> additionalInfo);
 
-    Result SetPricingStrategy();
+    Result ApplyPricePolicy(int option);
 
-    Result GetReceipt();
+    Result<string> GetReceipt();
 }

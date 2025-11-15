@@ -7,10 +7,6 @@ using Cafe.Domain.Pricing;
 
 namespace Cafe.ConsoleUI.Menus;
 
-/*
- * The way it returns true and fals should be redone, so it is easier to follow and to not throw stupid errors
- */
-
 internal class DrinkMenu
 {
     private IOrderService OrderService { get; init; }
@@ -22,9 +18,14 @@ internal class DrinkMenu
         if (!CreateNewOrder()) return;
         if (!ChooseDrink()) return;
         AddAddons();
-        var pricePolicy = ChoosePricePolicy();
-        GetTotalCost(pricePolicy);
+        if (!ChoosePricePolicy()) return;
         PrintReceipt();
+
+        /*
+         * Add Logger
+         * Add Analytics
+         * Unittets from the platfrom
+         */
     }
 
     private bool ChooseDrink()
@@ -49,17 +50,12 @@ internal class DrinkMenu
         } while (option != 0);
     }
 
-    private IPricingStrategy ChoosePricePolicy()
+    private bool ChoosePricePolicy()
     {
         ShowPricePolicy();
         Console.Write("Option: ");
         if (!int.TryParse(Console.ReadLine(), out int option)) { ErrorDisplay.InvalidInput("number"); }
-        return GetPricePolicy(option);
-    }
-
-    private void GetTotalCost(IPricingStrategy pricePolicy, OrderPlaced order = null)
-    {
-        order.Total = pricePolicy.Apply(order.Subtotal);
+        return ApplayPricePolicy(option);
     }
 
     #region Display
@@ -95,10 +91,12 @@ internal class DrinkMenu
     }
 
     //To Improve
-    private void PrintReceipt(OrderPlaced order = null)
+    private void PrintReceipt()
     {
-        Console.WriteLine(order.Description);
-        Console.WriteLine(order.Total);
+        var receipt = GetReceipt();
+        if (string.IsNullOrEmpty(receipt)) { ErrorDisplay.OperationFailed("Print Receipt", "Could not get receipt"); return; }
+        Console.WriteLine("=== Receipt ===");
+        Console.WriteLine(receipt);
     }
 
     #endregion Display
@@ -126,10 +124,18 @@ internal class DrinkMenu
         return true;
     }
 
-    private IPricingStrategy GetPricePolicy(int option)
+    private bool ApplayPricePolicy(int option)
     {
-        Console.WriteLine("PricePolicy - TBD");
-        return new RegularPricing();
+        var result = OrderService.ApplyPricePolicy(option);
+        if (result.IsFailure) { ErrorDisplay.OperationFailed("Apply Price Policy", result.Error.Message); return false; }
+        return true;
+    }
+
+    private string GetReceipt()
+    {
+        var result = OrderService.GetReceipt();
+        if (result.IsFailure) { ErrorDisplay.OperationFailed("Get Receipt", result.Error.Message); return string.Empty; }
+        return result.Value;
     }
 
     #endregion Application

@@ -10,5 +10,5 @@ public class ExtraShotDecorator : BeverageDecorator
 
     public override decimal Cost() => _beverage.Cost() + 0.8m;
 
-    public override string Description() => $"{_beverage.Description()} + ExtraShot($0.80)";
+    public override string Description() => $"{_beverage.Description()}, ExtraShot";
 }

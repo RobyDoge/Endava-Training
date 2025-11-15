@@ -4,8 +4,8 @@ namespace Cafe.Domain.Events;
 
 public class OrderPlaced
 {
-    private Guid OrderId { get; } = Guid.NewGuid();
-    private DateTimeOffset At { get; } = DateTimeOffset.UtcNow;
+    public Guid OrderId { get; } = Guid.NewGuid();
+    public DateTimeOffset At { get; } = DateTimeOffset.UtcNow;
     public string? Description { get => Beverage!.Description(); }
     public IBeverage? Beverage { get; set; }
     public decimal Subtotal { get => Beverage!.Cost(); }

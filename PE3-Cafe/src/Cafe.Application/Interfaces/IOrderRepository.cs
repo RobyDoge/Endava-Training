@@ -1,5 +1,6 @@
 ﻿using Cafe.Domain.Beverages;
 using Cafe.Domain.Beverages.Decorators;
+using Cafe.Domain.Pricing;
 using Cafe.Domain.Result;
 using System;
 using System.Collections.Generic;
@@ -16,4 +17,8 @@ public interface IOrderRepository
     Result AddDrink(BeverageType beverageType);
 
     Result AddAddon(DecoratorType decoratorType, params List<string?> additionalInfo);
+
+    Result ApplyPricePolicy(IPricingStrategy pricingStrategy);
+
+    Result<string> GetReceipt();
 }

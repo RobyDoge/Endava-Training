@@ -10,5 +10,5 @@ public class MilkDecorator : BeverageDecorator
 
     public override decimal Cost() => _beverage.Cost() + 0.4m;
 
-    public override string Description() => $"{_beverage.Description()} + Milk ($0.40)";
+    public override string Description() => $"{_beverage.Description()}, Milk";
 }
