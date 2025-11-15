@@ -4,6 +4,7 @@ using Cafe.Domain.Beverages;
 using Cafe.Domain.Beverages.Decorators;
 using Cafe.Domain.Events;
 using Cafe.Domain.Pricing;
+using System.Diagnostics.Contracts;
 
 namespace Cafe.ConsoleUI.Menus;
 
@@ -20,12 +21,6 @@ internal class DrinkMenu
         AddAddons();
         if (!ChoosePricePolicy()) return;
         PrintReceipt();
-
-        /*
-         * Add Logger
-         * Add Analytics
-         * Unittets from the platfrom
-         */
     }
 
     private bool ChooseDrink()
@@ -46,7 +41,7 @@ internal class DrinkMenu
             Console.Write("Option: ");
             if (!int.TryParse(Console.ReadLine(), out option)) { ErrorDisplay.InvalidInput("number"); return; }
             if (option == 0) return;
-            if (!AddAddon(option)) { ErrorDisplay.OperationFailed("Add Addon", "Could not add addon"); continue; }
+            if (!AddAddon(option)) continue;
         } while (option != 0);
     }
 
@@ -94,7 +89,7 @@ internal class DrinkMenu
     private void PrintReceipt()
     {
         var receipt = GetReceipt();
-        if (string.IsNullOrEmpty(receipt)) { ErrorDisplay.OperationFailed("Print Receipt", "Could not get receipt"); return; }
+        if (string.IsNullOrEmpty(receipt)) return;
         Console.WriteLine("=== Receipt ===");
         Console.WriteLine(receipt);
     }
