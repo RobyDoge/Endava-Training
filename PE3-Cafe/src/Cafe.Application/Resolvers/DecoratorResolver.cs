@@ -1,8 +1,8 @@
 ﻿using Cafe.Domain.Beverages.Decorators;
 
-namespace Cafe.Application.Validators;
+namespace Cafe.Application.Resolvers;
 
-public static class DecoratorValidator
+public static class DecoratorResolver
 {
     public static DecoratorType GetDecoratorType(int option)
     {

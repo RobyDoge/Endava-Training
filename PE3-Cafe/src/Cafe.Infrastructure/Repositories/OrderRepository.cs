@@ -59,7 +59,7 @@ public class OrderRepository : IOrderRepository
 
         var total = pricingStrategy.Apply(CurrentOrder.Subtotal);
         CurrentOrder.Total = total;
-        OrderEventPublisher.Publish(CurrentOrder);
+        PublishOrder();
         return Result.Success();
     }
 
@@ -72,4 +72,9 @@ public class OrderRepository : IOrderRepository
     }
 
     #endregion IOrderRepository Members
+
+    private void PublishOrder()
+    {
+        OrderEventPublisher.Publish(CurrentOrder!);
+    }
 }

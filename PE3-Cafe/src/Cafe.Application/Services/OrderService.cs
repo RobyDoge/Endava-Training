@@ -1,9 +1,7 @@
 ﻿using Cafe.Application.Interfaces;
-using Cafe.Application.Validators;
-using Cafe.Domain.Events;
+using Cafe.Application.Resolvers;
 using Cafe.Domain.Result;
-using Cafe.Infrastructure.Validators;
-using System.Dynamic;
+using Cafe.Infrastructure.Resolvers;
 
 namespace Cafe.Application.Services;
 
@@ -20,13 +18,13 @@ public class OrderService : IOrderService
 
     public Result AddAddon(int option, params List<string?> additionalInfo)
     {
-        var decoratorType = DecoratorValidator.GetDecoratorType(option);
+        var decoratorType = DecoratorResolver.GetDecoratorType(option);
         return OrderRepository.AddAddon(decoratorType, additionalInfo);
     }
 
     public Result AddDrink(int option)
     {
-        var beverageType = BeverageValidator.GetBeverageType(option);
+        var beverageType = BeverageResolver.GetBeverageType(option);
         return OrderRepository.AddDrink(beverageType);
     }
 
@@ -37,7 +35,7 @@ public class OrderService : IOrderService
 
     public Result ApplyPricePolicy(int option)
     {
-        var pricePolicyResult = PricePolicyValidator.GetPricePolicy(option);
+        var pricePolicyResult = PricePolicyResolver.GetPricePolicy(option);
         if (pricePolicyResult.IsFailure) { return Result.Failure(pricePolicyResult.Error); }
         return OrderRepository.ApplyPricePolicy(pricePolicyResult.Value);
     }

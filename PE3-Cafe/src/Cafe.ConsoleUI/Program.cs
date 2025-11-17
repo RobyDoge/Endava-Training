@@ -3,6 +3,7 @@ using Cafe.Application.Services;
 using Cafe.ConsoleUI.Menus;
 using Cafe.Domain.Events;
 using Cafe.Domain.Factories;
+using Cafe.Domain.Pricing;
 using Cafe.Infrastructure.Factories;
 using Cafe.Infrastructure.Observers;
 using Cafe.Infrastructure.Repositories;

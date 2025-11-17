@@ -1,8 +1,8 @@
 ﻿using Cafe.Domain.Beverages;
 
-namespace Cafe.Infrastructure.Validators;
+namespace Cafe.Infrastructure.Resolvers;
 
-public static class BeverageValidator
+public static class BeverageResolver
 {
     public static BeverageType GetBeverageType(int option)
     {
