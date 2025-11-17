@@ -4,5 +4,5 @@ public interface IOrderEventPublisher
 {
     void Subscribe(IOrderEventSubscriber subscriber);
 
-    Task Publish(OrderPlaced evt);
+    Task Publish(Order evt);
 }

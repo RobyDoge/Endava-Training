@@ -1,5 +1,4 @@
-﻿using Cafe.Domain.Events;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +8,7 @@ namespace Cafe.Domain.Result.Formaters;
 
 public static class OrderConsoleFormater
 {
-    public static string FormatOrder(OrderPlaced order)
+    public static string FormatOrder(Order order)
     {
         string orderString = $"""
             Order id: {order.OrderId}

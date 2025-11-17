@@ -1,4 +1,5 @@
-﻿using Cafe.Domain.Events;
+﻿using Cafe.Domain;
+using Cafe.Domain.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ public class InMemoryOrderAnalytics : IOrderEventSubscriber
     private int OrderCount { get; set; } = 0;
     private decimal TotalRevenue { get; set; } = 0;
 
-    public Task On(OrderPlaced evt)
+    public Task On(Order evt)
     {
         if (evt.Total <= 0) return Task.CompletedTask;
 

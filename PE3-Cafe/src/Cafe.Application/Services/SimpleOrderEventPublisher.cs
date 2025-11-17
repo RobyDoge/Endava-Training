@@ -1,4 +1,5 @@
-﻿using Cafe.Domain.Events;
+﻿using Cafe.Domain;
+using Cafe.Domain.Events;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ public class SimpleOrderEventPublisher : IOrderEventPublisher
 {
     private ConcurrentBag<IOrderEventSubscriber> Subscribers { get; } = [];
 
-    public async Task Publish(OrderPlaced evt)
+    public async Task Publish(Order evt)
     {
         foreach (var subscriber in Subscribers)
         {

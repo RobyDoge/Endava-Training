@@ -6,12 +6,13 @@ using Cafe.Domain.Factories;
 using Cafe.Domain.Beverages.Decorators;
 using Cafe.Domain.Pricing;
 using Cafe.Domain.Result.Formaters;
+using Cafe.Domain;
 
 namespace Cafe.Infrastructure.Repositories;
 
 public class OrderRepository : IOrderRepository
 {
-    private OrderPlaced? CurrentOrder { get; set; }
+    private Order? CurrentOrder { get; set; }
     private IBeverageFactory BeverageFactory { get; init; }
     private IOrderEventPublisher OrderEventPublisher { get; init; }
 

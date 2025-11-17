@@ -2,5 +2,5 @@
 
 public interface IOrderEventSubscriber
 {
-    Task On(OrderPlaced evt);
+    Task On(Order evt);
 }
