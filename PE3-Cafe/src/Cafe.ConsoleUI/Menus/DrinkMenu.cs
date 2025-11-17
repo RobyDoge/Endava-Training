@@ -1,10 +1,6 @@
 ﻿using Cafe.Application.Interfaces;
 using Cafe.ConsoleUI.ConsoleHelpers;
-using Cafe.Domain.Beverages;
-using Cafe.Domain.Beverages.Decorators;
-using Cafe.Domain.Events;
-using Cafe.Domain.Pricing;
-using System.Diagnostics.Contracts;
+using Cafe.ConsoleUI.Displays;
 
 namespace Cafe.ConsoleUI.Menus;
 
@@ -20,12 +16,12 @@ internal class DrinkMenu
         if (!ChooseDrink()) return;
         AddAddons();
         if (!ChoosePricePolicy()) return;
-        PrintReceipt();
+        DrinkMenuDisplay.PrintReceipt(GetReceipt());
     }
 
     private bool ChooseDrink()
     {
-        ShowDrinkOptions();
+        DrinkMenuDisplay.ShowDrinkOptions();
         Console.Write("Option: ");
         if (!int.TryParse(Console.ReadLine(), out int option)) { ErrorDisplay.InvalidInput("number"); return false; }
         if (!AddBeverage(option)) return false;
@@ -34,7 +30,7 @@ internal class DrinkMenu
 
     private void AddAddons()
     {
-        ShowAddonOptions();
+        DrinkMenuDisplay.ShowAddonOptions();
         int option;
         do
         {
@@ -47,54 +43,11 @@ internal class DrinkMenu
 
     private bool ChoosePricePolicy()
     {
-        ShowPricePolicy();
+        DrinkMenuDisplay.ShowPricePolicy();
         Console.Write("Option: ");
         if (!int.TryParse(Console.ReadLine(), out int option)) { ErrorDisplay.InvalidInput("number"); }
         return ApplayPricePolicy(option);
     }
-
-    #region Display
-
-    private void ShowDrinkOptions()
-    {
-        Console.WriteLine($"""
-            Please select one of the following base beverages:
-            1. Espresso        - $2.50
-            2. Tea             - $2.00
-            3. HotChocolate    - $3.00
-            """);
-    }
-
-    private void ShowAddonOptions()
-    {
-        Console.WriteLine($"""
-        The following addons are present:
-        1. Milk         - $0.40
-        2. Syrup        - $0.50
-        3. Extra Shot   - $0.80
-        0. Finish the drink
-        """);
-    }
-
-    private void ShowPricePolicy()
-    {
-        Console.WriteLine($"""
-            Insert the wanted price policy:
-            1. Regular price
-            2. Happy Hour (20% off)
-            """);
-    }
-
-    //To Improve
-    private void PrintReceipt()
-    {
-        var receipt = GetReceipt();
-        if (string.IsNullOrEmpty(receipt)) return;
-        Console.WriteLine("=== Receipt ===");
-        Console.WriteLine(receipt);
-    }
-
-    #endregion Display
 
     #region Application
 
