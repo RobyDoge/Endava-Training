@@ -1,5 +1,6 @@
 ﻿using Cafe.Application.Interfaces;
 using Cafe.Application.Resolvers;
+using Cafe.Domain.Formaters;
 using Cafe.Domain.Result;
 using Cafe.Infrastructure.Resolvers;
 
@@ -30,7 +31,11 @@ public class OrderService : IOrderService
 
     public Result<string> GetReceipt()
     {
-        return OrderRepository.GetReceipt();
+        var orderResult = OrderRepository.GetOrder();
+        if (orderResult.IsFailure) { return Result.Failure<string>(orderResult.Error); }
+
+        var receipt = OrderStringFormater.Format(orderResult.Value);
+        return receipt;
     }
 
     public Result ApplyPricePolicy(int option)

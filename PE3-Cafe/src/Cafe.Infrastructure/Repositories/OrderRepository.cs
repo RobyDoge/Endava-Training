@@ -5,8 +5,8 @@ using Cafe.Domain.Beverages;
 using Cafe.Domain.Factories;
 using Cafe.Domain.Beverages.Decorators;
 using Cafe.Domain.Pricing;
-using Cafe.Domain.Result.Formaters;
 using Cafe.Domain;
+using Cafe.Domain.Formaters;
 
 namespace Cafe.Infrastructure.Repositories;
 
@@ -64,12 +64,12 @@ public class OrderRepository : IOrderRepository
         return Result.Success();
     }
 
-    public Result<string> GetReceipt()
+    public Result<Order> GetOrder()
     {
-        if (CurrentOrder is null) return Result.Failure<string>(Error.NullOrder);
-        if (CurrentOrder.Beverage is null) return Result.Failure<string>(Error.NullBeverage);
+        if (CurrentOrder is null) return Result.Failure<Order>(Error.NullOrder);
+        if (CurrentOrder.Beverage is null) return Result.Failure<Order>(Error.NullBeverage);
 
-        return OrderConsoleFormater.FormatOrder(CurrentOrder);
+        return CurrentOrder;
     }
 
     #endregion IOrderRepository Members

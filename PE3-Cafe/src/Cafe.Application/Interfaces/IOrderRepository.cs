@@ -1,4 +1,5 @@
-﻿using Cafe.Domain.Beverages;
+﻿using Cafe.Domain;
+using Cafe.Domain.Beverages;
 using Cafe.Domain.Beverages.Decorators;
 using Cafe.Domain.Pricing;
 using Cafe.Domain.Result;
@@ -20,5 +21,5 @@ public interface IOrderRepository
 
     Result ApplyPricePolicy(IPricingStrategy pricingStrategy);
 
-    Result<string> GetReceipt();
+    Result<Order> GetOrder();
 }

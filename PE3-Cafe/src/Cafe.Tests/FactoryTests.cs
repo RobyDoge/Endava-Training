@@ -6,20 +6,22 @@ namespace Cafe.Tests;
 
 public class FactoryTests
 {
-    [Fact]
-    public void CreateEspresso()
+    [Theory]
+    [InlineData(BeverageType.Espresso, typeof(Espresso))]
+    [InlineData(BeverageType.Tea, typeof(Tea))]
+    [InlineData(BeverageType.HotChocolate, typeof(HotChocolate))]
+    public void BeverageFactory_Create_ReturnsExpectedBeverage(BeverageType type, Type expectedType)
     {
-        var beverageType = BeverageType.Espresso;
         var beverageFactory = new BeverageFactory();
 
-        var espressoResult = beverageFactory.Create(beverageType);
+        var espressoResult = beverageFactory.Create(type);
 
         Assert.True(espressoResult.IsSuccess);
-        Assert.IsType<Espresso>(espressoResult.Value);
+        Assert.IsType(expectedType, espressoResult.Value);
     }
 
     [Fact]
-    public void CreateUnknownType()
+    public void BeverageFactory_Create_ReturnsError_WhenBeverageTypeIsUnknown()
     {
         var beverageType = BeverageType.Unknown;
         var beverageFactory = new BeverageFactory();

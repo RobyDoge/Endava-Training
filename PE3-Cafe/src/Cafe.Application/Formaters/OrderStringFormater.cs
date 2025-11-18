@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cafe.Domain.Result.Formaters;
+namespace Cafe.Domain.Formaters;
 
-public static class OrderConsoleFormater
+public static class OrderStringFormater
 {
-    public static string FormatOrder(Order order)
+    public static string Format(Order order)
     {
         string orderString = $"""
             Order id: {order.OrderId}
