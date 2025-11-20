@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Cafe.Domain.Formaters;
+
+public static class OrderStringFormater
+{
+    public static string Format(Order order)
+    {
+        string orderString = $"""
+            Order id: {order.OrderId}
+            Placed at: {order.At}
+            Order description: {order.Description}
+            Order subtotal: {order.Subtotal:C2}
+            Order total: {order.Total:C2}
+            """;
+
+        return orderString;
+    }
+}
