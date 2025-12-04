@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EntityFrameworkCore.Data.Migrations
 {
     [DbContext(typeof(FootballLeagueDbContext))]
-    [Migration("20251204102520_Initial")]
+    [Migration("20251204105754_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -62,6 +62,26 @@ namespace EntityFrameworkCore.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Teams");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Petrolul"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "Dinamo"
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Name = "FCSB"
+                        });
                 });
 #pragma warning restore 612, 618
         }
