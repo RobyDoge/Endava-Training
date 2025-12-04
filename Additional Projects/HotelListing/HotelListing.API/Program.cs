@@ -1,6 +1,6 @@
+using HotelListing.API.Configurations;
 using HotelListing.API.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +24,8 @@ builder.Services.AddCors(options =>
             .AllowAnyOrigin()
             .AllowAnyMethod());
 });
+
+builder.Services.AddAutoMapper(cfg => { }, typeof(MapperConfig));
 
 var app = builder.Build();
 
