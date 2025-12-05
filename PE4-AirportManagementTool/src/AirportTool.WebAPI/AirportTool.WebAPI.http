@@ -1,0 +1,6 @@
+@AirportTool.WebAPI_HostAddress = http://localhost:5139
+
+GET {{AirportTool.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
