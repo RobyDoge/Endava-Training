@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AirportTool.Infrastructure.Models.Enums;
+namespace AirportTool.Domain.Enums;
 
 public enum BookingStatusEnum
 {
