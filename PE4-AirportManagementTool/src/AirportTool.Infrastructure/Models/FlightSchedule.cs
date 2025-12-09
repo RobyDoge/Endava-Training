@@ -17,13 +17,13 @@ public partial class FlightSchedule
 
     public int? AssignedAircraftId { get; set; }
 
-    public int Status { get; set; }
+    public int FlightScheduleId { get; set; }
 
     public virtual Flight Flight { get; set; } = null!;
 
-    public virtual Gate Gate { get; set; } = null!;
+    public virtual FlightScheduleStatus FlightScheduleNavigation { get; set; } = null!;
 
-    public virtual FlightScheduleStatus StatusNavigation { get; set; } = null!;
+    public virtual Gate Gate { get; set; } = null!;
 
     public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }

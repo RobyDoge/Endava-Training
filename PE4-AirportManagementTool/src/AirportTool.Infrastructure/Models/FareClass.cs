@@ -9,5 +9,7 @@ public partial class FareClass
 
     public string Description { get; set; } = null!;
 
+    public int Id { get; set; }
+
     public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }

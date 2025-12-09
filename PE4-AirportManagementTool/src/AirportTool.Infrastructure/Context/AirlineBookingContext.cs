@@ -85,8 +85,8 @@ public partial class AirlineBookingContext : DbContext
             entity.Property(e => e.PassengerEmail).HasMaxLength(120);
             entity.Property(e => e.PassengerFullName).HasMaxLength(120);
 
-            entity.HasOne(d => d.StatusNavigation).WithMany(p => p.Bookings)
-                .HasForeignKey(d => d.Status)
+            entity.HasOne(d => d.BookingStatus).WithMany(p => p.Bookings)
+                .HasForeignKey(d => d.BookingStatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Bookings_BookingStatus");
 
@@ -105,8 +105,6 @@ public partial class AirlineBookingContext : DbContext
 
         modelBuilder.Entity<Currency>(entity =>
         {
-            entity.HasKey(e => e.Code);
-
             entity.Property(e => e.Code)
                 .HasMaxLength(3)
                 .IsFixedLength();
@@ -115,7 +113,7 @@ public partial class AirlineBookingContext : DbContext
 
         modelBuilder.Entity<FareClass>(entity =>
         {
-            entity.HasKey(e => e.Code).HasName("PK_FareClass");
+            entity.HasKey(e => e.Id).HasName("PK_FareClass");
 
             entity.Property(e => e.Code).HasMaxLength(2);
             entity.Property(e => e.Description).HasMaxLength(50);
@@ -159,15 +157,15 @@ public partial class AirlineBookingContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FlightSchedule_Flights");
 
+            entity.HasOne(d => d.FlightScheduleNavigation).WithMany(p => p.FlightSchedules)
+                .HasForeignKey(d => d.FlightScheduleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_FlightSchedule_FlightScheduleStatus");
+
             entity.HasOne(d => d.Gate).WithMany(p => p.FlightSchedules)
                 .HasForeignKey(d => d.GateId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FlightSchedule_Gates");
-
-            entity.HasOne(d => d.StatusNavigation).WithMany(p => p.FlightSchedules)
-                .HasForeignKey(d => d.Status)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_FlightSchedule_FlightScheduleStatus");
         });
 
         modelBuilder.Entity<FlightScheduleStatus>(entity =>
@@ -191,27 +189,23 @@ public partial class AirlineBookingContext : DbContext
 
         modelBuilder.Entity<Ticket>(entity =>
         {
-            entity.HasIndex(e => new { e.FlightScheduleId, e.FareClass }, "IX_Tickets_FlightScheduleId_FareClass");
+            entity.HasIndex(e => new { e.FlightScheduleId, e.FareClassId }, "IX_Tickets_FlightScheduleId_FareClass");
 
             entity.Property(e => e.BasePrice).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.CurrencyCode)
-                .HasMaxLength(3)
-                .IsFixedLength();
-            entity.Property(e => e.FareClass).HasMaxLength(2);
             entity.Property(e => e.Taxes).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.TotalPrice)
                 .HasComputedColumnSql("([BasePrice]+[Taxes])", true)
                 .HasColumnType("decimal(11, 2)");
 
-            entity.HasOne(d => d.CurrencyCodeNavigation).WithMany(p => p.Tickets)
-                .HasForeignKey(d => d.CurrencyCode)
+            entity.HasOne(d => d.Currency).WithMany(p => p.Tickets)
+                .HasForeignKey(d => d.CurrencyId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Tickets_Currencies");
 
-            entity.HasOne(d => d.FareClassNavigation).WithMany(p => p.Tickets)
-                .HasForeignKey(d => d.FareClass)
+            entity.HasOne(d => d.FareClass).WithMany(p => p.Tickets)
+                .HasForeignKey(d => d.FareClassId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Tickets_FareClasses");
+                .HasConstraintName("FK_Tickets_Fareclasses");
 
             entity.HasOne(d => d.FlightSchedule).WithMany(p => p.Tickets)
                 .HasForeignKey(d => d.FlightScheduleId)

@@ -17,11 +17,11 @@ public partial class Booking
 
     public int Quantity { get; set; }
 
-    public int Status { get; set; }
+    public int BookingStatusId { get; set; }
 
     public DateTime CreatedUtc { get; set; }
 
-    public virtual BookingStatus StatusNavigation { get; set; } = null!;
+    public virtual BookingStatus BookingStatus { get; set; } = null!;
 
     public virtual Ticket Ticket { get; set; } = null!;
 }

@@ -9,7 +9,7 @@ public partial class Ticket
 
     public int FlightScheduleId { get; set; }
 
-    public string FareClass { get; set; } = null!;
+    public int FareClassId { get; set; }
 
     public decimal BasePrice { get; set; }
 
@@ -17,7 +17,7 @@ public partial class Ticket
 
     public decimal? TotalPrice { get; set; }
 
-    public string CurrencyCode { get; set; } = null!;
+    public int CurrencyId { get; set; }
 
     public bool IsRefundable { get; set; }
 
@@ -25,9 +25,9 @@ public partial class Ticket
 
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
-    public virtual Currency CurrencyCodeNavigation { get; set; } = null!;
+    public virtual Currency Currency { get; set; } = null!;
 
-    public virtual FareClass FareClassNavigation { get; set; } = null!;
+    public virtual FareClass FareClass { get; set; } = null!;
 
     public virtual FlightSchedule FlightSchedule { get; set; } = null!;
 }
