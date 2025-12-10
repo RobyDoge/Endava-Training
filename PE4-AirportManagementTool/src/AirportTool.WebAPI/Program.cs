@@ -1,3 +1,4 @@
+using AirportTool.Infrastructure.Configurations;
 using AirportTool.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,8 @@ builder.Services.AddDbContext<AirlineBookingContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
+
+builder.Services.AddAutoMapper(cfg => { }, typeof(EfDomainMapper));
 
 var app = builder.Build();
 

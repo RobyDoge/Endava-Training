@@ -157,8 +157,8 @@ public partial class AirlineBookingContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FlightSchedule_Flights");
 
-            entity.HasOne(d => d.FlightScheduleNavigation).WithMany(p => p.FlightSchedules)
-                .HasForeignKey(d => d.FlightScheduleId)
+            entity.HasOne(d => d.FlightScheduleStatus).WithMany(p => p.FlightSchedules)
+                .HasForeignKey(d => d.FlightScheduleStatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_FlightSchedule_FlightScheduleStatus");
 

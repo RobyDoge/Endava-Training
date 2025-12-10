@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AirportTool.Domain.Enums;
 
-public enum FlightScheduleStatusEnum
+public enum FlightScheduleStatus
 {
     Planned = 1,
     Boarding = 2,
