@@ -1,5 +1,7 @@
+using AirportTool.Application.Abstractions;
 using AirportTool.Infrastructure.Configurations;
 using AirportTool.Infrastructure.Context;
+using AirportTool.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +20,10 @@ builder.Services.AddDbContext<AirlineBookingContext>(options =>
 });
 
 builder.Services.AddAutoMapper(cfg => { }, typeof(EfDomainMapper));
+
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IFlightScheduleRepository, FlightScheduleRepository>();
+
 
 var app = builder.Build();
 
