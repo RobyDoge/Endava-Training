@@ -1,15 +1,15 @@
-﻿namespace AirportTool.Domain.Models;
+﻿namespace AirportTool.Domain.Entities;
 
-public class Gate
+public class GateEntity
 {
     public int Id { get; }
     public string Code { get; private set; } = null!;
-    public Airport Airport { get; private set; } = null!;
+    public AirportEntity Airport { get; private set; } = null!;
 
-    public Gate(
+    public GateEntity(
         int id,
         string code,
-        Airport airport)
+        AirportEntity airport)
     {
         Id = id;
         Code = code;

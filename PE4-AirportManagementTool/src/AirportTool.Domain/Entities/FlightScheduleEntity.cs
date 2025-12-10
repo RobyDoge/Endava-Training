@@ -1,23 +1,23 @@
 ﻿using AirportTool.Domain.Enums;
 
-namespace AirportTool.Domain.Models;
+namespace AirportTool.Domain.Entities;
 
-public class FlightSchedule
+public class FlightScheduleEntity
 {
     public int Id { get; }
     public DateTime ScheduledDepartureUtc { get; set; }
     public DateTime ScheduledArrivalUtc { get; set; }
-    public Flight Flight { get; set; } = null!;
-    public FlightScheduleStatus Status { get; set; }
-    public Gate Gate { get; set; } = null!;
+    public FlightEntity Flight { get; set; } = null!;
+    public FlightScheduleStatusEnum Status { get; set; }
+    public GateEntity Gate { get; set; } = null!;
 
-    public FlightSchedule(
+    public FlightScheduleEntity(
         int id,
         DateTime scheduledDepartureUtc,
         DateTime scheduledArrivalUtc,
-        Flight flight,
-        FlightScheduleStatus status,
-        Gate gate
+        FlightEntity flight,
+        FlightScheduleStatusEnum status,
+        GateEntity gate
         )
     {
         Id = id;

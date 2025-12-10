@@ -1,6 +1,6 @@
-﻿namespace AirportTool.Domain.Models;
+﻿namespace AirportTool.Domain.Entities;
 
-public class Airport
+public class AirportEntity
 {
     public int Id { get; }
     public string IataCode { get; private set; } = null!;
@@ -9,7 +9,7 @@ public class Airport
     public string? Country { get; private set; }
     public string Timezone { get; private set; } = null!;
 
-    public Airport(
+    public AirportEntity(
         int id,
         string iataCode,
         string name,

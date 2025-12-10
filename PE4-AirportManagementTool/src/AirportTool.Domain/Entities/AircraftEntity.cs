@@ -1,19 +1,19 @@
-﻿namespace AirportTool.Domain.Models;
+﻿namespace AirportTool.Domain.Entities;
 
-public class Aircraft
+public class AircraftEntity
 {
     public int Id { get; }
     public string TailName { get; private set; } = null!;
     public string Model { get; private set; } = null!;
     public int SeatCapacity { get; private set; }
-    public Airline AirlineOwner { get; private set; } = null!;
+    public AirlineEntity AirlineOwner { get; private set; } = null!;
 
-    public Aircraft(
+    public AircraftEntity(
         int id,
         string tailName,
         string model,
         int seatCapacity,
-        Airline airlineOwner)
+        AirlineEntity airlineOwner)
     {
         Id = id;
         TailName = tailName;

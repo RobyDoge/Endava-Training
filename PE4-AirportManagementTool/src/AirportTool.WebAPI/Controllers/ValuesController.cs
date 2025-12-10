@@ -1,4 +1,4 @@
-﻿using AirportTool.Domain.Models;
+﻿using AirportTool.Domain.Entities;
 using AirportTool.Infrastructure.Context;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -20,9 +20,9 @@ public class ValuesController : ControllerBase
     }
 
     [HttpGet]
-    public Airline GetAircraft()
+    public AirlineEntity GetAircraft()
     {
         var airline = db.Airlines.Find(1);
-        return Mapper.Map<Airline>(airline);
+        return Mapper.Map<AirlineEntity>(airline);
     }
 }
