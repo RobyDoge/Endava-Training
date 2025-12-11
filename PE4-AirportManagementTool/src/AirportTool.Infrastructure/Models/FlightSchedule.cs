@@ -19,6 +19,8 @@ public partial class FlightSchedule
 
     public int FlightScheduleStatusId { get; set; }
 
+    public virtual Aircraft? AssignedAircraft { get; set; }
+
     public virtual Flight Flight { get; set; } = null!;
 
     public virtual FlightScheduleStatus FlightScheduleStatus { get; set; } = null!;

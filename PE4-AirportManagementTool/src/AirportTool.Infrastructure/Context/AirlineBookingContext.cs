@@ -152,6 +152,10 @@ public partial class AirlineBookingContext : DbContext
 
             entity.HasIndex(e => new { e.FlightId, e.ScheduledDepartureUtc }, "IX_FlightSchedules_FlightId_ScheduledDepartureUtc");
 
+            entity.HasOne(d => d.AssignedAircraft).WithMany(p => p.FlightSchedules)
+                .HasForeignKey(d => d.AssignedAircraftId)
+                .HasConstraintName("FK_FlightSchedules_Aircrafts");
+
             entity.HasOne(d => d.Flight).WithMany(p => p.FlightSchedules)
                 .HasForeignKey(d => d.FlightId)
                 .OnDelete(DeleteBehavior.ClientSetNull)

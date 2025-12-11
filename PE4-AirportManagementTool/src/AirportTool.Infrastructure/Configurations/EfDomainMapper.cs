@@ -26,7 +26,11 @@ public class EfDomainMapper : Profile
             src.ScheduledArrivalUtc,
             ctx.Mapper.Map<FlightEntity>(src.Flight),
             (FlightScheduleStatusEnum)src.FlightScheduleStatusId,
-            ctx.Mapper.Map<GateEntity>(src.Gate)
+            ctx.Mapper.Map<GateEntity>(src.Gate),
+            src.AssignedAircraftId.HasValue
+                ? ctx.Mapper.Map<AircraftEntity>(src.AssignedAircraft!)
+                : null
+
         );
 
     private void MapFlightSchedule()
@@ -38,11 +42,15 @@ public class EfDomainMapper : Profile
             opt => opt.MapFrom(src => src.Gate.Id))
             .ForMember(dest => dest.FlightScheduleStatusId,
             opt => opt.MapFrom(src => (int)src.Status))
+            .ForMember(dest => dest.AssignedAircraftId,
+            opt => opt.MapFrom(src => src.AssignedAircraft != null ? src.AssignedAircraft.Id : (int?)null))
             .ForMember(dest => dest.Flight,
-                opt => opt.Ignore()) 
+                opt => opt.Ignore())
             .ForMember(dest => dest.Gate,
                 opt => opt.Ignore())
             .ForMember(dest => dest.Tickets,
+                opt => opt.Ignore())
+            .ForMember(dest => dest.AssignedAircraft,
                 opt => opt.Ignore());
     }
 }

@@ -17,5 +17,7 @@ public partial class Aircraft
 
     public virtual Airline AirlineOwner { get; set; } = null!;
 
+    public virtual ICollection<FlightSchedule> FlightSchedules { get; set; } = new List<FlightSchedule>();
+
     public virtual ICollection<Flight> Flights { get; set; } = new List<Flight>();
 }

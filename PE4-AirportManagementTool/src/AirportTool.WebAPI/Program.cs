@@ -3,6 +3,7 @@ using AirportTool.Application.Services;
 using AirportTool.Infrastructure.Configurations;
 using AirportTool.Infrastructure.Context;
 using AirportTool.Infrastructure.Repositories;
+using AirportTool.WebAPI.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,7 @@ builder.Services.AddDbContext<AirlineBookingContext>(options =>
 });
 
 builder.Services.AddAutoMapper(cfg => { }, typeof(EfDomainMapper));
+builder.Services.AddAutoMapper(cfg => { }, typeof(DomainDtoProfile));
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
