@@ -21,9 +21,9 @@ builder.Services.AddDbContext<AirlineBookingContext>(options =>
 
 builder.Services.AddAutoMapper(cfg => { }, typeof(EfDomainMapper));
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IFlightScheduleRepository, FlightScheduleRepository>();
-
 
 var app = builder.Build();
 

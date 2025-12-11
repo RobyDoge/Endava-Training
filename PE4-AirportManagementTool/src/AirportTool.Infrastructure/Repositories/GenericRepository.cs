@@ -11,20 +11,20 @@ namespace AirportTool.Infrastructure.Repositories;
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
     private AirlineBookingContext Context { get; }
+
     public GenericRepository(AirlineBookingContext context) => Context = context;
 
     public async Task<T> AddAsync(T entity)
     {
-        await Context.AddAsync(entity);
-        await Context.SaveChangesAsync();
+        await Context.Set<T>().AddAsync(entity);
         return entity;
     }
 
     public async Task Delete(int id)
     {
         var entity = await GetAsync(id);
+        if (entity is null) return;
         Context.Set<T>().Remove(entity);
-        await Context.SaveChangesAsync();
     }
 
     public async Task<bool> Exists(int id)
@@ -47,7 +47,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     public async Task UpdateAsync(T entity)
     {
-        Context.Update(entity);
-        await Context.SaveChangesAsync();
+        Context.Set<T>().Update(entity);
     }
 }
