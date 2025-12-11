@@ -1,4 +1,5 @@
 using AirportTool.Application.Abstractions;
+using AirportTool.Application.Services;
 using AirportTool.Infrastructure.Configurations;
 using AirportTool.Infrastructure.Context;
 using AirportTool.Infrastructure.Repositories;
@@ -24,6 +25,7 @@ builder.Services.AddAutoMapper(cfg => { }, typeof(EfDomainMapper));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IFlightScheduleRepository, FlightScheduleRepository>();
+builder.Services.AddScoped<FlightScheduleService>();
 
 var app = builder.Build();
 

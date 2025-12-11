@@ -1,9 +1,12 @@
-﻿using AirportTool.Domain.Entities;
+﻿using AirportTool.Application.Services;
+using AirportTool.Domain.Entities;
 using AirportTool.Infrastructure.Context;
+using AirportTool.Infrastructure.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace AirportTool.WebAPI.Controllers;
 
@@ -11,18 +14,21 @@ namespace AirportTool.WebAPI.Controllers;
 [ApiController]
 public class ValuesController : ControllerBase
 {
-    AirlineBookingContext db { get; set; }
-    IMapper Mapper { get; set; }
-    public ValuesController(AirlineBookingContext airport, IMapper mapper)
+    private AirlineBookingContext db { get; set; }
+    private IMapper Mapper { get; set; }
+    private FlightScheduleService fss { get; set; }
+
+    public ValuesController(AirlineBookingContext airport, IMapper mapper, FlightScheduleService fsss)
     {
         db = airport;
         Mapper = mapper;
+        fss = fsss;
     }
 
     [HttpGet]
-    public AirlineEntity GetAircraft()
+    public async Task<FlightScheduleEntity> GetAircraft()
     {
-        var airline = db.Airlines.Find(1);
-        return Mapper.Map<AirlineEntity>(airline);
+        var result = await fss.GetByRouteAndDate("otp", "LTn", DateTime.Parse("2025-05-01"));
+        return result.FirstOrDefault();
     }
 }
