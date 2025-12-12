@@ -1,8 +1,6 @@
 ﻿using AirportTool.Application.Abstractions;
 using AirportTool.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CSharpFunctionalExtensions;
 
 namespace AirportTool.Application.Services;
 
@@ -15,10 +13,9 @@ public class FlightScheduleService
         UnitOfWork = unitOfWork;
     }
 
-    public async Task<IEnumerable<FlightScheduleEntity>> GetByRouteAndDate(string fromIata, string toIata, DateTime date)
+    public async Task<Result<IEnumerable<FlightScheduleEntity>>> GetByRouteAndDate(string fromIata, string toIata, DateTime date)
     {
         var result = await UnitOfWork.FlightScheduleRepository.GetByRouteAndDateAsync(fromIata, toIata, date);
-        await UnitOfWork.SaveChangesAsync();
         return result;
     }
 }

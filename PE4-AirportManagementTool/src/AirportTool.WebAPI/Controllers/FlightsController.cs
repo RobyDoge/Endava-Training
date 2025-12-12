@@ -24,10 +24,10 @@ public class FlightsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetFlightsByRouteAndDate(GetFlightsByRouteAndDateRequest request)
     {
-        var flightSchedules = await FlightScheduleService.GetByRouteAndDate(request.FromIata, request.ToIata, request.Date);
-        if (flightSchedules == null || !flightSchedules.Any()) return NotFound();
+        var result = await FlightScheduleService.GetByRouteAndDate(request.FromIata, request.ToIata, request.Date);
+        if (result.IsFailure) return BadRequest(result.Error);
 
-        var response = Mapper.Map<List<GetFlightScheduleDto>>(flightSchedules);
+        var response = Mapper.Map<List<GetFlightScheduleDto>>(result.Value);
         return Ok(response);
     }
 
