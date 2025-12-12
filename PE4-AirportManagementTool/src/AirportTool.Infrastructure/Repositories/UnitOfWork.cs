@@ -11,12 +11,15 @@ public class UnitOfWork : IUnitOfWork
 {
     private AirlineBookingContext Context { get; }
     public IFlightScheduleRepository FlightScheduleRepository { get; }
+    public IFlightRepository FlightRepository { get; }
 
     public UnitOfWork(AirlineBookingContext context,
-        IFlightScheduleRepository flightScheduleRepository)
+        IFlightScheduleRepository flightScheduleRepository,
+        IFlightRepository flightRepository)
     {
         Context = context;
         FlightScheduleRepository = flightScheduleRepository;
+        FlightRepository = flightRepository;
     }
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

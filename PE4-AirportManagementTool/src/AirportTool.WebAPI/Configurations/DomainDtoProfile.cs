@@ -1,5 +1,5 @@
 ﻿using AirportTool.Domain.Entities;
-using AirportTool.WebAPI.DTOs;
+using AirportTool.WebAPI.Models.DTOs;
 using AutoMapper;
 
 namespace AirportTool.WebAPI.Configurations;
@@ -8,10 +8,10 @@ public class DomainDtoProfile : Profile
 {
     public DomainDtoProfile()
     {
-        FlightScheduleMappings();
+        GetFlightScheduleMap();
     }
 
-    private void FlightScheduleMappings()
+    private void GetFlightScheduleMap()
     {
         CreateMap<FlightScheduleEntity, GetFlightScheduleDto>()
             .ForMember(dest => dest.FlightNumber,

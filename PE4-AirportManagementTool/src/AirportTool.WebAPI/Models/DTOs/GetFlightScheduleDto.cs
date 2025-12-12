@@ -1,4 +1,4 @@
-﻿namespace AirportTool.WebAPI.DTOs;
+﻿namespace AirportTool.WebAPI.Models.DTOs;
 
 public class GetFlightScheduleDto
 {

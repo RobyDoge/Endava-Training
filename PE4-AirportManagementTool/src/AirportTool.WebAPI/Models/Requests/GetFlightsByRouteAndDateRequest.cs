@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AirportTool.WebAPI.DTOs;
+namespace AirportTool.WebAPI.Models.Requests;
 
 public class GetFlightsByRouteAndDateRequest
 {

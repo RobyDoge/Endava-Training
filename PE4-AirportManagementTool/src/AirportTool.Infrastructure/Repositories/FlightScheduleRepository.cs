@@ -1,13 +1,14 @@
 ﻿using AirportTool.Application.Abstractions;
 using AirportTool.Domain.Entities;
 using AirportTool.Infrastructure.Context;
+using AirportTool.Infrastructure.Models;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 
 namespace AirportTool.Infrastructure.Repositories;
 
-public class FlightScheduleRepository : GenericRepository<FlightScheduleEntity>, IFlightScheduleRepository
+public class FlightScheduleRepository : GenericRepository<FlightSchedule>, IFlightScheduleRepository
 {
     private AirlineBookingContext Context { get; }
     private IMapper Mapper { get; }

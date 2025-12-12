@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AirportTool.Application.Abstractions;
 
-public interface IFlightScheduleRepository : IGenericRepository<FlightScheduleEntity>
+public interface IFlightScheduleRepository
 {
     Task<IEnumerable<FlightScheduleEntity>> GetByRouteAndDateAsync(string fromIata, string toIata, DateTime date);
 }

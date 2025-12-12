@@ -27,7 +27,10 @@ builder.Services.AddAutoMapper(cfg => { }, typeof(DomainDtoProfile));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IFlightScheduleRepository, FlightScheduleRepository>();
+builder.Services.AddScoped<IFlightRepository, FlightRepository>();
+
 builder.Services.AddScoped<FlightScheduleService>();
+builder.Services.AddScoped<FlightService>();
 
 var app = builder.Build();
 
