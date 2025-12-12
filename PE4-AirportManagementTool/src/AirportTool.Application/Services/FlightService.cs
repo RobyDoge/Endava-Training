@@ -1,5 +1,6 @@
 ﻿using AirportTool.Application.Abstractions;
 using AirportTool.Domain.Entities;
+using CSharpFunctionalExtensions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -16,12 +17,15 @@ public class FlightService
         UnitOfWork = unitOfWork;
     }
 
-    public async Task<int> CreateAsync(string airlineIata,
+    public async Task<Result<int>> CreateAsync(string airlineIata,
         string flightNumber,
         string originIata,
         string destinationIata,
         string? defaultAircraftTailName)
     {
+        if (!Validators.FlightValidator.IsValidFlightNumber(flightNumber)) return Result.Failure<int>("Invalid Flight Number");
+        if (!Validators.FlightValidator.AreAirportsDifferent(originIata, destinationIata)) return Result.Failure<int>("Airports must be different");
+
         var result = await UnitOfWork.FlightRepository.CreateAsync(
         airlineIata,
         flightNumber,
@@ -29,8 +33,16 @@ public class FlightService
         destinationIata,
         defaultAircraftTailName);
 
-        await UnitOfWork.SaveChangesAsync();
+        try
+        {
+            await UnitOfWork.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure<int>($"Error saving flight: {ex.Message}");
+        }
 
-        return result.Id;
+        if (result.IsFailure) return result.ConvertFailure<int>();
+        return Result.Success(result.Value.Id);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace AirportTool.Application.Abstractions;
 
-public interface IEntity<T>
+public interface IIdentifiable<T>
 {
     T Id { get; }
 }

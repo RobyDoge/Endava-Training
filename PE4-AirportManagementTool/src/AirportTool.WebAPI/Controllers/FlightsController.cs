@@ -35,6 +35,7 @@ public class FlightsController : ControllerBase
     public async Task<IActionResult> CreateFlight(CreateFlightRequest request)
     {
         var result = await FlightService.CreateAsync(request.AirlineIata, request.FlightNumber, request.OriginAirportIata, request.DestinationAirportIata, request.DefaultAircraftTailName);
-        return Ok(result);
+        if (result.IsFailure) return BadRequest(result.Error);
+        return Ok(result.Value);
     }
 }

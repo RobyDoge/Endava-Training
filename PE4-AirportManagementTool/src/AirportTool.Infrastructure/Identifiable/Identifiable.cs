@@ -1,16 +1,13 @@
 ﻿using AirportTool.Application.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace AirportTool.Infrastructure.Entities;
+namespace AirportTool.Infrastructure.Identifiable;
 
-public class Entity<T> : IEntity<T>
+public class Identifiable<T> : IIdentifiable<T>
 {
     private dynamic Item { get; }
     private string PropertyName { get; }
 
-    public Entity(dynamic item, string propertyName)
+    public Identifiable(dynamic item, string propertyName)
     {
         Item = item;
         PropertyName = propertyName;
