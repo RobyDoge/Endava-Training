@@ -20,11 +20,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return entity;
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
         var entity = await GetAsync(id);
-        if (entity is null) return;
+        if (entity is null) return false;
         Context.Set<T>().Remove(entity);
+        return true;
     }
 
     public async Task<bool> Exists(int id)

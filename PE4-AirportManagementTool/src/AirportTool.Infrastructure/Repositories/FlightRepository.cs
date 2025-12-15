@@ -108,9 +108,8 @@ public class FlightRepository : GenericRepository<Flight>, IFlightRepository
     {
         try
         {
-            var entity = await GetAsync(id);
-            if (entity is null) return Result.Failure("Flight not found");
-            Context.Flights.Remove(entity);
+            var result = await base.DeleteAsync(id);
+            if (!result) return Result.Failure("Flight not found.");
             return Result.Success();
         }
         catch (Exception e)
