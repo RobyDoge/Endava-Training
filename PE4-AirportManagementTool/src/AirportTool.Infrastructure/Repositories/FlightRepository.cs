@@ -2,9 +2,10 @@
 using AirportTool.Infrastructure.Context;
 using AirportTool.Infrastructure.Identifiable;
 using AirportTool.Infrastructure.Models;
-using CSharpFunctionalExtensions;
 using AutoMapper;
+using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 
 namespace AirportTool.Infrastructure.Repositories;
 
@@ -100,6 +101,21 @@ public class FlightRepository : GenericRepository<Flight>, IFlightRepository
         catch (Exception e)
         {
             return Result.Failure(e.Message);
+        }
+    }
+
+    public async new Task<Result> DeleteAsync(int id)
+    {
+        try
+        {
+            var entity = await GetAsync(id);
+            if (entity is null) return Result.Failure("Flight not found");
+            Context.Flights.Remove(entity);
+            return Result.Success();
+        }
+        catch (Exception e)
+        {
+            return Result.Failure($"Error deleting flight: {e.Message}");
         }
     }
 }

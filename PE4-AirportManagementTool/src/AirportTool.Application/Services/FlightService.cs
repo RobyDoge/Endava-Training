@@ -23,27 +23,27 @@ public class FlightService
         string destinationIata,
         string? defaultAircraftTailName)
     {
-        if (!Validators.FlightValidator.IsValidFlightNumber(flightNumber)) return Result.Failure<int>("Invalid Flight Number");
-        if (!Validators.FlightValidator.AreAirportsDifferent(originIata, destinationIata)) return Result.Failure<int>("Airports must be different");
-
-        var result = await UnitOfWork.FlightRepository.CreateAsync(
-        airlineIata,
-        flightNumber,
-        originIata,
-        destinationIata,
-        defaultAircraftTailName);
-
         try
         {
+            if (!Validators.FlightValidator.IsValidFlightNumber(flightNumber)) return Result.Failure<int>("Invalid Flight Number");
+            if (!Validators.FlightValidator.AreAirportsDifferent(originIata, destinationIata)) return Result.Failure<int>("Airports must be different");
+
+            var result = await UnitOfWork.FlightRepository.CreateAsync(
+            airlineIata,
+            flightNumber,
+            originIata,
+            destinationIata,
+            defaultAircraftTailName);
+
             await UnitOfWork.SaveChangesAsync();
+
+            if (result.IsFailure) return result.ConvertFailure<int>();
+            return Result.Success(result.Value.Id);
         }
         catch (Exception ex)
         {
             return Result.Failure<int>($"Error saving flight: {ex.Message}");
         }
-
-        if (result.IsFailure) return result.ConvertFailure<int>();
-        return Result.Success(result.Value.Id);
     }
 
     public async Task<Result> UpdateAsync(int id,
@@ -54,25 +54,42 @@ public class FlightService
         string? defaultAircraftTailName,
         bool isActive)
     {
-        if (flightNumber != null && !Validators.FlightValidator.IsValidFlightNumber(flightNumber)) return Result.Failure("Invalid Flight Number");
-        if (originIata != null && destinationIata != null && !Validators.FlightValidator.AreAirportsDifferent(originIata, destinationIata)) return Result.Failure("Airports must be different");
-
-        var result = await UnitOfWork.FlightRepository.UpdateAsync(
-        id,
-        airlineIata,
-        flightNumber,
-        originIata,
-        destinationIata,
-        defaultAircraftTailName,
-        isActive);
         try
         {
+            if (flightNumber != null && !Validators.FlightValidator.IsValidFlightNumber(flightNumber)) return Result.Failure("Invalid Flight Number");
+            if (originIata != null && destinationIata != null && !Validators.FlightValidator.AreAirportsDifferent(originIata, destinationIata)) return Result.Failure("Airports must be different");
+
+            var result = await UnitOfWork.FlightRepository.UpdateAsync(
+            id,
+            airlineIata,
+            flightNumber,
+            originIata,
+            destinationIata,
+            defaultAircraftTailName,
+            isActive);
+
             await UnitOfWork.SaveChangesAsync();
+
+            return result;
         }
         catch (Exception ex)
         {
             return Result.Failure($"Error saving flight: {ex.Message}");
         }
-        return result;
+    }
+
+    public async Task<Result> DeleteAsync(int id)
+    {
+        
+        try
+        {
+            var flight = await UnitOfWork.FlightRepository.DeleteAsync(id);
+            await UnitOfWork.SaveChangesAsync();
+            return flight;
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure($"Error deleting flight: {ex.Message}");
+        }
     }
 }

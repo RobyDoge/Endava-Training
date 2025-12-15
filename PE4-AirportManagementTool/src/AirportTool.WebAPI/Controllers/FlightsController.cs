@@ -46,4 +46,12 @@ public class FlightsController : ControllerBase
         if (result.IsFailure) return BadRequest(result.Error);
         return Ok();
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteFlight(int id)
+    {
+        var result = await FlightService.DeleteAsync(id);
+        if (result.IsFailure) return BadRequest(result.Error);
+        return NoContent();
+    }
 }
