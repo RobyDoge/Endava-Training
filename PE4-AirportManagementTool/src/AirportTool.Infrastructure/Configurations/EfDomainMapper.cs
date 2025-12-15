@@ -2,6 +2,7 @@
 using AirportTool.Domain.Enums;
 using AirportTool.Infrastructure.Models;
 using AutoMapper;
+using Microsoft.Data.SqlClient;
 
 namespace AirportTool.Infrastructure.Configurations;
 
@@ -17,6 +18,39 @@ public class EfDomainMapper : Profile
 
         CreateMap<FlightSchedule, FlightScheduleEntity>().ConstructUsing(MapFlightScheduleEntity);
         MapFlightSchedule();
+
+        CreateMap<Ticket, TicketEntity>().ConstructUsing(MapTicketEntity);
+        MapTicket();
+    }
+
+    private TicketEntity MapTicketEntity(Ticket src, ResolutionContext ctx) =>
+        new(
+            src.Id,
+            src.BasePrice,
+            src.Taxes,
+            src.SeatInventory,
+            (CurrencyEnum)src.CurrencyId,
+            (FareClassEnum)src.FareClassId,
+            ctx.Mapper.Map<FlightScheduleEntity>(src.FlightSchedule),
+            src.TotalPrice,
+            src.IsRefundable
+            );
+
+    private void MapTicket()
+    {
+        CreateMap<TicketEntity, Ticket>()
+            .ForMember(dest => dest.FlightScheduleId,
+            opt => opt.MapFrom(src => src.FlightSchedule.Id))
+            .ForMember(dest => dest.CurrencyId,
+            opt => opt.MapFrom(src => (int)src.Currency))
+            .ForMember(dest => dest.FareClassId,
+            opt => opt.MapFrom(src => (int)src.FareClass))
+            .ForMember(dest => dest.FlightSchedule,
+                opt => opt.Ignore())
+            .ForMember(dest => dest.Currency,
+                opt => opt.Ignore())
+            .ForMember(dest => dest.FareClass,
+                opt => opt.Ignore());
     }
 
     private static FlightScheduleEntity MapFlightScheduleEntity(FlightSchedule src, ResolutionContext ctx) =>

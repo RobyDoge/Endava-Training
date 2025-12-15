@@ -9,6 +9,12 @@ public class DomainDtoProfile : Profile
     public DomainDtoProfile()
     {
         GetFlightScheduleMap();
+        GetTicketMap();
+    }
+
+    private void GetTicketMap()
+    {
+        CreateMap<TicketEntity, GetTicketDto>();
     }
 
     private void GetFlightScheduleMap()
