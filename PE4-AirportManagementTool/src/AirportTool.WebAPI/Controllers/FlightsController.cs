@@ -38,4 +38,12 @@ public class FlightsController : ControllerBase
         if (result.IsFailure) return BadRequest(result.Error);
         return Ok(result.Value);
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateFlight(int id, UpdateFlightRequest request)
+    {
+        var result = await FlightService.UpdateAsync(id, request.AirlineIata, request.FlightNumber, request.OriginAirportIata, request.DestinationAirportIata, request.DefaultAircraftTailName, request.IsActive);
+        if (result.IsFailure) return BadRequest(result.Error);
+        return Ok();
+    }
 }

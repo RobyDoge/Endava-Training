@@ -45,4 +45,34 @@ public class FlightService
         if (result.IsFailure) return result.ConvertFailure<int>();
         return Result.Success(result.Value.Id);
     }
+
+    public async Task<Result> UpdateAsync(int id,
+        string? airlineIata,
+        string? flightNumber,
+        string? originIata,
+        string? destinationIata,
+        string? defaultAircraftTailName,
+        bool isActive)
+    {
+        if (flightNumber != null && !Validators.FlightValidator.IsValidFlightNumber(flightNumber)) return Result.Failure("Invalid Flight Number");
+        if (originIata != null && destinationIata != null && !Validators.FlightValidator.AreAirportsDifferent(originIata, destinationIata)) return Result.Failure("Airports must be different");
+
+        var result = await UnitOfWork.FlightRepository.UpdateAsync(
+        id,
+        airlineIata,
+        flightNumber,
+        originIata,
+        destinationIata,
+        defaultAircraftTailName,
+        isActive);
+        try
+        {
+            await UnitOfWork.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure($"Error saving flight: {ex.Message}");
+        }
+        return result;
+    }
 }

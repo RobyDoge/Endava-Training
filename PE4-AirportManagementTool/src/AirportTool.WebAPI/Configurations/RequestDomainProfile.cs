@@ -1,4 +1,5 @@
 ﻿using AirportTool.Domain.Entities;
+using AirportTool.Infrastructure.Models;
 using AirportTool.WebAPI.Models.Requests;
 using AutoMapper;
 

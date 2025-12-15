@@ -9,4 +9,12 @@ public interface IFlightRepository
         string originIata,
         string destinationIata,
         string? defaultAircraftTailName);
+
+    Task<Result> UpdateAsync(int id,
+        string? airlineIata,
+        string? flightNumber,
+        string? originIata,
+        string? destinationIata,
+        string? defaultAircraftTailName,
+        bool isActive);
 }
