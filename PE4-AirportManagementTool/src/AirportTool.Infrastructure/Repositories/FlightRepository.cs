@@ -5,7 +5,6 @@ using AirportTool.Infrastructure.Models;
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using System.Xml.Linq;
 
 namespace AirportTool.Infrastructure.Repositories;
 
@@ -24,17 +23,25 @@ public class FlightRepository : GenericRepository<Flight>, IFlightRepository
     {
         try
         {
-            var airline = await Context.Airlines.SingleAsync(a => a.Iatacode == airlineIata);
-            var origin = await Context.Airports.SingleAsync(a => a.Iatacode == originIata);
-            var destination = await Context.Airports.SingleAsync(a => a.Iatacode == destinationIata);
-            var defaultAircraft = await Context.Aircrafts.SingleOrDefaultAsync(a => a.TailName == defaultAircraftTailName);
+            var airlineRes = await Utils.FindByPropertyString(Context.Airlines, nameof(Airline.Iatacode), airlineIata);
+            if (airlineRes.IsFailure) return Result.Failure<IIdentifiable<int>>(airlineRes.Error);
+
+            var originRes = await Utils.FindByPropertyString(Context.Airports, nameof(Airport.Iatacode), originIata);
+            if (originRes.IsFailure && originIata != null) return Result.Failure<IIdentifiable<int>>(originRes.Error);
+
+            var destinationRes = await Utils.FindByPropertyString(Context.Airports, nameof(Airport.Iatacode), destinationIata);
+            if (destinationRes.IsFailure && destinationIata != null) return Result.Failure<IIdentifiable<int>>(destinationRes.Error);
+
+            var defaultAircraftRes = await Utils.FindByPropertyString(Context.Aircrafts, nameof(Aircraft.TailName), defaultAircraftTailName);
+            if (defaultAircraftRes.IsFailure && defaultAircraftTailName != null) return Result.Failure<IIdentifiable<int>>(defaultAircraftRes.Error);
+
             var flight = new Flight
             {
                 FlightNumber = flightNumber,
-                Airline = airline,
-                OriginAirport = origin,
-                DestinationAirport = destination,
-                DefaultAircraft = defaultAircraft,
+                Airline = airlineRes.Value,
+                OriginAirport = originRes.Value,
+                DestinationAirport = destinationRes.Value,
+                DefaultAircraft = defaultAircraftRes.Value,
                 IsActive = true
             };
             var result = await AddAsync(flight);
@@ -47,55 +54,38 @@ public class FlightRepository : GenericRepository<Flight>, IFlightRepository
         }
     }
 
-    public async Task<Result> UpdateAsync(int id, string? airlineIata, string? flightNumber, string? originIata, string? destinationIata, string? defaultAircraftTailName, bool isActive)
+    public async Task<Result> UpdateAsync(int id, string? airlineIata, string? flightNumber, string? originIata, string? destinationIata, string? defaultAircraftTailName, bool? isActive)
     {
         try
         {
-            var airline = await Context.Airlines.SingleOrDefaultAsync(a => a.Iatacode == airlineIata);
-            var origin = await Context.Airports.SingleOrDefaultAsync(a => a.Iatacode == originIata);
-            var destination = await Context.Airports.SingleOrDefaultAsync(a => a.Iatacode == destinationIata);
-            var defaultAircraft = await Context.Aircrafts.SingleOrDefaultAsync(a => a.TailName == defaultAircraftTailName);
+            var flight = await Context.Flights
+                .Include(f => f.Airline)
+                .Include(f => f.OriginAirport)
+                .Include(f => f.DestinationAirport)
+                .Include(f => f.DefaultAircraft)
+                .SingleOrDefaultAsync(f => f.Id == id);
+            if (flight == null) return Result.Failure("Flight not found.");
 
-            if (airline == null)
-            {
-                if (airlineIata != null) return Result.Failure($"Airline with IATA code '{airlineIata}' not found.");
+            var airlineRes = await Utils.FindByPropertyString(Context.Airlines, nameof(Airline.Iatacode), airlineIata);
+            if (airlineRes.IsFailure && airlineIata != null) return Result.Failure(airlineRes.Error);
 
-                airline = await Context.Airlines.SingleAsync(a => a.Flights.Any(f => f.Id == id));
-            }
-            if (origin == null)
-            {
-                if (originIata != null) return Result.Failure($"Origin airport with IATA code '{originIata}' not found.");
+            var originRes = await Utils.FindByPropertyString(Context.Airports, nameof(Airport.Iatacode), originIata);
+            if (originRes.IsFailure && originIata != null) return Result.Failure(originRes.Error);
 
-                origin = await Context.Airports.SingleAsync(a => a.FlightOriginAirports.Any(f => f.Id == id && f.OriginAirportId == a.Id));
-            }
-            if (destination == null)
-            {
-                if (destinationIata != null) return Result.Failure($"Destination airport with IATA code '{destinationIata}' not found.");
-                destination = await Context.Airports.SingleAsync(a => a.FlightDestinationAirports.Any(f => f.Id == id && f.DestinationAirportId == a.Id));
-            }
-            if (defaultAircraft == null)
-            {
-                if (defaultAircraftTailName != null) return Result.Failure($"Default aircraft with tail name '{defaultAircraftTailName}' not found.");
-                defaultAircraft = await Context.Aircrafts.SingleOrDefaultAsync(a => a.Flights.Any(f => f.Id == id && f.DefaultAircraftId == a.Id));
-            }
-            if (flightNumber == null)
-            {
-                var existingFlight = await Context.Flights.AsNoTracking().SingleAsync(f => f.Id == id);
-                flightNumber = existingFlight.FlightNumber;
-            }
+            var destinationRes = await Utils.FindByPropertyString(Context.Airports, nameof(Airport.Iatacode), destinationIata);
+            if (destinationRes.IsFailure && destinationIata != null) return Result.Failure(destinationRes.Error);
 
-            var updatedFlight = new Flight
-            {
-                Id = id,
-                FlightNumber = flightNumber,
-                Airline = airline,
-                OriginAirport = origin,
-                DestinationAirport = destination,
-                DefaultAircraft = defaultAircraft,
-                IsActive = isActive
-            };
+            var defaultAircraftRes = await Utils.FindByPropertyString(Context.Aircrafts, nameof(Aircraft.TailName), defaultAircraftTailName);
+            if (defaultAircraftRes.IsFailure && defaultAircraftTailName != null) return Result.Failure(defaultAircraftRes.Error);
 
-            await UpdateAsync(updatedFlight);
+            Utils.Patch(airlineRes.Value, a => flight.Airline = a);
+            Utils.Patch(originRes.Value, a => flight.OriginAirport = a);
+            Utils.Patch(destinationRes.Value, a => flight.DestinationAirport = a);
+            Utils.Patch(defaultAircraftRes.Value, a => flight.DefaultAircraft = a);
+            Utils.Patch(flightNumber, v => flight.FlightNumber = v);
+            Utils.Patch(isActive, v => flight.IsActive = v);
+
+            await UpdateAsync(flight);
             return Result.Success();
         }
         catch (Exception e)

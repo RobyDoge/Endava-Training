@@ -52,7 +52,7 @@ public class FlightService
         string? originIata,
         string? destinationIata,
         string? defaultAircraftTailName,
-        bool isActive)
+        bool? isActive)
     {
         try
         {
@@ -80,7 +80,6 @@ public class FlightService
 
     public async Task<Result> DeleteAsync(int id)
     {
-        
         try
         {
             var flight = await UnitOfWork.FlightRepository.DeleteAsync(id);

@@ -25,7 +25,7 @@ public class TicketsService
         }
         catch (Exception ex)
         {
-            return Result.Failure<IEnumerable<Domain.Entities.TicketEntity>>($"An error occurred while retrieving tickets: {ex.Message}");
+            return Result.Failure<IEnumerable<TicketEntity>>($"An error occurred while retrieving tickets: {ex.Message}");
         }
     }
 }

@@ -17,5 +17,5 @@ public class UpdateFlightRequest
     public string? DestinationAirportIata { get; set; }
 
     public string? DefaultAircraftTailName { get; set; }
-    public bool IsActive { get; set; }
+    public bool? IsActive { get; set; }
 }

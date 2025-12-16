@@ -16,7 +16,7 @@ public interface IFlightRepository
         string? originIata,
         string? destinationIata,
         string? defaultAircraftTailName,
-        bool isActive);
+        bool? isActive);
 
     Task<Result> DeleteAsync(int id);
 }
