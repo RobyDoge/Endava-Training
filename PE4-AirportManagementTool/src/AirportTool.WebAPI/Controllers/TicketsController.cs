@@ -1,5 +1,6 @@
 ﻿using AirportTool.Application.Services;
 using AirportTool.WebAPI.Models.DTOs;
+using AirportTool.WebAPI.Utils;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +23,7 @@ public class TicketsController : ControllerBase
     public async Task<IActionResult> GetTicketsByFlight(int flightId)
     {
         var result = await TicketsService.GetTicketsByFlight(flightId);
-        if (result.IsFailure) return BadRequest(result.Error);
+        if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
 
         var response = Mapper.Map<List<GetTicketDto>>(result.Value);
         return Ok(response);

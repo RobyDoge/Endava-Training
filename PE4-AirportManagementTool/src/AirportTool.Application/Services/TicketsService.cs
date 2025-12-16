@@ -1,5 +1,6 @@
 ﻿using AirportTool.Application.Abstractions;
 using AirportTool.Domain.Entities;
+using AirportTool.Domain.Errors;
 using CSharpFunctionalExtensions;
 using System;
 using System.Collections.Generic;
@@ -16,16 +17,9 @@ public class TicketsService
         UnitOfWork = unitOfWork;
     }
 
-    public async Task<Result<IEnumerable<TicketEntity>>> GetTicketsByFlight(int flightId)
+    public async Task<Result<IEnumerable<TicketEntity>, Error>> GetTicketsByFlight(int flightId)
     {
-        try
-        {
-            var tickets = await UnitOfWork.TicketRepository.GetTicketsByFlightAsync(flightId);
-            return tickets;
-        }
-        catch (Exception ex)
-        {
-            return Result.Failure<IEnumerable<TicketEntity>>($"An error occurred while retrieving tickets: {ex.Message}");
-        }
+        var aux = await UnitOfWork.TicketRepository.GetTicketsByFlightAsync(flightId);
+        return aux;
     }
 }

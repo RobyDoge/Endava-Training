@@ -19,22 +19,20 @@ public class EfDomainMapper : Profile
         CreateMap<FlightSchedule, FlightScheduleEntity>().ConstructUsing(MapFlightScheduleEntity);
         MapFlightSchedule();
 
-        CreateMap<Ticket, TicketEntity>().ConstructUsing(MapTicketEntity);
+        MapTicketEntity();
         MapTicket();
     }
 
-    private TicketEntity MapTicketEntity(Ticket src, ResolutionContext ctx) =>
-        new(
-            src.Id,
-            src.BasePrice,
-            src.Taxes,
-            src.SeatInventory,
-            (CurrencyEnum)src.CurrencyId,
-            (FareClassEnum)src.FareClassId,
-            ctx.Mapper.Map<FlightScheduleEntity>(src.FlightSchedule),
-            src.TotalPrice,
-            src.IsRefundable
-            );
+    private void MapTicketEntity()
+    {
+        CreateMap<Ticket, TicketEntity>()
+        .ForMember(dest => dest.Currency,
+        opt => opt.MapFrom(src => (CurrencyEnum)src.CurrencyId))
+        .ForMember(dest => dest.FareClass,
+        opt => opt.MapFrom(src => (FareClassEnum)src.FareClassId))
+        .ForMember(dest => dest.FlightSchedule,
+        opt => opt.MapFrom(src => src.FlightSchedule));
+    }
 
     private void MapTicket()
     {

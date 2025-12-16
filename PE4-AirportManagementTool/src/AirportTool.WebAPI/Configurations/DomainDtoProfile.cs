@@ -14,7 +14,9 @@ public class DomainDtoProfile : Profile
 
     private void GetTicketMap()
     {
-        CreateMap<TicketEntity, GetTicketDto>();
+        CreateMap<TicketEntity, GetTicketDto>()
+            .ForMember(dest => dest.FareClass,
+                opt => opt.MapFrom(src => src.FareClass.ToString()));
     }
 
     private void GetFlightScheduleMap()

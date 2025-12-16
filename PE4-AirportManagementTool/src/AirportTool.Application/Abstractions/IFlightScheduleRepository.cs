@@ -1,12 +1,10 @@
 ﻿using AirportTool.Domain.Entities;
+using AirportTool.Domain.Errors;
 using CSharpFunctionalExtensions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace AirportTool.Application.Abstractions;
 
 public interface IFlightScheduleRepository
 {
-    Task<Result<IEnumerable<FlightScheduleEntity>>> GetByRouteAndDateAsync(string fromIata, string toIata, DateTime date);
+    Task<Result<IEnumerable<FlightScheduleEntity>, Error>> GetByRouteAndDateAsync(string fromIata, string toIata, DateTime date);
 }

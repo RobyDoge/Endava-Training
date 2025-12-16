@@ -21,8 +21,11 @@ builder.Services.AddDbContext<AirlineBookingContext>(options =>
     options.UseSqlServer(connectionString);
 });
 
-builder.Services.AddAutoMapper(cfg => { }, typeof(EfDomainMapper));
-builder.Services.AddAutoMapper(cfg => { }, typeof(DomainDtoProfile));
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<EfDomainMapper>();
+    cfg.AddProfile<DomainDtoProfile>();
+});
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

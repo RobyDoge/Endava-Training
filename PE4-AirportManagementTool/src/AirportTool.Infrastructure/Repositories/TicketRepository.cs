@@ -1,5 +1,6 @@
 ﻿using AirportTool.Application.Abstractions;
 using AirportTool.Domain.Entities;
+using AirportTool.Domain.Errors;
 using AirportTool.Infrastructure.Context;
 using AirportTool.Infrastructure.Models;
 using AutoMapper;
@@ -19,21 +20,21 @@ public class TicketRepository : GenericRepository<Ticket>, ITicketRepository
         Context = context;
     }
 
-    public async Task<Result<IEnumerable<TicketEntity>>> GetTicketsByFlightAsync(int flightId)
+    public async Task<Result<IEnumerable<TicketEntity>, Error>> GetTicketsByFlightAsync(int flightId)
     {
-        try
+        var result = await Context.Tickets
+            .Include(t => t.FlightSchedule)
+            .Where(t => t.FlightSchedule.FlightId == flightId)
+            .ToListAsync();
+        IEnumerable<TicketEntity> aux = [];
+        foreach (var ticket in result)
         {
-            var result = await Context.Tickets
-                .Include(t => t.FlightSchedule)
-                .Where(t => t.FlightSchedule.FlightId == flightId)
-                .ToListAsync();
-            if (result == null || result.Count == 0) return Result.Failure<IEnumerable<TicketEntity>>("No tickets found for the specified flight.");
+            Console.WriteLine($"Ticket {ticket.Id}: CurrencyId={ticket.CurrencyId}, FareClassId={ticket.FareClassId}");
+            var aux2 = Mapper.Map<TicketEntity>(ticket);
+            Console.WriteLine($"{aux2.Currency.ToString()} , {aux2.FareClass.ToString()}");
+            aux = aux.Append(aux2);
+        }
 
-            return Result.Success(Mapper.Map<IEnumerable<TicketEntity>>(result));
-        }
-        catch (Exception ex)
-        {
-            return Result.Failure<IEnumerable<TicketEntity>>($"An error occurred while retrieving tickets: {ex.Message}");
-        }
+        return Result.Success<IEnumerable<TicketEntity>, Error>(aux);
     }
 }
