@@ -1,5 +1,6 @@
 ﻿using AirportTool.Application.Services;
 using AirportTool.WebAPI.Models.DTOs;
+using AirportTool.WebAPI.Models.Requests;
 using AirportTool.WebAPI.Utils;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -27,5 +28,11 @@ public class TicketsController : ControllerBase
 
         var response = Mapper.Map<List<GetTicketDto>>(result.Value);
         return Ok(response);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateTicket(CreateTicketRequest createTicketRequest)
+    {
+        return StatusCode(501);
     }
 }

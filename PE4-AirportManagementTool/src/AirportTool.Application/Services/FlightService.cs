@@ -1,4 +1,5 @@
 ﻿using AirportTool.Application.Abstractions;
+using AirportTool.Application.Records;
 using AirportTool.Domain.Entities;
 using AirportTool.Domain.Errors;
 using CSharpFunctionalExtensions;
@@ -20,21 +21,14 @@ public class FlightService
         UnitOfWork = unitOfWork;
     }
 
-    public async Task<Result<int, Error>> CreateAsync(string airlineIata,
-        string flightNumber,
-        string originIata,
-        string destinationIata,
-        string? defaultAircraftTailName)
+    public async Task<Result<int, Error>> CreateAsync(CreateFlightRecord createFlightRecord)
     {
-        if (!Validators.FlightValidator.IsValidFlightNumber(flightNumber)) return Result.Failure<int, Error>(Error.Validation("Incorrect Flight Number Format"));
-        if (!Validators.FlightValidator.AreAirportsDifferent(originIata, destinationIata)) return Result.Failure<int, Error>(Error.Validation("Airports must be different"));
+        if (!Validators.FlightValidator.IsValidFlightNumber(createFlightRecord.FlightNumber)) return Result.Failure<int, Error>(Error.Validation("Incorrect Flight Number Format"));
+        if (!Validators.FlightValidator.AreAirportsDifferent(
+            createFlightRecord.OriginAirportIata,
+            createFlightRecord.DestinationAirportIata)) return Result.Failure<int, Error>(Error.Validation("Airports must be different"));
 
-        var result = await UnitOfWork.FlightRepository.CreateAsync(
-        airlineIata,
-        flightNumber,
-        originIata,
-        destinationIata,
-        defaultAircraftTailName);
+        var result = await UnitOfWork.FlightRepository.CreateAsync(createFlightRecord);
 
         await UnitOfWork.SaveChangesAsync();
 
@@ -44,24 +38,12 @@ public class FlightService
     }
 
     public async Task<UnitResult<Error>> UpdateAsync(int id,
-        string? airlineIata,
-        string? flightNumber,
-        string? originIata,
-        string? destinationIata,
-        string? defaultAircraftTailName,
-        bool? isActive)
+            UpdateFlightRecord record)
     {
-        if (flightNumber != null && !Validators.FlightValidator.IsValidFlightNumber(flightNumber)) return UnitResult.Failure(Error.Validation("Invalid Flight Number"));
-        if (originIata != null && destinationIata != null && !Validators.FlightValidator.AreAirportsDifferent(originIata, destinationIata)) return Result.Failure<int, Error>(Error.Validation("Airports must be different"));
+        if (record.FlightNumber != null && !Validators.FlightValidator.IsValidFlightNumber(record.FlightNumber)) return UnitResult.Failure(Error.Validation("Invalid Flight Number"));
+        if (record.OriginAirportIata != null && record.DestinationAirportIata != null && !Validators.FlightValidator.AreAirportsDifferent(record.OriginAirportIata, record.DestinationAirportIata)) return Result.Failure<int, Error>(Error.Validation("Airports must be different"));
 
-        var result = await UnitOfWork.FlightRepository.UpdateAsync(
-        id,
-        airlineIata,
-        flightNumber,
-        originIata,
-        destinationIata,
-        defaultAircraftTailName,
-        isActive);
+        var result = await UnitOfWork.FlightRepository.UpdateAsync(id, record);
 
         await UnitOfWork.SaveChangesAsync();
 

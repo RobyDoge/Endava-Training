@@ -7,4 +7,6 @@ namespace AirportTool.Application.Abstractions;
 public interface ITicketRepository
 {
     Task<Result<IEnumerable<TicketEntity>, Error>> GetTicketsByFlightAsync(int flightId);
+
+    //Task<Result<IIdentifiable<int>, Error>> CreateAsync(int flightScheduleId, string fareClassCode, decimal price, string currencyCode);
 }

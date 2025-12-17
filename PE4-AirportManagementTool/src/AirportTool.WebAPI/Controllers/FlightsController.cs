@@ -1,4 +1,5 @@
-﻿using AirportTool.Application.Services;
+﻿using AirportTool.Application.Records;
+using AirportTool.Application.Services;
 using AirportTool.WebAPI.Models.DTOs;
 using AirportTool.WebAPI.Models.Requests;
 using AirportTool.WebAPI.Utils;
@@ -23,9 +24,10 @@ public class FlightsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetFlightsByRouteAndDate(GetFlightsByRouteAndDateRequest request)
+    public async Task<IActionResult> GetFlightsByRouteAndDate([FromQuery] GetFlightsByRouteAndDateRequest request)
     {
-        var result = await FlightScheduleService.GetByRouteAndDate(request.FromIata, request.ToIata, request.Date);
+        var record = Mapper.Map<GetFlightsByRouteAndDateRecord>(request);
+        var result = await FlightScheduleService.GetByRouteAndDate(record);
         if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
 
         var response = Mapper.Map<List<GetFlightScheduleDto>>(result.Value);
@@ -35,14 +37,16 @@ public class FlightsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateFlight(CreateFlightRequest request)
     {
-        var result = await FlightService.CreateAsync(request.AirlineIata, request.FlightNumber, request.OriginAirportIata, request.DestinationAirportIata, request.DefaultAircraftTailName);
+        var createFlightRecord = Mapper.Map<CreateFlightRecord>(request);
+        var result = await FlightService.CreateAsync(createFlightRecord);
         return result.IsSuccess ? Ok(result.Value) : Converter.ErrorToActionResult(result.Error);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateFlight(int id, UpdateFlightRequest request)
     {
-        var result = await FlightService.UpdateAsync(id, request.AirlineIata, request.FlightNumber, request.OriginAirportIata, request.DestinationAirportIata, request.DefaultAircraftTailName, request.IsActive);
+        var record = Mapper.Map<UpdateFlightRecord>(request);
+        var result = await FlightService.UpdateAsync(id, record);
         return result.IsSuccess ? NoContent() : Converter.ErrorToActionResult(result.Error);
     }
 
