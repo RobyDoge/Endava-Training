@@ -23,8 +23,8 @@ builder.Services.AddDbContext<AirlineBookingContext>(options =>
 
 builder.Services.AddAutoMapper(cfg =>
 {
-    cfg.AddProfile<EfDomainMapper>();
     cfg.AddProfile<DomainDtoProfile>();
+    cfg.AddProfile<EfDomainMapper>();
 });
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

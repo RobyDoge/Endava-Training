@@ -7,4 +7,5 @@ public class GetTicketDto
     public decimal TotalPrice { get; set; }
     public int SeatInventory { get; set; }
     public string FareClass { get; set; } = null!;
+    public string Currency { get; set; } = null!;
 }

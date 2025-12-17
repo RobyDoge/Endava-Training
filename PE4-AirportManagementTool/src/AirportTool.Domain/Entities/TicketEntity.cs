@@ -28,8 +28,8 @@ public class TicketEntity
         decimal basePrice,
         decimal taxes,
         int? seatInventory,
-        CurrencyEnum currency,
-        FareClassEnum fareClass,
+        int currency,
+        int fareClass,
         FlightScheduleEntity flightSchedule,
         decimal? totalPrice,
         bool isRefundable = false
@@ -40,8 +40,8 @@ public class TicketEntity
         Taxes = taxes;
         IsRefundable = isRefundable;
         SeatInventory = seatInventory;
-        Currency = currency;
-        FareClass = fareClass;
+        Currency = (CurrencyEnum)currency;
+        FareClass = (FareClassEnum)fareClass;
         FlightSchedule = flightSchedule;
         TotalPrice = totalPrice == null ? BasePrice + Taxes : totalPrice;
     }

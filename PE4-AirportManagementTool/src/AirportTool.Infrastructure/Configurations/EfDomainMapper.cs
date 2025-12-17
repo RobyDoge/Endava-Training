@@ -3,6 +3,8 @@ using AirportTool.Domain.Enums;
 using AirportTool.Infrastructure.Models;
 using AutoMapper;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace AirportTool.Infrastructure.Configurations;
 
@@ -26,10 +28,10 @@ public class EfDomainMapper : Profile
     private void MapTicketEntity()
     {
         CreateMap<Ticket, TicketEntity>()
-        .ForMember(dest => dest.Currency,
-        opt => opt.MapFrom(src => (CurrencyEnum)src.CurrencyId))
-        .ForMember(dest => dest.FareClass,
-        opt => opt.MapFrom(src => (FareClassEnum)src.FareClassId))
+        .ForCtorParam("currency",
+            opt => opt.MapFrom(src => src.CurrencyId))          
+        .ForCtorParam("fareClass",
+            opt => opt.MapFrom(src => src.FareClassId))
         .ForMember(dest => dest.FlightSchedule,
         opt => opt.MapFrom(src => src.FlightSchedule));
     }

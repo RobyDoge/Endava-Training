@@ -1,1 +1,0 @@
-tickets does not convert to Enum when converting to ticketEntity

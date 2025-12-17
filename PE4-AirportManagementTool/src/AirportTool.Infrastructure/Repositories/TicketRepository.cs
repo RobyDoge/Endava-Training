@@ -24,17 +24,11 @@ public class TicketRepository : GenericRepository<Ticket>, ITicketRepository
     {
         var result = await Context.Tickets
             .Include(t => t.FlightSchedule)
+            .Include(t => t.FareClass)
+            .Include(t => t.Currency)
             .Where(t => t.FlightSchedule.FlightId == flightId)
             .ToListAsync();
-        IEnumerable<TicketEntity> aux = [];
-        foreach (var ticket in result)
-        {
-            Console.WriteLine($"Ticket {ticket.Id}: CurrencyId={ticket.CurrencyId}, FareClassId={ticket.FareClassId}");
-            var aux2 = Mapper.Map<TicketEntity>(ticket);
-            Console.WriteLine($"{aux2.Currency.ToString()} , {aux2.FareClass.ToString()}");
-            aux = aux.Append(aux2);
-        }
 
-        return Result.Success<IEnumerable<TicketEntity>, Error>(aux);
+        return Result.Success<IEnumerable<TicketEntity>, Error>(Mapper.Map<IEnumerable<TicketEntity>>(result));
     }
 }
