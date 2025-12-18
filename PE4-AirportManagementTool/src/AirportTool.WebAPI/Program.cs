@@ -5,6 +5,8 @@ using AirportTool.Infrastructure.Context;
 using AirportTool.Infrastructure.Repositories;
 using AirportTool.WebAPI.Configurations;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation;
+using AirportTool.Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +39,8 @@ builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<FlightScheduleService>();
 builder.Services.AddScoped<FlightService>();
 builder.Services.AddScoped<TicketsService>();
+
+builder.Services.AddValidatorsFromAssemblyContaining<CreateFlightValidator>();
 
 var app = builder.Build();
 

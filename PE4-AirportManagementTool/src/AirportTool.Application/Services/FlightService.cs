@@ -1,8 +1,11 @@
 ﻿using AirportTool.Application.Abstractions;
 using AirportTool.Application.Records;
+using AirportTool.Application.Validators;
 using AirportTool.Domain.Entities;
 using AirportTool.Domain.Errors;
 using CSharpFunctionalExtensions;
+using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -15,18 +18,25 @@ namespace AirportTool.Application.Services;
 public class FlightService
 {
     private IUnitOfWork UnitOfWork { get; }
+    private IServiceProvider ServiceProvider { get; }
 
-    public FlightService(IUnitOfWork unitOfWork)
+    public FlightService(IUnitOfWork unitOfWork, IServiceProvider serviceProvider)
     {
         UnitOfWork = unitOfWork;
+        ServiceProvider = serviceProvider;
     }
 
     public async Task<Result<int, Error>> CreateAsync(CreateFlightRecord createFlightRecord)
     {
-        if (!Validators.FlightValidator.IsValidFlightNumber(createFlightRecord.FlightNumber)) return Result.Failure<int, Error>(Error.Validation("Incorrect Flight Number Format"));
-        if (!Validators.FlightValidator.AreAirportsDifferent(
-            createFlightRecord.OriginAirportIata,
-            createFlightRecord.DestinationAirportIata)) return Result.Failure<int, Error>(Error.Validation("Airports must be different"));
+        var validator = ServiceProvider.GetRequiredService<IValidator<CreateFlightRecord>>()
+            ?? throw new InvalidOperationException("CreateFlightValidator not registered in the service provider.");
+
+        var res = await validator.ValidateAsync(createFlightRecord);
+        if (!res.IsValid)
+        {
+            var errors = string.Join("; ", res.Errors);
+            return Result.Failure<int, Error>(Error.Validation(errors));
+        }
 
         var result = await UnitOfWork.FlightRepository.CreateAsync(createFlightRecord);
 
@@ -40,8 +50,15 @@ public class FlightService
     public async Task<UnitResult<Error>> UpdateAsync(int id,
             UpdateFlightRecord record)
     {
-        if (record.FlightNumber != null && !Validators.FlightValidator.IsValidFlightNumber(record.FlightNumber)) return UnitResult.Failure(Error.Validation("Invalid Flight Number"));
-        if (record.OriginAirportIata != null && record.DestinationAirportIata != null && !Validators.FlightValidator.AreAirportsDifferent(record.OriginAirportIata, record.DestinationAirportIata)) return Result.Failure<int, Error>(Error.Validation("Airports must be different"));
+        var validator = ServiceProvider.GetRequiredService<IValidator<UpdateFlightRecord>>()
+            ?? throw new InvalidOperationException("UpdateFlightValidator not registered in the service provider.");
+
+        var res = await validator.ValidateAsync(record);
+        if (!res.IsValid)
+        {
+            var errors = string.Join("; ", res.Errors);
+            return UnitResult.Failure<Error>(Error.Validation(errors));
+        }
 
         var result = await UnitOfWork.FlightRepository.UpdateAsync(id, record);
 
