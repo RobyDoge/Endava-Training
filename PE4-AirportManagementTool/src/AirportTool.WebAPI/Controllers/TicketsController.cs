@@ -1,4 +1,5 @@
-﻿using AirportTool.Application.Services;
+﻿using AirportTool.Application.Records;
+using AirportTool.Application.Services;
 using AirportTool.WebAPI.Models.DTOs;
 using AirportTool.WebAPI.Models.Requests;
 using AirportTool.WebAPI.Utils;
@@ -33,6 +34,9 @@ public class TicketsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateTicket(CreateTicketRequest createTicketRequest)
     {
-        return StatusCode(501);
+        var record = Mapper.Map<CreateTicketRecord>(createTicketRequest);
+        var result = await TicketsService.CreateTicket(record);
+        if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
+        return Ok(result.Value);
     }
 }

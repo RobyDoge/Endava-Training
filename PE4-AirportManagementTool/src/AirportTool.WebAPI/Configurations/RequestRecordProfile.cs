@@ -11,6 +11,15 @@ public class RequestRecordProfile : Profile
         CreateMap<CreateFlightRequest, CreateFlightRecord>();
         CreateMap<UpdateFlightRequest, UpdateFlightRecord>();
         CreateMap<GetFlightsByRouteAndDateRequest, GetFlightsByRouteAndDateRecord>();
-        CreateMap<CreateTicketRequest, CreateTicketRecord>();
+        CreateTicketRecordMap();
+    }
+
+    private void CreateTicketRecordMap()
+    {
+        CreateMap<CreateTicketRequest, CreateTicketRecord>()
+            .ForMember(dest => dest.FareClass,
+            opt => opt.MapFrom(src => Enum.Parse<Domain.Enums.FareClassEnum>(src.FareClass, true)))
+            .ForMember(dest => dest.Currency,
+            opt => opt.MapFrom(src => Enum.Parse<Domain.Enums.CurrencyEnum>(src.Currency, true)));
     }
 }

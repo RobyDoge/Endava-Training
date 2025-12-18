@@ -1,7 +1,9 @@
 ﻿using AirportTool.Application.Abstractions;
+using AirportTool.Application.Records;
 using AirportTool.Domain.Entities;
 using AirportTool.Domain.Errors;
 using AirportTool.Infrastructure.Context;
+using AirportTool.Infrastructure.Identifiable;
 using AirportTool.Infrastructure.Models;
 using AutoMapper;
 using CSharpFunctionalExtensions;
@@ -30,5 +32,33 @@ public class TicketRepository : GenericRepository<Ticket>, ITicketRepository
             .ToListAsync();
 
         return Result.Success<IEnumerable<TicketEntity>, Error>(Mapper.Map<IEnumerable<TicketEntity>>(result));
+    }
+
+    public async Task<Result<IIdentifiable<int>, Error>> CreateAsync(CreateTicketRecord record)
+    {
+        var flightScheduleRes = await Utils.FindRequiredEntity(Context.FlightSchedules, nameof(FlightSchedule.Id), record.FlightScheduleId);
+        if (flightScheduleRes.IsFailure) return flightScheduleRes.ConvertFailure<IIdentifiable<int>>();
+
+        var fareClassRes = await Utils.FindRequiredEntity(Context.FareClasses, nameof(FareClass.Id), (int)record.FareClass);
+        if (fareClassRes.IsFailure) return fareClassRes.ConvertFailure<IIdentifiable<int>>();
+
+        var currencyRes = await Utils.FindRequiredEntity(Context.Currencies, nameof(Currency.Id), (int)record.Currency);
+        if (currencyRes.IsFailure) return currencyRes.ConvertFailure<IIdentifiable<int>>();
+
+        //TODO: Validate seat availability
+
+        var ticket = new Ticket
+        {
+            FlightSchedule = flightScheduleRes.Value,
+            FareClass = fareClassRes.Value,
+            Currency = currencyRes.Value,
+            BasePrice = record.BasePrice,
+            Taxes = record.Taxes,
+            IsRefundable = record.IsRefundable ?? false,
+            SeatInventory = record.SeatInventory
+        };
+        var result = await AddAsync(ticket);
+        IIdentifiable<int> id = new Identifiable<int>(result, nameof(ticket.Id));
+        return Result.Success<IIdentifiable<int>, Error>(id);
     }
 }

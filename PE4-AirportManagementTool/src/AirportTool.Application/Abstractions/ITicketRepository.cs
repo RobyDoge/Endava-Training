@@ -1,4 +1,5 @@
-﻿using AirportTool.Domain.Entities;
+﻿using AirportTool.Application.Records;
+using AirportTool.Domain.Entities;
 using AirportTool.Domain.Errors;
 using CSharpFunctionalExtensions;
 
@@ -8,5 +9,5 @@ public interface ITicketRepository
 {
     Task<Result<IEnumerable<TicketEntity>, Error>> GetTicketsByFlightAsync(int flightId);
 
-    //Task<Result<IIdentifiable<int>, Error>> CreateAsync(int flightScheduleId, string fareClassCode, decimal price, string currencyCode);
+    Task<Result<IIdentifiable<int>, Error>> CreateAsync(CreateTicketRecord record);
 }

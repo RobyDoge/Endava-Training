@@ -1,9 +1,11 @@
 ﻿using AirportTool.Application.Abstractions;
+using AirportTool.Application.Records;
 using AirportTool.Domain.Entities;
 using AirportTool.Domain.Errors;
 using CSharpFunctionalExtensions;
 using System;
 using System.Collections.Generic;
+using System.Formats.Asn1;
 using System.Text;
 
 namespace AirportTool.Application.Services;
@@ -21,5 +23,16 @@ public class TicketsService
     {
         var aux = await UnitOfWork.TicketRepository.GetTicketsByFlightAsync(flightId);
         return aux;
+    }
+
+    public async Task<Result<int, Error>> CreateTicket(CreateTicketRecord record)
+    {
+        var result = await UnitOfWork.TicketRepository.CreateAsync(record);
+
+        await UnitOfWork.SaveChangesAsync();
+
+        if (result.IsFailure) return Result.Failure<int, Error>(result.Error);
+
+        return Result.Success<int, Error>(result.Value.Id);
     }
 }
