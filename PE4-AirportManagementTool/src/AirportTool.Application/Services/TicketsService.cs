@@ -25,8 +25,7 @@ public class TicketsService
 
     public async Task<Result<IEnumerable<TicketEntity>, Error>> GetTicketsByFlight(int flightId)
     {
-        var aux = await UnitOfWork.TicketRepository.GetTicketsByFlightAsync(flightId);
-        return aux;
+        return await UnitOfWork.TicketRepository.GetTicketsByFlightAsync(flightId);
     }
 
     public async Task<Result<int, Error>> CreateTicket(CreateTicketRecord record)

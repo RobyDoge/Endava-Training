@@ -1,5 +1,6 @@
 ﻿using AirportTool.Application.Abstractions;
 using AirportTool.Application.Records;
+using AirportTool.Domain.Entities;
 using AirportTool.Domain.Errors;
 using AirportTool.Infrastructure.Context;
 using AirportTool.Infrastructure.Identifiable;
@@ -87,5 +88,18 @@ public class FlightRepository : GenericRepository<Flight>, IFlightRepository
         var result = await base.DeleteAsync(id);
         if (!result) return UnitResult.Failure(Error.NotFound(nameof(Flight), id));
         return UnitResult.Success<Error>();
+    }
+
+    public async Task<Result<FlightEntity, Error>> GetAsync(int id)
+    {
+        var flight = await Context.Flights
+            .Include(f => f.Airline)
+            .Include(f => f.OriginAirport)
+            .Include(f => f.DestinationAirport)
+            .Include(f => f.DefaultAircraft)
+            .SingleOrDefaultAsync(f => f.Id == id);
+        if (flight == null) return Result.Failure<FlightEntity, Error>(Error.NotFound(nameof(Flight), id));
+
+        return Mapper.Map<FlightEntity>(flight);
     }
 }

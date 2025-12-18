@@ -22,4 +22,6 @@ public class CreateFlightRequest
     public string DestinationAirportIata { get; set; } = null!;
 
     public string? DefaultAircraftTailName { get; set; }
+
+    public bool IsActive { get; set; } = true;
 }

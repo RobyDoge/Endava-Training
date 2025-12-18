@@ -1,4 +1,5 @@
 ﻿using AirportTool.Application.Records;
+using AirportTool.Domain.Entities;
 using AirportTool.Domain.Errors;
 using CSharpFunctionalExtensions;
 
@@ -6,6 +7,8 @@ namespace AirportTool.Application.Abstractions;
 
 public interface IFlightRepository
 {
+    Task<Result<FlightEntity, Error>> GetAsync(int id);
+
     Task<Result<IIdentifiable<int>, Error>> CreateAsync(CreateFlightRecord record);
 
     Task<UnitResult<Error>> UpdateAsync(int id,

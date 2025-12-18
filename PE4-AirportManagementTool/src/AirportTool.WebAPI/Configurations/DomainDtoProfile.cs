@@ -10,6 +10,7 @@ public class DomainDtoProfile : Profile
     {
         GetFlightScheduleMap();
         GetTicketMap();
+        FlightMap();
     }
 
     private void GetTicketMap()
@@ -41,6 +42,23 @@ public class DomainDtoProfile : Profile
                         : src.Flight.DefaultAircraft != null
                             ? src.Flight.DefaultAircraft.TailName
                             : "No Aircraft"
+                ));
+    }
+
+    private void FlightMap()
+    {
+        CreateMap<FlightEntity, FlightDTO>()
+            .ForMember(dest => dest.AirlineIata,
+                opt => opt.MapFrom(src => src.Airline.IataCode))
+            .ForMember(dest => dest.OriginAirportIata,
+                opt => opt.MapFrom(src => src.OriginAirport.IataCode))
+            .ForMember(dest => dest.DestinationAirportIata,
+                opt => opt.MapFrom(src => src.DestinationAirport.IataCode))
+            .ForMember(dest => dest.DefaultAircraftTailName,
+                opt => opt.MapFrom(src =>
+                    src.DefaultAircraft != null
+                        ? src.DefaultAircraft.TailName
+                        : "No Aircraft"
                 ));
     }
 }

@@ -26,7 +26,7 @@ public class FlightService
         ServiceProvider = serviceProvider;
     }
 
-    public async Task<Result<int, Error>> CreateAsync(CreateFlightRecord createFlightRecord)
+    public async Task<Result<FlightEntity, Error>> CreateAsync(CreateFlightRecord createFlightRecord)
     {
         var validator = ServiceProvider.GetRequiredService<IValidator<CreateFlightRecord>>()
             ?? throw new InvalidOperationException("CreateFlightValidator not registered in the service provider.");
@@ -35,16 +35,15 @@ public class FlightService
         if (!res.IsValid)
         {
             var errors = string.Join("; ", res.Errors);
-            return Result.Failure<int, Error>(Error.Validation(errors));
+            return Result.Failure<FlightEntity, Error>(Error.Validation(errors));
         }
 
-        var result = await UnitOfWork.FlightRepository.CreateAsync(createFlightRecord);
+        var resultId = await UnitOfWork.FlightRepository.CreateAsync(createFlightRecord);
 
         await UnitOfWork.SaveChangesAsync();
+        if (resultId.IsFailure) return Result.Failure<FlightEntity, Error>(resultId.Error);
 
-        if (result.IsFailure) return Result.Failure<int, Error>(result.Error);
-
-        return Result.Success<int, Error>(result.Value.Id);
+        return await UnitOfWork.FlightRepository.GetAsync(resultId.Value.Id);
     }
 
     public async Task<UnitResult<Error>> UpdateAsync(int id,

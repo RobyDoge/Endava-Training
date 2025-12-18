@@ -39,7 +39,10 @@ public class FlightsController : ControllerBase
     {
         var createFlightRecord = Mapper.Map<CreateFlightRecord>(request);
         var result = await FlightService.CreateAsync(createFlightRecord);
-        return result.IsSuccess ? Ok(result.Value) : Converter.ErrorToActionResult(result.Error);
+        if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
+
+        var flightDto = Mapper.Map<FlightDTO>(result.Value);
+        return Ok(flightDto);
     }
 
     [HttpPut("{id}")]
