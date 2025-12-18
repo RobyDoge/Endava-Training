@@ -8,6 +8,7 @@ using AirportTool.WebAPI.Configurations;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using AirportTool.Application.Validators;
+using AirportTool.Application.Services.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +53,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
