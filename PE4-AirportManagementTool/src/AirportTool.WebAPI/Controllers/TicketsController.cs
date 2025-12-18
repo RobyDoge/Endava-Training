@@ -39,4 +39,13 @@ public class TicketsController : ControllerBase
         if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
         return Ok(result.Value);
     }
+
+    [HttpPut("{id}/inventory")]
+    public async Task<IActionResult> UpdateTicketInventory(int id, int newSeatInvetoryCount)
+    {
+        var record = new UpdateTicketRecord { SeatInventory = newSeatInvetoryCount };
+        var result = await TicketsService.UpdateTicket(id, record);
+        if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
+        return Ok();
+    }
 }

@@ -7,7 +7,7 @@ namespace AirportTool.Infrastructure.Utils;
 
 public class EntityHelper : IEntityHelper
 {
-    public async Task<Result<T>> FindByProperty<T, V>
+    public async Task<Result<T>> FindByPropertyAsync<T, V>
        (IQueryable<T> source, string propertyName, V? value) where T : class
     {
         if (value is null)
@@ -25,13 +25,13 @@ public class EntityHelper : IEntityHelper
         : Result.Success(result);
     }
 
-    public async Task<Result<T, Error>> FindRequiredEntity<T, V>(
+    public async Task<Result<T, Error>> FindEntityAsync<T, V>(
             IQueryable<T> source,
             string propertyName,
             V? value)
     where T : class
     {
-        var res = await FindByProperty(source, propertyName, value);
+        var res = await FindByPropertyAsync(source, propertyName, value);
 
         if (res.IsFailure)
             return Result.Failure<T, Error>(Error.NotFound(typeof(T).Name, value!.ToString()));

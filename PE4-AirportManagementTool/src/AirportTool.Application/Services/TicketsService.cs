@@ -48,4 +48,22 @@ public class TicketsService
 
         return Result.Success<int, Error>(result.Value.Id);
     }
+
+    public async Task<UnitResult<Error>> UpdateTicket(int id, UpdateTicketRecord record)
+    {
+        var validator = ServiceProvider.GetRequiredService<IValidator<UpdateTicketRecord>>()
+            ?? throw new InvalidOperationException("UpdateTicketValidator not registered in the service provider.");
+        var res = await validator.ValidateAsync(record);
+        if (!res.IsValid)
+        {
+            var errors = string.Join("; ", res.Errors);
+            return UnitResult.Failure(Error.Validation(errors));
+        }
+
+        var result = await UnitOfWork.TicketRepository.UpdateAsync(id, record);
+        if (result.IsFailure) return UnitResult.Failure(result.Error);
+
+        await UnitOfWork.SaveChangesAsync();
+        return UnitResult.Success<Error>();
+    }
 }

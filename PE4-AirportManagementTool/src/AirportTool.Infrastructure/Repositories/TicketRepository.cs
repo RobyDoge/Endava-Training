@@ -39,13 +39,13 @@ public class TicketRepository : GenericRepository<Ticket>, ITicketRepository
 
     public async Task<Result<IIdentifiable<int>, Error>> CreateAsync(CreateTicketRecord record)
     {
-        var flightScheduleRes = await EntityHelper.FindRequiredEntity(Context.FlightSchedules, nameof(FlightSchedule.Id), record.FlightScheduleId);
+        var flightScheduleRes = await EntityHelper.FindEntityAsync(Context.FlightSchedules, nameof(FlightSchedule.Id), record.FlightScheduleId);
         if (flightScheduleRes.IsFailure) return flightScheduleRes.ConvertFailure<IIdentifiable<int>>();
 
-        var fareClassRes = await EntityHelper.FindRequiredEntity(Context.FareClasses, nameof(FareClass.Id), (int)record.FareClass);
+        var fareClassRes = await EntityHelper.FindEntityAsync(Context.FareClasses, nameof(FareClass.Id), (int)record.FareClass);
         if (fareClassRes.IsFailure) return fareClassRes.ConvertFailure<IIdentifiable<int>>();
 
-        var currencyRes = await EntityHelper.FindRequiredEntity(Context.Currencies, nameof(Currency.Id), (int)record.Currency);
+        var currencyRes = await EntityHelper.FindEntityAsync(Context.Currencies, nameof(Currency.Id), (int)record.Currency);
         if (currencyRes.IsFailure) return currencyRes.ConvertFailure<IIdentifiable<int>>();
 
         //TODO: Validate seat availability
@@ -63,5 +63,41 @@ public class TicketRepository : GenericRepository<Ticket>, ITicketRepository
         var result = await AddAsync(ticket);
         IIdentifiable<int> id = new Identifiable<int>(result, nameof(ticket.Id));
         return Result.Success<IIdentifiable<int>, Error>(id);
+    }
+
+    public async Task<UnitResult<Error>> UpdateAsync(int id, UpdateTicketRecord record)
+    {
+        var ticket = await Context.Tickets
+            .Include(t => t.FlightSchedule)
+            .Include(t => t.FareClass)
+            .Include(t => t.Currency)
+            .SingleOrDefaultAsync(t => t.Id == id);
+        if (ticket is null) return UnitResult.Failure(Error.NotFound(nameof(Ticket), id));
+
+        var flightScheduleRes = await EntityHelper.FindEntityAsync(Context.FlightSchedules, nameof(FlightSchedule.Id), record.FlightScheduleId);
+        if (flightScheduleRes.IsFailure) return flightScheduleRes;
+
+        if (record.FareClass is not null)
+        {
+            var fareClassRes = await EntityHelper.FindEntityAsync(Context.FareClasses, nameof(FareClass.Id), (int)record.FareClass);
+            if (fareClassRes.IsFailure) return fareClassRes.ConvertFailure<IIdentifiable<int>>();
+            EntityHelper.Patch(record.FareClass, v => ticket.FareClass = fareClassRes.Value);
+        }
+
+        if (record.Currency is not null)
+        {
+            var currencyRes = await EntityHelper.FindEntityAsync(Context.Currencies, nameof(Currency.Id), (int)record.Currency);
+            if (currencyRes.IsFailure) return currencyRes.ConvertFailure<IIdentifiable<int>>();
+            EntityHelper.Patch(record.Currency, v => ticket.Currency = currencyRes.Value);
+        }
+
+        EntityHelper.Patch(record.FlightScheduleId, v => ticket.FlightSchedule = flightScheduleRes.Value);
+        EntityHelper.Patch(record.BasePrice, v => ticket.BasePrice = v);
+        EntityHelper.Patch(record.Taxes, v => ticket.Taxes = v);
+        EntityHelper.Patch(record.IsRefundable, v => ticket.IsRefundable = v);
+        EntityHelper.Patch(record.SeatInventory, v => ticket.SeatInventory = v);
+
+        await UpdateAsync(ticket);
+        return UnitResult.Success<Error>();
     }
 }

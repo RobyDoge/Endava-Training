@@ -8,12 +8,12 @@ namespace AirportTool.Application.Abstractions;
 
 public interface IEntityHelper
 {
-    Task<Result<T>> FindByProperty<T, V>
+    Task<Result<T>> FindByPropertyAsync<T, V>
       (IQueryable<T> source,
         string propertyName,
         V? value) where T : class;
 
-    Task<Result<T, Error>> FindRequiredEntity<T, V>(
+    Task<Result<T, Error>> FindEntityAsync<T, V>(
            IQueryable<T> source,
            string propertyName,
            V? value) where T : class;

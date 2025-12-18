@@ -10,4 +10,8 @@ public interface ITicketRepository
     Task<Result<IEnumerable<TicketEntity>, Error>> GetTicketsByFlightAsync(int flightId);
 
     Task<Result<IIdentifiable<int>, Error>> CreateAsync(CreateTicketRecord record);
+
+    Task<UnitResult<Error>> UpdateAsync(
+        int id,
+        UpdateTicketRecord record);
 }
