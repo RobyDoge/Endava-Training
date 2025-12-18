@@ -100,4 +100,11 @@ public class TicketRepository : GenericRepository<Ticket>, ITicketRepository
         await UpdateAsync(ticket);
         return UnitResult.Success<Error>();
     }
+
+    public async new Task<UnitResult<Error>> DeleteAsync(int id)
+    {
+        var result = await base.DeleteAsync(id);
+        if (!result) return UnitResult.Failure(Error.NotFound(nameof(Flight), id));
+        return UnitResult.Success<Error>();
+    }
 }

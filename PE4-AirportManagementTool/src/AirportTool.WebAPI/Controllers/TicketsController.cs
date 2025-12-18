@@ -24,7 +24,7 @@ public class TicketsController : ControllerBase
     [HttpGet("by-flight/{flightId}")]
     public async Task<IActionResult> GetTicketsByFlight(int flightId)
     {
-        var result = await TicketsService.GetTicketsByFlight(flightId);
+        var result = await TicketsService.GetByFlightAsync(flightId);
         if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
 
         var response = Mapper.Map<List<GetTicketDto>>(result.Value);
@@ -35,7 +35,7 @@ public class TicketsController : ControllerBase
     public async Task<IActionResult> CreateTicket(CreateTicketRequest createTicketRequest)
     {
         var record = Mapper.Map<CreateTicketRecord>(createTicketRequest);
-        var result = await TicketsService.CreateTicket(record);
+        var result = await TicketsService.CreateAsync(record);
         if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
         return Ok(result.Value);
     }
@@ -44,7 +44,15 @@ public class TicketsController : ControllerBase
     public async Task<IActionResult> UpdateTicketInventory(int id, int newSeatInvetoryCount)
     {
         var record = new UpdateTicketRecord { SeatInventory = newSeatInvetoryCount };
-        var result = await TicketsService.UpdateTicket(id, record);
+        var result = await TicketsService.UpdateAsync(id, record);
+        if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
+        return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteTicket(int id)
+    {
+        var result = await TicketsService.DeleteAsync(id);
         if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
         return Ok();
     }

@@ -23,12 +23,12 @@ public class TicketsService
         ServiceProvider = serviceProvider;
     }
 
-    public async Task<Result<IEnumerable<TicketEntity>, Error>> GetTicketsByFlight(int flightId)
+    public async Task<Result<IEnumerable<TicketEntity>, Error>> GetByFlightAsync(int flightId)
     {
         return await UnitOfWork.TicketRepository.GetTicketsByFlightAsync(flightId);
     }
 
-    public async Task<Result<int, Error>> CreateTicket(CreateTicketRecord record)
+    public async Task<Result<int, Error>> CreateAsync(CreateTicketRecord record)
     {
         var validator = ServiceProvider.GetRequiredService<IValidator<CreateTicketRecord>>()
             ?? throw new InvalidOperationException("CreateTicketValidator not registered in the service provider.");
@@ -49,7 +49,7 @@ public class TicketsService
         return Result.Success<int, Error>(result.Value.Id);
     }
 
-    public async Task<UnitResult<Error>> UpdateTicket(int id, UpdateTicketRecord record)
+    public async Task<UnitResult<Error>> UpdateAsync(int id, UpdateTicketRecord record)
     {
         var validator = ServiceProvider.GetRequiredService<IValidator<UpdateTicketRecord>>()
             ?? throw new InvalidOperationException("UpdateTicketValidator not registered in the service provider.");
@@ -61,6 +61,15 @@ public class TicketsService
         }
 
         var result = await UnitOfWork.TicketRepository.UpdateAsync(id, record);
+        if (result.IsFailure) return UnitResult.Failure(result.Error);
+
+        await UnitOfWork.SaveChangesAsync();
+        return UnitResult.Success<Error>();
+    }
+
+    public async Task<UnitResult<Error>> DeleteAsync(int id)
+    {
+        var result = await UnitOfWork.TicketRepository.DeleteAsync(id);
         if (result.IsFailure) return UnitResult.Failure(result.Error);
 
         await UnitOfWork.SaveChangesAsync();

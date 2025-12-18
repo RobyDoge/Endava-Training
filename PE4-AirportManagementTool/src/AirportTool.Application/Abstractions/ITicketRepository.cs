@@ -14,4 +14,6 @@ public interface ITicketRepository
     Task<UnitResult<Error>> UpdateAsync(
         int id,
         UpdateTicketRecord record);
+
+    Task<UnitResult<Error>> DeleteAsync(int id);
 }
