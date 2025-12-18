@@ -2,16 +2,13 @@
 using AirportTool.Domain.Errors;
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace AirportTool.Infrastructure.Repositories;
+namespace AirportTool.Infrastructure.Utils;
 
-public static class Utils
+public class EntityHelper : IEntityHelper
 {
-    public static async Task<Result<T>> FindByProperty<T, V>
-        (IQueryable<T> source, string propertyName, V? value) where T : class
+    public async Task<Result<T>> FindByProperty<T, V>
+       (IQueryable<T> source, string propertyName, V? value) where T : class
     {
         if (value is null)
             return Result.Success<T>(null!);
@@ -28,7 +25,7 @@ public static class Utils
         : Result.Success(result);
     }
 
-    public static async Task<Result<T, Error>> FindRequiredEntity<T, V>(
+    public async Task<Result<T, Error>> FindRequiredEntity<T, V>(
             IQueryable<T> source,
             string propertyName,
             V? value)
@@ -42,12 +39,12 @@ public static class Utils
         return Result.Success<T, Error>(res.Value!);
     }
 
-    public static void Patch<T>(T? newValue, Action<T> apply) where T : class
+    public void Patch<T>(T? newValue, Action<T> apply) where T : class
     {
         if (newValue is not null) apply(newValue);
     }
 
-    public static void Patch<T>(T? newValue, Action<T> apply) where T : struct
+    public void Patch<T>(T? newValue, Action<T> apply) where T : struct
     {
         if (newValue.HasValue) apply(newValue.Value);
     }

@@ -5,6 +5,7 @@ using AirportTool.Domain.Errors;
 using AirportTool.Infrastructure.Context;
 using AirportTool.Infrastructure.Identifiable;
 using AirportTool.Infrastructure.Models;
+using AirportTool.Infrastructure.Utils;
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +15,14 @@ namespace AirportTool.Infrastructure.Repositories;
 public class TicketRepository : GenericRepository<Ticket>, ITicketRepository
 {
     private AirlineBookingContext Context { get; }
+    public IEntityHelper EntityHelper { get; }
     private IMapper Mapper { get; }
 
-    public TicketRepository(IMapper mapper, AirlineBookingContext context) : base(context)
+    public TicketRepository(IMapper mapper, AirlineBookingContext context, IEntityHelper entityHelper) : base(context)
     {
         Mapper = mapper;
         Context = context;
+        EntityHelper = entityHelper;
     }
 
     public async Task<Result<IEnumerable<TicketEntity>, Error>> GetTicketsByFlightAsync(int flightId)
@@ -36,13 +39,13 @@ public class TicketRepository : GenericRepository<Ticket>, ITicketRepository
 
     public async Task<Result<IIdentifiable<int>, Error>> CreateAsync(CreateTicketRecord record)
     {
-        var flightScheduleRes = await Utils.FindRequiredEntity(Context.FlightSchedules, nameof(FlightSchedule.Id), record.FlightScheduleId);
+        var flightScheduleRes = await EntityHelper.FindRequiredEntity(Context.FlightSchedules, nameof(FlightSchedule.Id), record.FlightScheduleId);
         if (flightScheduleRes.IsFailure) return flightScheduleRes.ConvertFailure<IIdentifiable<int>>();
 
-        var fareClassRes = await Utils.FindRequiredEntity(Context.FareClasses, nameof(FareClass.Id), (int)record.FareClass);
+        var fareClassRes = await EntityHelper.FindRequiredEntity(Context.FareClasses, nameof(FareClass.Id), (int)record.FareClass);
         if (fareClassRes.IsFailure) return fareClassRes.ConvertFailure<IIdentifiable<int>>();
 
-        var currencyRes = await Utils.FindRequiredEntity(Context.Currencies, nameof(Currency.Id), (int)record.Currency);
+        var currencyRes = await EntityHelper.FindRequiredEntity(Context.Currencies, nameof(Currency.Id), (int)record.Currency);
         if (currencyRes.IsFailure) return currencyRes.ConvertFailure<IIdentifiable<int>>();
 
         //TODO: Validate seat availability

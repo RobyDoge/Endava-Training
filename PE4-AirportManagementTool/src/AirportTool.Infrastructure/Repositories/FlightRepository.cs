@@ -15,25 +15,27 @@ public class FlightRepository : GenericRepository<Flight>, IFlightRepository
 {
     private AirlineBookingContext Context { get; }
     private IMapper Mapper { get; }
+    public IEntityHelper EntityHelper { get; }
 
-    public FlightRepository(AirlineBookingContext context, IMapper mapper) : base(context)
+    public FlightRepository(AirlineBookingContext context, IMapper mapper, IEntityHelper entityHelper) : base(context)
     {
         Context = context;
         Mapper = mapper;
+        EntityHelper = entityHelper;
     }
 
     public async Task<Result<IIdentifiable<int>, Error>> CreateAsync(CreateFlightRecord record)
     {
-        var airlineRes = await Utils.FindRequiredEntity(Context.Airlines, nameof(Airline.Iatacode), record.AirlineIata);
+        var airlineRes = await EntityHelper.FindRequiredEntity(Context.Airlines, nameof(Airline.Iatacode), record.AirlineIata);
         if (airlineRes.IsFailure) return airlineRes.ConvertFailure<IIdentifiable<int>>();
 
-        var originRes = await Utils.FindRequiredEntity(Context.Airports, nameof(Airport.Iatacode), record.OriginAirportIata);
+        var originRes = await EntityHelper.FindRequiredEntity(Context.Airports, nameof(Airport.Iatacode), record.OriginAirportIata);
         if (originRes.IsFailure) return originRes.ConvertFailure<IIdentifiable<int>>();
 
-        var destinationRes = await Utils.FindRequiredEntity(Context.Airports, nameof(Airport.Iatacode), record.DestinationAirportIata);
+        var destinationRes = await EntityHelper.FindRequiredEntity(Context.Airports, nameof(Airport.Iatacode), record.DestinationAirportIata);
         if (destinationRes.IsFailure) return destinationRes.ConvertFailure<IIdentifiable<int>>();
 
-        var defaultAircraftRes = await Utils.FindRequiredEntity(Context.Aircrafts, nameof(Aircraft.TailName), record.DefaultAircraftTailName);
+        var defaultAircraftRes = await EntityHelper.FindRequiredEntity(Context.Aircrafts, nameof(Aircraft.TailName), record.DefaultAircraftTailName);
         if (defaultAircraftRes.IsFailure) return defaultAircraftRes.ConvertFailure<IIdentifiable<int>>();
 
         var flight = new Flight
@@ -60,24 +62,24 @@ public class FlightRepository : GenericRepository<Flight>, IFlightRepository
             .SingleOrDefaultAsync(f => f.Id == id);
         if (flight == null) return UnitResult.Failure(Error.NotFound(nameof(Flight), id));
 
-        var airlineRes = await Utils.FindRequiredEntity(Context.Airlines, nameof(Airline.Iatacode), record.AirlineIata);
+        var airlineRes = await EntityHelper.FindRequiredEntity(Context.Airlines, nameof(Airline.Iatacode), record.AirlineIata);
         if (airlineRes.IsFailure && record.AirlineIata != null) return airlineRes;
 
-        var originRes = await Utils.FindRequiredEntity(Context.Airports, nameof(Airport.Iatacode), record.OriginAirportIata);
+        var originRes = await EntityHelper.FindRequiredEntity(Context.Airports, nameof(Airport.Iatacode), record.OriginAirportIata);
         if (originRes.IsFailure && record.OriginAirportIata != null) return originRes;
 
-        var destinationRes = await Utils.FindRequiredEntity(Context.Airports, nameof(Airport.Iatacode), record.DestinationAirportIata);
+        var destinationRes = await EntityHelper.FindRequiredEntity(Context.Airports, nameof(Airport.Iatacode), record.DestinationAirportIata);
         if (destinationRes.IsFailure && record.DestinationAirportIata != null) return destinationRes;
 
-        var defaultAircraftRes = await Utils.FindRequiredEntity(Context.Aircrafts, nameof(Aircraft.TailName), record.DefaultAircraftTailName);
+        var defaultAircraftRes = await EntityHelper.FindRequiredEntity(Context.Aircrafts, nameof(Aircraft.TailName), record.DefaultAircraftTailName);
         if (defaultAircraftRes.IsFailure && record.DefaultAircraftTailName != null) return defaultAircraftRes;
 
-        Utils.Patch(airlineRes.Value, a => flight.Airline = a);
-        Utils.Patch(originRes.Value, a => flight.OriginAirport = a);
-        Utils.Patch(destinationRes.Value, a => flight.DestinationAirport = a);
-        Utils.Patch(defaultAircraftRes.Value, a => flight.DefaultAircraft = a);
-        Utils.Patch(record.FlightNumber, v => flight.FlightNumber = v);
-        Utils.Patch(record.IsActive, v => flight.IsActive = v);
+        EntityHelper.Patch(airlineRes.Value, a => flight.Airline = a);
+        EntityHelper.Patch(originRes.Value, a => flight.OriginAirport = a);
+        EntityHelper.Patch(destinationRes.Value, a => flight.DestinationAirport = a);
+        EntityHelper.Patch(defaultAircraftRes.Value, a => flight.DefaultAircraft = a);
+        EntityHelper.Patch(record.FlightNumber, v => flight.FlightNumber = v);
+        EntityHelper.Patch(record.IsActive, v => flight.IsActive = v);
 
         await UpdateAsync(flight);
         return UnitResult.Success<Error>();

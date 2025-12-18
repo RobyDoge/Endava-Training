@@ -3,6 +3,7 @@ using AirportTool.Application.Services;
 using AirportTool.Infrastructure.Configurations;
 using AirportTool.Infrastructure.Context;
 using AirportTool.Infrastructure.Repositories;
+using AirportTool.Infrastructure.Utils;
 using AirportTool.WebAPI.Configurations;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
@@ -35,6 +36,7 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IFlightScheduleRepository, FlightScheduleRepository>();
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<IEntityHelper, EntityHelper>();
 
 builder.Services.AddScoped<FlightScheduleService>();
 builder.Services.AddScoped<FlightService>();
