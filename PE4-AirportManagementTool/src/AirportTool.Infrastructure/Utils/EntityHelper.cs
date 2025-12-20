@@ -27,14 +27,14 @@ public class EntityHelper : IEntityHelper
 
     public async Task<Result<T, Error>> FindEntityAsync<T, V>(
             IQueryable<T> source,
-            string propertyName,
-            V? value)
+            string byPropertyName,
+            V? property)
     where T : class
     {
-        var res = await FindByPropertyAsync(source, propertyName, value);
+        var res = await FindByPropertyAsync(source, byPropertyName, property);
 
         if (res.IsFailure)
-            return Result.Failure<T, Error>(Error.NotFound(typeof(T).Name, value!.ToString()));
+            return Result.Failure<T, Error>(Error.NotFound(typeof(T).Name, property!.ToString()));
 
         return Result.Success<T, Error>(res.Value!);
     }

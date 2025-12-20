@@ -1,6 +1,6 @@
 ﻿namespace AirportTool.WebAPI.Models.DTOs;
 
-public record FlightDTO
+public record FlightDto
 {
     public int Id { get; set; }
     public string FlightNumber { get; set; } = null!;

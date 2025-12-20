@@ -41,7 +41,7 @@ public class FlightsController : ControllerBase
         var result = await FlightService.CreateAsync(createFlightRecord);
         if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
 
-        var flightDto = Mapper.Map<FlightDTO>(result.Value);
+        var flightDto = Mapper.Map<FlightDto>(result.Value);
         return Ok(flightDto);
     }
 

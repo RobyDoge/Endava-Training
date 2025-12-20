@@ -1,6 +1,7 @@
 ﻿using AirportTool.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 
 namespace AirportTool.Application.Records;
 

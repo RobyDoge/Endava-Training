@@ -37,11 +37,13 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IFlightScheduleRepository, FlightScheduleRepository>();
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IEntityHelper, EntityHelper>();
 
 builder.Services.AddScoped<FlightScheduleService>();
 builder.Services.AddScoped<FlightService>();
 builder.Services.AddScoped<TicketsService>();
+builder.Services.AddScoped<BookingService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<CreateFlightValidator>();
 

@@ -23,13 +23,38 @@ public class EfDomainMapper : Profile
 
         MapTicketEntity();
         MapTicket();
+
+        MapBooking();
+        MapBookingEntity();
+    }
+
+    private void MapBookingEntity()
+    {
+        CreateMap<Booking, BookingEntity>()
+            .ForCtorParam("bookingStatus",
+                opt => opt.MapFrom(src => src.BookingStatusId))
+            .ForMember(dest => dest.Ticket,
+                opt => opt.MapFrom(src => src.Ticket));
+    }
+
+    private void MapBooking()
+    {
+        CreateMap<BookingEntity, Booking>()
+             .ForMember(dest => dest.TicketId,
+                 opt => opt.MapFrom(src => src.Ticket.Id))
+             .ForMember(dest => dest.BookingStatusId,
+                 opt => opt.MapFrom(src => (int)src.BookingStatus))
+             .ForMember(dest => dest.Ticket,
+                 opt => opt.Ignore())
+             .ForMember(dest => dest.BookingStatus,
+                    opt => opt.Ignore());
     }
 
     private void MapTicketEntity()
     {
         CreateMap<Ticket, TicketEntity>()
         .ForCtorParam("currency",
-            opt => opt.MapFrom(src => src.CurrencyId))          
+            opt => opt.MapFrom(src => src.CurrencyId))
         .ForCtorParam("fareClass",
             opt => opt.MapFrom(src => src.FareClassId))
         .ForMember(dest => dest.FlightSchedule,

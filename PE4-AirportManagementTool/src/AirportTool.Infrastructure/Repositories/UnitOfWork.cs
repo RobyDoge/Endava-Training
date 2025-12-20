@@ -9,16 +9,19 @@ public class UnitOfWork : IUnitOfWork
     public IFlightScheduleRepository FlightScheduleRepository { get; }
     public IFlightRepository FlightRepository { get; }
     public ITicketRepository TicketRepository { get; }
+    public IBookingRepository BookingRepository { get; }
 
     public UnitOfWork(AirlineBookingContext context,
         IFlightScheduleRepository flightScheduleRepository,
         IFlightRepository flightRepository,
-        ITicketRepository ticketRepository)
+        ITicketRepository ticketRepository,
+        IBookingRepository bookingRepository)
     {
         Context = context;
         FlightScheduleRepository = flightScheduleRepository;
         FlightRepository = flightRepository;
         TicketRepository = ticketRepository;
+        BookingRepository = bookingRepository;
     }
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
