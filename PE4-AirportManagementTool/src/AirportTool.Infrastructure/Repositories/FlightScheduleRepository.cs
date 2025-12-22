@@ -42,4 +42,24 @@ public class FlightScheduleRepository : GenericRepository<FlightSchedule>, IFlig
 
         return Result.Success<IEnumerable<FlightScheduleEntity>, Error>(Mapper.Map<IEnumerable<FlightScheduleEntity>>(result));
     }
+
+    public Task<Result<FlightEntity, Error>> GetByIdAsync(int flightId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Result<IEnumerable<FlightScheduleEntity>, Error>> GetUpcomingAsync(DateTime startingDate, DateTime endingDate)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Result<IIdentifiable<int>, Error>> CreateAsync(CreateFlightScheduleRecord record)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Result<BulkImportFlightScheduleSummary>> BulkImport(IEnumerable<CreateFlightScheduleRecord> records)
+    {
+        throw new NotImplementedException();
+    }
 }
