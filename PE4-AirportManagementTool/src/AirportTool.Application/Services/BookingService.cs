@@ -49,7 +49,12 @@ public class BookingService
 
     public Task<Result<BookingEntity, Error>> GetByConfirmationCodeAsync(string confirmationCode)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrEmpty(confirmationCode) || confirmationCode.Length > 8)
+        {
+            return Task.FromResult(Result.Failure<BookingEntity, Error>(Error.Validation("Invalid confirmation code.")));
+        }
+
+        return UnitOfWork.BookingRepository.GetByConfirmationCodeAsync(confirmationCode);
     }
 
     public Task<UnitResult<Error>> CancelAsync(string confimationCode)

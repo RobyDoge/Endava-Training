@@ -37,7 +37,16 @@ public class BookingController : ControllerBase
     [HttpGet("{code}")]
     public async Task<IActionResult> GetBookingByCode(string code)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrEmpty(code) || code.Length > 8)
+        {
+            return BadRequest("Invalid confirmation code.");
+        }
+
+        var result = await BookingService.GetByConfirmationCodeAsync(code);
+        if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
+
+        var response = Mapper.Map<BookingEntity, BookingDto>(result.Value);
+        return Ok(response);
     }
 
     [HttpDelete("{code}")]

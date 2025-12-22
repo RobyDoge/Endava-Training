@@ -33,9 +33,16 @@ public class BookingRepository : GenericRepository<Booking>, IBookingRepository
         throw new NotImplementedException();
     }
 
-    public Task<Result<BookingEntity, Error>> GetByConfirmationCodeAsync(string confirmationCode)
+    public async Task<Result<BookingEntity, Error>> GetByConfirmationCodeAsync(string confirmationCode)
     {
-        throw new NotImplementedException();
+        var booking = await Context.Bookings
+            .Include(b => b.Ticket)
+            .Include(b => b.BookingStatus)
+            .SingleOrDefaultAsync(b => b.ConfirmationCode == confirmationCode);
+
+        if (booking == null) return Result.Failure<BookingEntity, Error>(Error.NotFound(nameof(Booking), confirmationCode));
+
+        return Mapper.Map<BookingEntity>(booking);
     }
 
     public async Task<Result<BookingEntity, Error>> GetAsync(int id)

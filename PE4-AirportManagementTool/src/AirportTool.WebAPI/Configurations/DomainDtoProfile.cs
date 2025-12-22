@@ -12,6 +12,16 @@ public class DomainDtoProfile : Profile
         GetTicketMap();
         FlightMap();
         CreateBookingDto();
+        BookingDto();
+    }
+
+    private void BookingDto()
+    {
+        CreateMap<BookingEntity, BookingDto>()
+            .ForMember(dest => dest.Status,
+                opt => opt.MapFrom(src => src.BookingStatus.ToString()))
+            .ForMember(dest => dest.TicketId,
+                opt => opt.MapFrom(src => src.Ticket.Id));
     }
 
     private void CreateBookingDto()
