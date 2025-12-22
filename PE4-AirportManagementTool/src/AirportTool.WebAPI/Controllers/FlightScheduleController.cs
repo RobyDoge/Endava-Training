@@ -42,4 +42,25 @@ public class FlightScheduleController : ControllerBase
         var response = Mapper.Map<GetFlightScheduleDto>(result.Value);
         return Ok(response);
     }
+
+    [HttpGet("/stats/upcoming")]
+    public async Task<IActionResult> GetUpcoming(DateTime date)
+    {
+        var result = await FlightScheduleService.GetUpcoming(date, date.AddDays(7));
+        if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
+
+        var flightsPerDate = result.Value
+            .GroupBy(f => f.ScheduledDepartureUtc.Date)
+            .ToDictionary(g => g.Key, g => g.Count());
+
+        var response = flightsPerDate
+                .Select(kvp => new UpcomingFlightsDto
+                {
+                    date = kvp.Key,
+                    flightCount = kvp.Value
+                })
+                .ToList();
+
+        return Ok(response);
+    }
 }

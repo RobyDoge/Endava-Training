@@ -43,9 +43,18 @@ public class FlightScheduleRepository : GenericRepository<FlightSchedule>, IFlig
         return Result.Success<IEnumerable<FlightScheduleEntity>, Error>(Mapper.Map<IEnumerable<FlightScheduleEntity>>(result));
     }
 
-    public Task<Result<IEnumerable<FlightScheduleEntity>, Error>> GetUpcomingAsync(DateTime startingDate, DateTime endingDate)
+    public async Task<Result<IEnumerable<FlightScheduleEntity>, Error>> GetUpcomingAsync(DateTime startingDate, DateTime endingDate)
     {
-        throw new NotImplementedException();
+        var result = await Context.FlightSchedules
+            .Include(fs => fs.Gate)
+            .Include(fs => fs.AssignedAircraft)
+            .Include(fs => fs.Flight)
+            .ThenInclude(f => f.DefaultAircraft)
+            .Where(fs => fs.ScheduledDepartureUtc >= startingDate &&
+                            fs.ScheduledDepartureUtc <= endingDate)
+            .ToListAsync();
+
+        return Result.Success<IEnumerable<FlightScheduleEntity>, Error>(Mapper.Map<IEnumerable<FlightScheduleEntity>>(result));
     }
 
     public Task<Result<IIdentifiable<int>, Error>> CreateAsync(CreateFlightScheduleRecord record)

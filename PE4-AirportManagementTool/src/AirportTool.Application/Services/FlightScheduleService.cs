@@ -27,4 +27,10 @@ public class FlightScheduleService
         var result = await UnitOfWork.FlightScheduleRepository.GetByIdAsync(id);
         return result;
     }
+
+    public async Task<Result<IEnumerable<FlightScheduleEntity>, Error>> GetUpcoming(DateTime starDate, DateTime endDate)
+    {
+        var result = await UnitOfWork.FlightScheduleRepository.GetUpcomingAsync(starDate, endDate);
+        return result;
+    }
 }
