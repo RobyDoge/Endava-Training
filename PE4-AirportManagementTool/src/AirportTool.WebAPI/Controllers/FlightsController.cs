@@ -12,26 +12,13 @@ namespace AirportTool.WebAPI.Controllers;
 [ApiController]
 public class FlightsController : ControllerBase
 {
-    private FlightScheduleService FlightScheduleService { get; }
     private FlightService FlightService { get; }
     private IMapper Mapper { get; }
 
-    public FlightsController(FlightScheduleService flightScheduleService, FlightService flightService, IMapper mapper)
+    public FlightsController(FlightService flightService, IMapper mapper)
     {
-        FlightScheduleService = flightScheduleService;
         Mapper = mapper;
         FlightService = flightService;
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> GetFlightsByRouteAndDate([FromQuery] GetFlightsByRouteAndDateRequest request)
-    {
-        var record = Mapper.Map<GetFlightsByRouteAndDateRecord>(request);
-        var result = await FlightScheduleService.GetByRouteAndDate(record);
-        if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
-
-        var response = Mapper.Map<List<GetFlightScheduleDto>>(result.Value);
-        return Ok(response);
     }
 
     [HttpPost]

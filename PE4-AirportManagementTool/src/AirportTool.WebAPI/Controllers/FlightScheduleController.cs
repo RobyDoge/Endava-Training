@@ -1,4 +1,8 @@
-﻿using AirportTool.Application.Services;
+﻿using AirportTool.Application.Records;
+using AirportTool.Application.Services;
+using AirportTool.WebAPI.Models.DTOs;
+using AirportTool.WebAPI.Models.Requests;
+using AirportTool.WebAPI.Utils;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,5 +20,26 @@ public class FlightScheduleController : ControllerBase
     {
         Mapper = mapper;
         FlightScheduleService = flightScheduleService;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetByRouteAndDate([FromQuery] GetFlightsByRouteAndDateRequest request)
+    {
+        var record = Mapper.Map<GetFlightsByRouteAndDateRecord>(request);
+        var result = await FlightScheduleService.GetByRouteAndDate(record);
+        if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
+
+        var response = Mapper.Map<List<GetFlightScheduleDto>>(result.Value);
+        return Ok(response);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var result = await FlightScheduleService.GetById(id);
+        if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
+
+        var response = Mapper.Map<GetFlightScheduleDto>(result.Value);
+        return Ok(response);
     }
 }

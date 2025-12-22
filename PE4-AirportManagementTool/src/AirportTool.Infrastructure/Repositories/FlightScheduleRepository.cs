@@ -43,11 +43,6 @@ public class FlightScheduleRepository : GenericRepository<FlightSchedule>, IFlig
         return Result.Success<IEnumerable<FlightScheduleEntity>, Error>(Mapper.Map<IEnumerable<FlightScheduleEntity>>(result));
     }
 
-    public Task<Result<FlightEntity, Error>> GetByIdAsync(int flightId)
-    {
-        throw new NotImplementedException();
-    }
-
     public Task<Result<IEnumerable<FlightScheduleEntity>, Error>> GetUpcomingAsync(DateTime startingDate, DateTime endingDate)
     {
         throw new NotImplementedException();
@@ -61,5 +56,19 @@ public class FlightScheduleRepository : GenericRepository<FlightSchedule>, IFlig
     public Task<Result<BulkImportFlightScheduleSummary>> BulkImport(IEnumerable<CreateFlightScheduleRecord> records)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<Result<FlightScheduleEntity, Error>> GetByIdAsync(int flightId)
+    {
+        var flightSchedule = await Context.FlightSchedules
+            .Include(fs => fs.Gate)
+            .Include(fs => fs.AssignedAircraft)
+            .Include(fs => fs.Flight)
+            .ThenInclude(f => f.DefaultAircraft)
+            .FirstOrDefaultAsync(fs => fs.Id == flightId);
+
+        if (flightSchedule == null) return Result.Failure<FlightScheduleEntity, Error>(Error.NotFound("FlightSchedule", flightId));
+
+        return Result.Success<FlightScheduleEntity, Error>(Mapper.Map<FlightScheduleEntity>(flightSchedule));
     }
 }

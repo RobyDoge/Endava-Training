@@ -9,7 +9,7 @@ public interface IFlightScheduleRepository
 {
     Task<Result<IEnumerable<FlightScheduleEntity>, Error>> GetByRouteAndDateAsync(GetFlightsByRouteAndDateRecord record);
 
-    Task<Result<FlightEntity, Error>> GetByIdAsync(int flightId);
+    Task<Result<FlightScheduleEntity, Error>> GetByIdAsync(int flightId);
 
     Task<Result<IEnumerable<FlightScheduleEntity>, Error>> GetUpcomingAsync(DateTime startingDate, DateTime endingDate);
 
