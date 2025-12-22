@@ -63,4 +63,14 @@ public class FlightScheduleController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> Create(CreateFlightScheduleRequest request)
+    {
+        var record = Mapper.Map<CreateFlightScheduleRequest, CreateFlightScheduleRecord>(request);
+        var result = await FlightScheduleService.CreateAsync(record);
+        if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
+
+        return Ok(result.Value);
+    }
 }

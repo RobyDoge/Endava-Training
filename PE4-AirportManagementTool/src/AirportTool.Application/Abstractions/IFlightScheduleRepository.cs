@@ -13,7 +13,7 @@ public interface IFlightScheduleRepository
 
     Task<Result<IEnumerable<FlightScheduleEntity>, Error>> GetUpcomingAsync(DateTime startingDate, DateTime endingDate);
 
-    Task<Result<IIdentifiable<int>, Error>> CreateAsync(CreateFlightScheduleRecord record);
+    Task<Result<IIdentifiable<int>, Error>> AddAsync(CreateFlightScheduleRecord record);
 
     Task<Result<BulkImportFlightScheduleSummary>> BulkImport(IEnumerable<CreateFlightScheduleRecord> records);
 }

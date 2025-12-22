@@ -12,6 +12,8 @@ public class RequestRecordProfile : Profile
         CreateMap<UpdateFlightRequest, UpdateFlightRecord>();
         CreateMap<GetFlightsByRouteAndDateRequest, GetFlightsByRouteAndDateRecord>();
         CreateMap<CreateBookingRequest, CreateBookingRecord>();
+        CreateMap<CreateFlightScheduleRequest, CreateFlightScheduleRecord>();
+
         CreateTicketRecordMap();
     }
 

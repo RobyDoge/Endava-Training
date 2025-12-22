@@ -1,8 +1,10 @@
 ﻿using AirportTool.Application.Abstractions;
 using AirportTool.Application.Records;
 using AirportTool.Domain.Entities;
+using AirportTool.Domain.Enums;
 using AirportTool.Domain.Errors;
 using AirportTool.Infrastructure.Context;
+using AirportTool.Infrastructure.Identifiable;
 using AirportTool.Infrastructure.Models;
 using AutoMapper;
 using CSharpFunctionalExtensions;
@@ -16,11 +18,13 @@ public class FlightScheduleRepository : GenericRepository<FlightSchedule>, IFlig
 {
     private AirlineBookingContext Context { get; }
     private IMapper Mapper { get; }
+    public IEntityHelper EntityHelper { get; }
 
-    public FlightScheduleRepository(AirlineBookingContext context, IMapper mapper) : base(context)
+    public FlightScheduleRepository(AirlineBookingContext context, IMapper mapper, IEntityHelper entityHelper) : base(context)
     {
         Context = context;
         Mapper = mapper;
+        EntityHelper = entityHelper;
     }
 
     public async Task<Result<IEnumerable<FlightScheduleEntity>, Error>> GetByRouteAndDateAsync(GetFlightsByRouteAndDateRecord record)
@@ -57,9 +61,33 @@ public class FlightScheduleRepository : GenericRepository<FlightSchedule>, IFlig
         return Result.Success<IEnumerable<FlightScheduleEntity>, Error>(Mapper.Map<IEnumerable<FlightScheduleEntity>>(result));
     }
 
-    public Task<Result<IIdentifiable<int>, Error>> CreateAsync(CreateFlightScheduleRecord record)
+    public async new Task<Result<IIdentifiable<int>, Error>> AddAsync(CreateFlightScheduleRecord record)
     {
-        throw new NotImplementedException();
+        var flightRes = await EntityHelper.FindEntityAsync(Context.Flights, nameof(Flight.Id), record.FlightId);
+        if (flightRes.IsFailure) return flightRes.ConvertFailure<IIdentifiable<int>>();
+
+        var gate = await Context.Gates
+            .Where(g => g.AirportId == flightRes.Value.OriginAirportId
+                && g.Code.ToLower() == record.GateCode.ToLower())
+            .FirstOrDefaultAsync();
+        if (gate is null) return Result.Failure<IIdentifiable<int>, Error>(Error.NotFound(nameof(Gate), record.GateCode));
+
+        var aircraft = await EntityHelper.FindEntityAsync(Context.Aircrafts, nameof(Aircraft.TailName), record.AssignedAircraftTailName);
+        if (aircraft.IsFailure) return aircraft.ConvertFailure<IIdentifiable<int>>();
+
+        var newFlightSchedule = new FlightSchedule
+        {
+            Flight = flightRes.Value,
+            Gate = gate,
+            AssignedAircraft = aircraft.Value,
+            ScheduledArrivalUtc = record.ScheduledArrivalUtc,
+            ScheduledDepartureUtc = record.ScheduledDepartureUtc,
+            FlightScheduleStatusId = (int)FlightScheduleStatusEnum.Planned
+        };
+
+        var result = await AddAsync(newFlightSchedule);
+        IIdentifiable<int> id = new Identifiable<int>(result, nameof(result.Id));
+        return Result.Success<IIdentifiable<int>, Error>(id);
     }
 
     public Task<Result<BulkImportFlightScheduleSummary>> BulkImport(IEnumerable<CreateFlightScheduleRecord> records)
