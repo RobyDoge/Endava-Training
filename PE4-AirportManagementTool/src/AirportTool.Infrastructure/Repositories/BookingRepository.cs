@@ -22,7 +22,7 @@ public class BookingRepository : GenericRepository<Booking>, IBookingRepository
     private IMapper Mapper { get; }
     public IEntityHelper EntityHelper { get; }
 
-    public BookingRepository(AirlineBookingContext context, IMapper mapper, IEntityHelper entityHelper) : base(context)
+    public BookingRepository(AirlineBookingContext context, IMapper mapper, IEntityHelper entityHelper) : base(context, mapper)
     {
         Context = context;
         Mapper = mapper;

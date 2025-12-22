@@ -1,5 +1,8 @@
 ﻿using AirportTool.Application.Abstractions;
+using AirportTool.Application.Models;
 using AirportTool.Infrastructure.Context;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using System;
@@ -11,8 +14,13 @@ namespace AirportTool.Infrastructure.Repositories;
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
     private AirlineBookingContext Context { get; }
+    public IMapper Mapper { get; }
 
-    public GenericRepository(AirlineBookingContext context) => Context = context;
+    public GenericRepository(AirlineBookingContext context, IMapper mapper)
+    {
+        Context = context;
+        Mapper = mapper;
+    }
 
     public async Task<T> AddAsync(T entity)
     {
@@ -49,5 +57,23 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     public async Task UpdateAsync(T entity)
     {
         Context.Set<T>().Update(entity);
+    }
+
+    public async Task<PagedResult<TResult>> GetAllAsync<TResult>(QuerryParameters querryParameters)
+    {
+        var totalSize = await Context.Set<T>().CountAsync();
+        var items = await Context.Set<T>()
+            .Skip(querryParameters.PageNumber)
+            .Take(querryParameters.PageSize)
+            .ProjectTo<TResult>(Mapper.ConfigurationProvider)
+            .ToListAsync();
+
+        return new PagedResult<TResult>
+        {
+            Items = items,
+            PageNumber = querryParameters.PageNumber,
+            RecordNumber = querryParameters.PageSize,
+            TotalCount = totalSize
+        };
     }
 }

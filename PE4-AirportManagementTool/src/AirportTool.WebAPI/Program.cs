@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using AirportTool.Application.Validators;
 using AirportTool.Application.Services.Middlewares;
+using AirportTool.Application.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,11 @@ builder.Services.AddDbContext<AirlineBookingContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
+
+var appSettings = builder.Configuration
+    .GetSection("AppSettings")
+    .Get<AppSettings>() ?? new AppSettings();
+builder.Services.AddSingleton(appSettings);
 
 builder.Services.AddAutoMapper(cfg =>
 {

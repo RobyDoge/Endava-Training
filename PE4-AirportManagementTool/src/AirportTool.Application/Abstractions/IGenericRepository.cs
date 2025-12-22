@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AirportTool.Application.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,7 +9,7 @@ public interface IGenericRepository<T> where T : class
 {
     Task<T?> GetAsync(int? id);
 
-    Task<List<T>> GetAllAsync();
+    Task<PagedResult<TResult>> GetAllAsync<TResult>(QuerryParameters querryParameters);
 
     Task<T> AddAsync(T entity);
 

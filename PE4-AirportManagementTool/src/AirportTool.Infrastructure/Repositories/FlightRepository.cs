@@ -17,7 +17,7 @@ public class FlightRepository : GenericRepository<Flight>, IFlightRepository
     private IMapper Mapper { get; }
     public IEntityHelper EntityHelper { get; }
 
-    public FlightRepository(AirlineBookingContext context, IMapper mapper, IEntityHelper entityHelper) : base(context)
+    public FlightRepository(AirlineBookingContext context, IMapper mapper, IEntityHelper entityHelper) : base(context, mapper)
     {
         Context = context;
         Mapper = mapper;

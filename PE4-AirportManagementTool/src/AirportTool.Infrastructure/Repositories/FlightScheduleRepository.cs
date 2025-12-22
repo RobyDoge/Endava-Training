@@ -20,7 +20,7 @@ public class FlightScheduleRepository : GenericRepository<FlightSchedule>, IFlig
     private IMapper Mapper { get; }
     public IEntityHelper EntityHelper { get; }
 
-    public FlightScheduleRepository(AirlineBookingContext context, IMapper mapper, IEntityHelper entityHelper) : base(context)
+    public FlightScheduleRepository(AirlineBookingContext context, IMapper mapper, IEntityHelper entityHelper) : base(context, mapper)
     {
         Context = context;
         Mapper = mapper;
