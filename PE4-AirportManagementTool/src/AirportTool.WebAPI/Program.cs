@@ -36,6 +36,7 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<DomainDtoProfile>();
     cfg.AddProfile<EfDomainMapper>();
     cfg.AddProfile<RequestRecordProfile>();
+    cfg.AddProfile<RecordMapper>();
 });
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

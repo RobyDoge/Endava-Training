@@ -1,4 +1,5 @@
-﻿using AirportTool.Application.Records;
+﻿using AirportTool.Application.Models;
+using AirportTool.Application.Records;
 using AirportTool.Application.Services;
 using AirportTool.WebAPI.Models.DTOs;
 using AirportTool.WebAPI.Models.Requests;
@@ -6,6 +7,7 @@ using AirportTool.WebAPI.Utils;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace AirportTool.WebAPI.Controllers;
 
@@ -13,13 +15,20 @@ namespace AirportTool.WebAPI.Controllers;
 [ApiController]
 public class FlightScheduleController : ControllerBase
 {
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     public IMapper Mapper { get; }
     public FlightScheduleService FlightScheduleService { get; }
+    public AppSettings AppSettings { get; }
 
-    public FlightScheduleController(IMapper mapper, FlightScheduleService flightScheduleService)
+    public FlightScheduleController(IMapper mapper, FlightScheduleService flightScheduleService, AppSettings appSettings)
     {
         Mapper = mapper;
         FlightScheduleService = flightScheduleService;
+        AppSettings = appSettings;
     }
 
     [HttpGet]
@@ -72,5 +81,37 @@ public class FlightScheduleController : ControllerBase
         if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
 
         return Ok(result.Value);
+    }
+
+    [HttpPost("/import")]
+    public async Task<IActionResult> BulkImport(IFormFile file)
+    {
+        if (file is null || file.Length == 0)
+            return BadRequest("File must be not empty");
+
+        if (!file.FileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            return BadRequest("File must be a json");
+
+        List<UpsertFlightScheduleRecord>? rows;
+        try
+        {
+            await using var stream = file.OpenReadStream();
+            rows = await JsonSerializer.DeserializeAsync<List<UpsertFlightScheduleRecord>>(stream, JsonOptions);
+        }
+        catch (JsonException je)
+        {
+            return BadRequest($"Invalid JSON file. {je.Message}");
+        }
+
+        if (rows is null || rows.Count == 0)
+            return BadRequest("JSON must be a non-empty array of schedule rows.");
+
+        if (rows.Count > AppSettings.ImportLimit)
+            return BadRequest($"There were {rows.Count} rows to import, but the limit it {AppSettings.ImportLimit}");
+
+        var records = rows.ToAsyncEnumerable();
+        var result = await FlightScheduleService.BulkImportAsync(records);
+
+        return Ok(result);
     }
 }

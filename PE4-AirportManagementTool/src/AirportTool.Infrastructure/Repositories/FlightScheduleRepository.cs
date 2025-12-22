@@ -108,4 +108,51 @@ public class FlightScheduleRepository : GenericRepository<FlightSchedule>, IFlig
 
         return Result.Success<FlightScheduleEntity, Error>(Mapper.Map<FlightScheduleEntity>(flightSchedule));
     }
+
+    public async Task<Result<bool, Error>> UpsertAsync(UpsertFlightScheduleRecord record)
+    {
+        if (record.Id == null)
+        {
+            var addResult = await this.AddAsync(Mapper.Map<CreateFlightScheduleRecord>(record));
+            if (addResult.IsFailure) addResult.ConvertFailure<bool>();
+            return true;
+        }
+
+        var result = await this.UpdateAsync(Mapper.Map<UpdateFlightScheduleRecord>(record));
+        if (result.IsFailure) result.ConvertFailure<bool>();
+        return false;
+    }
+
+    public async Task<UnitResult<Error>> UpdateAsync(UpdateFlightScheduleRecord record)
+    {
+        var flightSchedule = await Context.FlightSchedules
+            .Include(fs => fs.Gate)
+            .Include(fs => fs.AssignedAircraft)
+            .Include(fs => fs.Flight)
+            .ThenInclude(f => f.DefaultAircraft)
+            .Where(fs => fs.Id == record.Id)
+            .SingleOrDefaultAsync();
+        if (flightSchedule == null) return Error.NotFound(nameof(FlightSchedule), record.Id);
+
+        var flightRes = await EntityHelper.FindEntityAsync(Context.Flights, nameof(Flight.Id), record.FlightId);
+        if (flightRes.IsFailure && record.FlightId != null) return flightRes;
+
+        var gate = await Context.Gates
+            .Where(g => g.AirportId == flightRes.Value.OriginAirportId
+                && g.Code.ToLower() == record.GateCode.ToLower())
+            .FirstOrDefaultAsync();
+        if (gate is null && record.GateCode != null) return Result.Failure<IIdentifiable<int>, Error>(Error.NotFound(nameof(Gate), record.GateCode));
+
+        var aircraft = await EntityHelper.FindEntityAsync(Context.Aircrafts, nameof(Aircraft.TailName), record.AssignedAircraftTailName);
+        if (aircraft.IsFailure && record.AssignedAircraftTailName != null) return aircraft.ConvertFailure<IIdentifiable<int>>();
+
+        EntityHelper.Patch(flightRes.Value, a => flightSchedule.Flight = a);
+        EntityHelper.Patch(gate, a => flightSchedule.Gate = a);
+        EntityHelper.Patch(aircraft.Value, a => flightSchedule.AssignedAircraft = a);
+        EntityHelper.Patch(record.ScheduledDepartureUtc, a => flightSchedule.ScheduledDepartureUtc = a);
+        EntityHelper.Patch(record.ScheduledArrivalUtc, a => flightSchedule.ScheduledArrivalUtc = a);
+
+        await UpdateAsync(flightSchedule);
+        return UnitResult.Success<Error>();
+    }
 }

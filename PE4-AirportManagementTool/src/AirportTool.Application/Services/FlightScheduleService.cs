@@ -1,4 +1,5 @@
 ﻿using AirportTool.Application.Abstractions;
+using AirportTool.Application.Models;
 using AirportTool.Application.Records;
 using AirportTool.Domain.Entities;
 using AirportTool.Domain.Errors;
@@ -6,6 +7,7 @@ using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Formats.Asn1;
+using System.Reflection.Metadata.Ecma335;
 
 namespace AirportTool.Application.Services;
 
@@ -13,11 +15,13 @@ public class FlightScheduleService
 {
     private IUnitOfWork UnitOfWork { get; }
     public IServiceProvider ServiceProvider { get; }
+    public AppSettings AppSettings { get; }
 
-    public FlightScheduleService(IUnitOfWork unitOfWork, IServiceProvider serviceProvider)
+    public FlightScheduleService(IUnitOfWork unitOfWork, IServiceProvider serviceProvider, AppSettings appSettings)
     {
         UnitOfWork = unitOfWork;
         ServiceProvider = serviceProvider;
+        AppSettings = appSettings;
     }
 
     public async Task<Result<IEnumerable<FlightScheduleEntity>, Error>> GetByRouteAndDate(GetFlightsByRouteAndDateRecord record)
@@ -61,5 +65,49 @@ public class FlightScheduleService
         await UnitOfWork.SaveChangesAsync();
 
         return result.Value.Id;
+    }
+
+    public async Task<Result<BulkImportFlightScheduleSummary, Error>> BulkImportAsync(IAsyncEnumerable<UpsertFlightScheduleRecord> records)
+    {
+        var validator = ServiceProvider.GetRequiredService<IValidator<UpsertFlightScheduleRecord>>()
+            ?? throw new InvalidOperationException("CreateFlightScheduleRecord not registered in the service provider.");
+
+        var summary = new BulkImportFlightScheduleSummary();
+
+        await foreach (var record in records)
+        {
+            if (summary.TotalRecords >= AppSettings.ImportLimit)
+                return summary;
+
+            summary.TotalRecords++;
+
+            var validationResult = await validator.ValidateAsync(record);
+            if (!validationResult.IsValid)
+            {
+                var errorMessage = string.Join("; ", validationResult.Errors);
+                summary.Errors.Add(Error.Validation($"row {summary.TotalRecords - 1} : {errorMessage}"));
+                continue;
+            }
+
+            try
+            {
+                var result = await UnitOfWork.FlightScheduleRepository.UpsertAsync(record);
+                if (result.IsFailure)
+                {
+                    summary.Errors.Add(result.Error);
+                    continue;
+                }
+                await UnitOfWork.SaveChangesAsync();
+
+                if (result.Value)
+                    summary.CreatedRecords++;
+                summary.UpdatedRecords++;
+            }
+            catch (Exception ex)
+            {
+                summary.Errors.Add(Error.FromException(ex));
+            }
+        }
+        return summary;
     }
 }

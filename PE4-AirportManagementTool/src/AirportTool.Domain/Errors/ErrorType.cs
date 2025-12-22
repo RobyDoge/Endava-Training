@@ -7,5 +7,6 @@ namespace AirportTool.Domain.Errors;
 public enum ErrorType
 {
     NotFound,
-    Validation
+    Validation,
+    Exception
 }

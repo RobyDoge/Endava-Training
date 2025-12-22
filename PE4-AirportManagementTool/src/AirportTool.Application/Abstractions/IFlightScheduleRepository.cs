@@ -16,4 +16,9 @@ public interface IFlightScheduleRepository
     Task<Result<IIdentifiable<int>, Error>> AddAsync(CreateFlightScheduleRecord record);
 
     Task<Result<BulkImportFlightScheduleSummary>> BulkImport(IEnumerable<CreateFlightScheduleRecord> records);
+
+    //true - created, false - updated
+    Task<Result<bool, Error>> UpsertAsync(UpsertFlightScheduleRecord record);
+
+    Task<UnitResult<Error>> UpdateAsync(UpdateFlightScheduleRecord record);
 }
