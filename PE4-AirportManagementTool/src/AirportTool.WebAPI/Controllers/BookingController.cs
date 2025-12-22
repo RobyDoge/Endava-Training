@@ -52,6 +52,14 @@ public class BookingController : ControllerBase
     [HttpDelete("{code}")]
     public async Task<IActionResult> CancelBooking(string code)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrEmpty(code) || code.Length > 8)
+        {
+            return BadRequest("Invalid confirmation code.");
+        }
+
+        var result = await BookingService.CancelAsync(code);
+        if (result.IsFailure) return Converter.ErrorToActionResult(result.Error);
+
+        return NoContent();
     }
 }

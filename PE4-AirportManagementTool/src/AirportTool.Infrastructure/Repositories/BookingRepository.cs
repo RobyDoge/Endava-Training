@@ -2,6 +2,7 @@
 using AirportTool.Application.Records;
 using AirportTool.Application.Services;
 using AirportTool.Domain.Entities;
+using AirportTool.Domain.Enums;
 using AirportTool.Domain.Errors;
 using AirportTool.Infrastructure.Context;
 using AirportTool.Infrastructure.Identifiable;
@@ -28,9 +29,17 @@ public class BookingRepository : GenericRepository<Booking>, IBookingRepository
         EntityHelper = entityHelper;
     }
 
-    public Task<UnitResult<Error>> CancelAsync(string confimationCode)
+    public async Task<UnitResult<Error>> CancelAsync(string confimationCode)
     {
-        throw new NotImplementedException();
+        var booking = await Context.Bookings
+            .Include(b => b.Ticket)
+            .SingleOrDefaultAsync(b => b.ConfirmationCode == confimationCode);
+        if (booking == null) return UnitResult.Failure<Error>(Error.NotFound(nameof(Booking), confimationCode));
+
+        booking.BookingStatusId = (int)BookingStatusEnum.Cancelled;
+        booking.Ticket.SeatInventory += booking.Quantity;
+
+        return UnitResult.Success<Error>();
     }
 
     public async Task<Result<BookingEntity, Error>> GetByConfirmationCodeAsync(string confirmationCode)

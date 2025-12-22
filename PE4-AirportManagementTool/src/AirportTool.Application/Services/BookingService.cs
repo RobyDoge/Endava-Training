@@ -47,24 +47,41 @@ public class BookingService
         return await UnitOfWork.BookingRepository.GetAsync(resultedId.Value.Id);
     }
 
-    public Task<Result<BookingEntity, Error>> GetByConfirmationCodeAsync(string confirmationCode)
+    public async Task<Result<BookingEntity, Error>> GetByConfirmationCodeAsync(string confirmationCode)
     {
-        if (string.IsNullOrEmpty(confirmationCode) || confirmationCode.Length > 8)
+        if (!ValidateConfirmationCode(confirmationCode))
         {
-            return Task.FromResult(Result.Failure<BookingEntity, Error>(Error.Validation("Invalid confirmation code.")));
+            return Result.Failure<BookingEntity, Error>(Error.Validation("Invalid confirmation code."));
         }
 
-        return UnitOfWork.BookingRepository.GetByConfirmationCodeAsync(confirmationCode);
+        return await UnitOfWork.BookingRepository.GetByConfirmationCodeAsync(confirmationCode);
     }
 
-    public Task<UnitResult<Error>> CancelAsync(string confimationCode)
+    public async Task<UnitResult<Error>> CancelAsync(string confirmationCode)
     {
-        throw new NotImplementedException();
+        if (!ValidateConfirmationCode(confirmationCode))
+        {
+            return UnitResult.Failure(Error.Validation("Invalid confirmation code."));
+        }
+
+        var getResult = await UnitOfWork.BookingRepository.CancelAsync(confirmationCode);
+        await UnitOfWork.SaveChangesAsync();
+
+        return getResult;
     }
 
     private static string CreateConfirmatioCode()
     {
         var guid = Guid.NewGuid().ToString("N").ToUpper();
         return guid.Substring(0, 8);
+    }
+
+    private static bool ValidateConfirmationCode(string code)
+    {
+        if (string.IsNullOrEmpty(code) || code.Length != 8)
+        {
+            return false;
+        }
+        return true;
     }
 }
