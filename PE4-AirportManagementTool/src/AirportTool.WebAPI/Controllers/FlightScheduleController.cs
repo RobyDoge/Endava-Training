@@ -112,6 +112,8 @@ public class FlightScheduleController : ControllerBase
         var records = rows.ToAsyncEnumerable();
         var result = await FlightScheduleService.BulkImportAsync(records);
 
-        return Ok(result);
+        if (result.IsFailure) Converter.ErrorToActionResult(result.Error);
+
+        return Ok(result.Value);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AirportTool.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,4 +13,5 @@ public record UpdateFlightScheduleRecord
     public DateTime? ScheduledArrivalUtc { get; init; }
     public string? GateCode { get; init; } = null!;
     public string? AssignedAircraftTailName { get; init; }
+    public FlightScheduleStatusEnum? FlightScheduleStatus { get; init; }
 }

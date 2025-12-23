@@ -73,6 +73,7 @@ public class FlightScheduleService
             ?? throw new InvalidOperationException("CreateFlightScheduleRecord not registered in the service provider.");
 
         var summary = new BulkImportFlightScheduleSummary();
+        await records.CountAsync();
 
         await foreach (var record in records)
         {
@@ -101,7 +102,8 @@ public class FlightScheduleService
 
                 if (result.Value)
                     summary.CreatedRecords++;
-                summary.UpdatedRecords++;
+                else
+                    summary.UpdatedRecords++;
             }
             catch (Exception ex)
             {

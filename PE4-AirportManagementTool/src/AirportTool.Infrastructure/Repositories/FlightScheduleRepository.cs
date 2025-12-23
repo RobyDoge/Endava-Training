@@ -151,6 +151,7 @@ public class FlightScheduleRepository : GenericRepository<FlightSchedule>, IFlig
         EntityHelper.Patch(aircraft.Value, a => flightSchedule.AssignedAircraft = a);
         EntityHelper.Patch(record.ScheduledDepartureUtc, a => flightSchedule.ScheduledDepartureUtc = a);
         EntityHelper.Patch(record.ScheduledArrivalUtc, a => flightSchedule.ScheduledArrivalUtc = a);
+        EntityHelper.Patch((int?)record.FlightScheduleStatus, a => flightSchedule.FlightScheduleStatusId = a);
 
         await UpdateAsync(flightSchedule);
         return UnitResult.Success<Error>();
