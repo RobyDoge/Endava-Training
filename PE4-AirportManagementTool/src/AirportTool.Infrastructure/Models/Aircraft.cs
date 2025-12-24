@@ -13,9 +13,9 @@ public partial class Aircraft
 
     public int SeatCapacity { get; set; }
 
-    public int AirlineOwnerId { get; set; }
+    public int? AirlineOwnerId { get; set; }
 
-    public virtual Airline AirlineOwner { get; set; } = null!;
+    public virtual Airline? AirlineOwner { get; set; }
 
     public virtual ICollection<FlightSchedule> FlightSchedules { get; set; } = new List<FlightSchedule>();
 

@@ -21,7 +21,7 @@ public partial class Ticket
 
     public bool IsRefundable { get; set; }
 
-    public int? SeatInventory { get; set; }
+    public int SeatInventory { get; set; }
 
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 

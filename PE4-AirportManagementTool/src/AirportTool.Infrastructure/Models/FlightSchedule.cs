@@ -13,7 +13,7 @@ public partial class FlightSchedule
 
     public DateTime ScheduledArrivalUtc { get; set; }
 
-    public int GateId { get; set; }
+    public int? GateId { get; set; }
 
     public int? AssignedAircraftId { get; set; }
 
@@ -25,7 +25,7 @@ public partial class FlightSchedule
 
     public virtual FlightScheduleStatus FlightScheduleStatus { get; set; } = null!;
 
-    public virtual Gate Gate { get; set; } = null!;
+    public virtual Gate? Gate { get; set; }
 
     public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 }

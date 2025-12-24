@@ -6,14 +6,14 @@ public class AircraftEntity
     public string TailName { get; private set; } = null!;
     public string Model { get; private set; } = null!;
     public int SeatCapacity { get; private set; }
-    public AirlineEntity AirlineOwner { get; private set; } = null!;
+    public AirlineEntity? AirlineOwner { get; private set; } = null!;
 
     public AircraftEntity(
         int id,
         string tailName,
         string model,
         int seatCapacity,
-        AirlineEntity airlineOwner)
+        AirlineEntity? airlineOwner)
     {
         Id = id;
         TailName = tailName;

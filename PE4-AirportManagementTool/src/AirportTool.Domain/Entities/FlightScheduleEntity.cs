@@ -9,7 +9,7 @@ public class FlightScheduleEntity
     public DateTime ScheduledArrivalUtc { get; private set; }
     public FlightEntity Flight { get; private set; } = null!;
     public FlightScheduleStatusEnum Status { get; private set; }
-    public GateEntity Gate { get; private set; } = null!;
+    public GateEntity? Gate { get; private set; } = null!;
     public AircraftEntity? AssignedAircraft { get; private set; }
 
     public FlightScheduleEntity(
@@ -18,7 +18,7 @@ public class FlightScheduleEntity
         DateTime scheduledArrivalUtc,
         FlightEntity flight,
         FlightScheduleStatusEnum status,
-        GateEntity gate,
+        GateEntity? gate,
         AircraftEntity? assignedAircraft
         )
     {

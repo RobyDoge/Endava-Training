@@ -17,7 +17,7 @@ public class TicketEntity
 
     public bool IsRefundable { get; set; }
 
-    public int? SeatInventory { get; set; }
+    public int SeatInventory { get; set; }
 
     public CurrencyEnum Currency { get; set; }
 
@@ -27,7 +27,7 @@ public class TicketEntity
     public TicketEntity(int id,
         decimal basePrice,
         decimal taxes,
-        int? seatInventory,
+        int seatInventory,
         int currency,
         int fareClass,
         FlightScheduleEntity flightSchedule,
