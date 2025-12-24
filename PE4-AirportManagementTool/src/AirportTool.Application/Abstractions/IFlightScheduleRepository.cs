@@ -1,0 +1,24 @@
+﻿using AirportTool.Application.Records;
+using AirportTool.Domain.Entities;
+using AirportTool.Domain.Errors;
+using CSharpFunctionalExtensions;
+
+namespace AirportTool.Application.Abstractions;
+
+public interface IFlightScheduleRepository
+{
+    Task<Result<IEnumerable<FlightScheduleEntity>, Error>> GetByRouteAndDateAsync(GetFlightsByRouteAndDateRecord record);
+
+    Task<Result<FlightScheduleEntity, Error>> GetByIdAsync(int flightId);
+
+    Task<Result<IEnumerable<FlightScheduleEntity>, Error>> GetUpcomingAsync(DateTime startingDate, DateTime endingDate);
+
+    Task<Result<IIdentifiable<int>, Error>> AddAsync(CreateFlightScheduleRecord record);
+
+    Task<Result<BulkImportFlightScheduleSummary>> BulkImport(IEnumerable<CreateFlightScheduleRecord> records);
+
+    //true - created, false - updated
+    Task<Result<bool, Error>> UpsertAsync(UpsertFlightScheduleRecord record);
+
+    Task<UnitResult<Error>> UpdateAsync(UpdateFlightScheduleRecord record);
+}
