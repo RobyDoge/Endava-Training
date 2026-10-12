@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="AirportTool.Application/AirportTool.Application.csproj" Id="69f73e75-c69a-4c73-adba-3e98d1ce1f3e" />
+  <Project Path="AirportTool.Domain/AirportTool.Domain.csproj" Id="cdc04687-89dc-44a7-b45c-77690dc2f38d" />
+  <Project Path="AirportTool.Infrastructure/AirportTool.Infrastructure.csproj" Id="80c02fab-fa7a-48ea-88b0-276260a51d2a" />
+  <Project Path="AirportTool.WebAPI/AirportTool.WebAPI.csproj" Id="d2a3fadd-65fa-4ad0-ae0f-f756efd11856" />
+</Solution>

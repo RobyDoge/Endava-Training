@@ -1,0 +1,68 @@
+Airline:
+1,RO,Tarom
+2,W6,Wizz Air
+
+Airport:
+1,('OTP', 'Henri Coandă International Airport', 'Otopeni', 'Romania', 'UTC+2'),
+2,('LTN', 'London Luton Aiport', 'Luton', 'England', 'UTC')
+
+Gates:
+1, (1 (airportId), 'GATE01'),
+2, (1, 'GATE02'),
+3, (1, 'GATE03'),
+4, (2, 'GATE01'),
+5, (2, 'GATE02'),
+6,(2, 'GATE03')
+
+Aircraft
+1, ('DOGE23', 'Boeing 737', 200, 1 (airlineid)),
+2, ('DOGE06', 'Boeing 727', 120, 1),
+3, ('DOGE03', 'Boeing 777', 300, 2)
+
+Flights
+1, (1 (airlineid), 'RO2003', 1 (originAirport),2 (destAirport),1 (defaultAircraft)),
+2, (2, 'ENG2309', 2,1,3)
+
+FSStatus
+1	Planned
+2	Boarding
+3	Departed
+4	Canceled
+5	Delayed
+
+
+FlightScheduel
+1, (1 (flightid),'2025-05-01T14:35:12.1234567','2025-05-01T17:20:50.7654321',1 (gateId),2 (AssignedAircraft),1 (Status)),
+2, (2,'2025-05-02T14:35:12.1234567','2025-05-01T17:20:50.7654321',6,3,4)
+
+
+Currencies
+EUR	Euro
+RON	Lei Romanaesti
+USD	United States Dollar
+
+FareClass
+ ('Y', 'Economy Full Fare'),
+    ('M', 'Economy Discount'),
+    ('J', 'Business Class'),
+    ('F', 'First Class')
+
+
+tickets
+1	1(flightScheduleID)	Y(fareclass)	200.00	24.00	224.00	RON	1	27
+2	1	J	200.00	24.00	224.00	EUR	1	100
+3	1	M	200.00	24.00	224.00	USD	1	20
+4	2	y	300.00	24.00	324.00	RON	0	27
+5	2	j	267.00	24.00	291.00	EUR	0	100
+6	2	m	890.00	24.00	914.00	USD	1	23
+
+
+bookingStatus
+1, ('Active'),
+2, ('Cancelled')
+
+
+bookings
+1, (1(ticketid),'Popa Robert', 'robert@email.com', 'ABX56', 3, 1(bookingStatusId), '2025-12-09T13:45:32.1234567'),
+2, (2,'Popa Robert', 'robert@email.com', 'AC678', 5, 1, '2025-12-09T13:45:32.1234567'),
+3 ,(3,'Popa Robert', 'robert@email.com', 'MKL90', 10, 2, '2025-12-09T13:45:32.1234567')

@@ -1,0 +1,84 @@
+﻿using AirportTool.Domain.Entities;
+using AirportTool.WebAPI.Models.DTOs;
+using AutoMapper;
+
+namespace AirportTool.WebAPI.Configurations;
+
+public class DomainDtoProfile : Profile
+{
+    public DomainDtoProfile()
+    {
+        GetFlightScheduleMap();
+        GetTicketMap();
+        FlightMap();
+        CreateBookingDto();
+        BookingDto();
+    }
+
+    private void BookingDto()
+    {
+        CreateMap<BookingEntity, BookingDto>()
+            .ForMember(dest => dest.Status,
+                opt => opt.MapFrom(src => src.BookingStatus.ToString()))
+            .ForMember(dest => dest.TicketId,
+                opt => opt.MapFrom(src => src.Ticket.Id));
+    }
+
+    private void CreateBookingDto()
+    {
+        CreateMap<BookingEntity, CreatBookingDto>()
+            .ForMember(dest => dest.Status,
+                opt => opt.MapFrom(src => src.BookingStatus.ToString()))
+            .ForMember(dest => dest.TotalAmount,
+                opti => opti.MapFrom(src => src.Ticket.TotalPrice * src.Quantity));
+    }
+
+    private void GetTicketMap()
+    {
+        CreateMap<TicketEntity, GetTicketDto>()
+            .ForMember(dest => dest.FareClass,
+                opt => opt.MapFrom(src => src.FareClass.ToString()))
+            .ForMember(dest => dest.Currency,
+                opt => opt.MapFrom(src => src.Currency.ToString()));
+    }
+
+    private void GetFlightScheduleMap()
+    {
+        CreateMap<FlightScheduleEntity, GetFlightScheduleDto>()
+            .ForMember(dest => dest.FlightNumber,
+                opt => opt.MapFrom(src => src.Flight.FlightNumber))
+            .ForMember(dest => dest.DepartureTime,
+                opt => opt.MapFrom(src => src.ScheduledDepartureUtc))
+            .ForMember(dest => dest.ArrivalTime,
+                opt => opt.MapFrom(src => src.ScheduledArrivalUtc))
+            .ForMember(dest => dest.GateName,
+                opt => opt.MapFrom(src => $"{src.Gate.Code}"))
+            .ForMember(dest => dest.Status,
+                opt => opt.MapFrom(src => src.Status.ToString()))
+            .ForMember(dest => dest.AssignedAircraftTailName,
+                opt => opt.MapFrom(src =>
+                    src.AssignedAircraft != null
+                        ? src.AssignedAircraft.TailName
+                        : src.Flight.DefaultAircraft != null
+                            ? src.Flight.DefaultAircraft.TailName
+                            : "No Aircraft"
+                ));
+    }
+
+    private void FlightMap()
+    {
+        CreateMap<FlightEntity, FlightDto>()
+            .ForMember(dest => dest.AirlineIata,
+                opt => opt.MapFrom(src => src.Airline.IataCode))
+            .ForMember(dest => dest.OriginAirportIata,
+                opt => opt.MapFrom(src => src.OriginAirport.IataCode))
+            .ForMember(dest => dest.DestinationAirportIata,
+                opt => opt.MapFrom(src => src.DestinationAirport.IataCode))
+            .ForMember(dest => dest.DefaultAircraftTailName,
+                opt => opt.MapFrom(src =>
+                    src.DefaultAircraft != null
+                        ? src.DefaultAircraft.TailName
+                        : "No Aircraft"
+                ));
+    }
+}
